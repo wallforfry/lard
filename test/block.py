@@ -96,9 +96,9 @@ class Block(Subject, Observer):
         :param output_name: {"name": "type"}
         :param input_name: {"name": "type"}
         """
-        names = {}
+        names = {"from": self.name, "to": block.name}
         if output_name and input_name:
-            names = {"old_name": output_name, "new_name": input_name}
+            names.update({"old_name": output_name, "new_name": input_name})
 
         liaison = Liaison(self.name + " to " + block.name, data=names)
         self.attach(liaison)
@@ -167,25 +167,44 @@ class Block(Subject, Observer):
         return str(self.dump())
 
     def dump(self):
+        next = []
+        for o in self._observers:
+            next.append(o._data)
+
         dumped_data = {
             "name": self.name,
             "type": str(self.__class__.__name__),
             "data": self.data,
             "inputs": self.inputs_dict,
             "ouputs": self.outputs_dict,
-            "data_ready": self.data_ready}
-
-        print(self._observers)
+            "data_ready": self.data_ready,
+            "next": next}
         return dumped_data
+
+    # À créer pour instancier puis lier tous les blocks
+    @staticmethod
+    def instanciate(j=[]):
+        blocks = []
+        for block in j:
+            b = globals()[block.get("type")](block.get("name"), block_inputs=block.get("inputs"),
+                                             block_outputs=block.get("outputs"), data=block.get("data_ready"))
+
+            blocks.append(b)
+        for b in blocks:
+            for i in j:
+                if b.name == i["name"]:
+                    #J'ai le bloc et le json du bloc
+                    for n in i["next"]:
+                        for c in blocks:
+                            if c.name == n["to"]:
+                                # J'ai le bon block à lier
+                                b.connect_to(c, n.get("input", None), n.get("output", None))
+        return blocks
 
     @staticmethod
     def loads(filename="dump.json"):
         with open(filename, mode="rb") as f:
-            j = json.load(f)
-        blocks = []
-        for block in j:
-            blocks.append(globals()[block.get("type")](block.get("name"), block_inputs=block.get("inputs"), block_outputs=block.get("outputs"), data=block.get("data_ready")))
-        return blocks
+            return json.load(f)
 
     @staticmethod
     def dumps(blocks, filename="dump.json"):
@@ -422,14 +441,6 @@ if __name__ == "__main__":
     blockMaskGreyInverted.data = mask_grey_inverted_data
     blockSuppressWithMask.data = suppress_with_mask_data
 
-    # Test pour la serialization
-    """
-    blockImage.connect_to(blockDisplay)
-    Block.dumps([blockImage, blockDisplay])
-    a = Block.loads()
-    print(a)
-    #"""
-
     # Démo d'inpainting
     """
     imP = Image("PEOPLE", block_inputs={"image_path": "string"}, block_outputs={"image": "image"}, data={"image_path": "picture.png"})
@@ -452,6 +463,19 @@ if __name__ == "__main__":
     blockImage._treat()
     #"""
 
+    # Save list of blocks
+    """
+    Block.dumps([blockImage, blockMaskGreyInverted, blockSuppressWithMask, blockDisplay])
+    #"""
+
+    # Load list of block and re-instanciate
+    """
+    a = Block.loads()
+    b = Block.instanciate(a)
+    b[0]._treat()
+    #"""
+
+    # Draw Graph
     draw_graph(g_from, g_to)
 
 
