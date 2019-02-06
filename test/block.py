@@ -157,7 +157,8 @@ class Block(Subject, Observer):
         self._data = arg
         _data_ready = copy.deepcopy(self.inputs_dict)
         _data_ready = set_dict_to_value(_data_ready, None)
-        self._data_ready = {**_data_ready, **self.data}
+        _data_ready.update(self.data)
+        self._data_ready = _data_ready
 
     @property
     def data_ready(self):
@@ -393,6 +394,7 @@ def draw_graph(v_from, v_to, spectral=False):
 
 
 def set_dict_to_value(d, value):
+    d = copy.deepcopy(d)
     for k, v in d.items():
         if isinstance(v, dict):
             set_dict_to_value(v, value)
@@ -460,7 +462,7 @@ if __name__ == "__main__":
     blockMaskGreyInverted.connect_to(blockSuppressWithMask)
     blockImage.connect_to(blockDisplay)
     blockSuppressWithMask.connect_to(blockDisplay)
-    blockImage._treat()
+    #blockImage._treat()
     #"""
 
     # Save list of blocks
