@@ -20,7 +20,7 @@ class Subject:
 
     def __init__(self):
         self._observers = set()
-        self._subject_outputs = None
+        self._subject_outputs = {}
 
     def attach(self, observer):
         observer._subject = self
@@ -73,43 +73,78 @@ class Block(Subject, Observer):
     Store state that should stay consistent with the subject's.
     """
 
-    def __init__(self, name="Block", block_inputs=dict(), block_outputs=dict()):
+    def __init__(self, name="Block", block_inputs=dict(), block_outputs=dict(), data={}):
         self.name = name
-        self.data = {"inputs": {}, "outputs": {}}
+        self._data = data
         self.inputs_dict = block_inputs
         self.outputs_dict = block_outputs
-        self._data_ready = {"inputs": {}, "outputs": {}}
+        self._data_ready = {}
         super().__init__()
 
     def update(self, inputs):
         self._observer_inputs = inputs
-        self.treat(inputs)
+        self._treat(inputs)
+
+    def connect_to(self, block, output_name=None, input_name=None):
+        """
+        Use to connect a block to another
+        :param block:
+        :param output_name: {"name": "type"}
+        :param input_name: {"name": "type"}
+        """
+        names = {}
+        if output_name and input_name:
+            names = {"old_name": output_name, "new_name": input_name}
+
+        liaison = Liaison(self.name + " to " + block.name, data=names)
+        self.attach(liaison)
+        liaison.attach(block)
+
+        g_from.append(self.name)
+        g_to.append(block.name)
 
     def attach(self, observer):
         super().attach(observer)
-        g_from.append(self.name)
-        g_to.append(observer.name)
 
     def detach(self, observer):
         super().detach(observer)
-        for f,t,i in zip(g_from, g_to, range(0, len(g_from))):
+        for f, t, i in zip(g_from, g_to, range(0, len(g_from))):
             if self.name == f and observer.name == t:
-                #g_from.pop(i)
+                # g_from.pop(i)
                 g_to[i] = None
 
+    def _treat(self, data={}):
+        self.data.update(data)
+
+        if self.name == "SUPPRESS WITH MASK":
+            print(self.name)
+
+        _data_ready = copy.deepcopy(self.inputs_dict)
+        _data_ready = set_dict_to_value(_data_ready, None)
+
+        self._data_ready = {**_data_ready, **self.data}
+        if not self.is_ready():
+            print(self.name + " Not ready")
+        else:
+            self.subject_outputs = self.treatment(self.data)
+
     @abc.abstractmethod
-    def treat(self, data=dict()):
+    def treatment(self, data={}):
         pass
 
     def is_ready(self):
-        self._is_ready(self._data_ready)
+        return self._is_ready(self._data_ready)
 
     def _is_ready(self, d):
+        # Attention ne fonctionne pas en récursif pour le moment
         for k, v in d.items():
             if isinstance(v, dict):
-                self._is_ready(v)
+                pass
+                if not self._is_ready(v):
+                    return False
             else:
-                return d[k] is True
+                if d[k] is None:
+                    return False
         return True
 
     @property
@@ -119,24 +154,34 @@ class Block(Subject, Observer):
     @data.setter
     def data(self, arg):
         self._data = arg
-        self._data_ready = copy.deepcopy(self._data)
-        self._data_ready = set_dict_to_value(self._data_ready.copy(), False)
+        self._data_ready = set_dict_to_value({"inputs": copy.deepcopy(self.inputs_dict)}, None)
+        self._data_ready = {**self._data_ready, **self._data}
 
     @property
     def data_ready(self):
         return self._data_ready
 
+    def __str__(self):
+        print(self.dump())
+
+    def dump(self):
+        dumped_data = {"name": self.name, "data": self.data, "inputs": self.inputs_dict, "ouputs": self.outputs_dict,
+                       "data_ready": self.data_ready}
+        return dumped_data
+
+    def load(self, block):
+        pass
+
+
 class Image(Block):
-    def treat(self, data=dict()):
-        #print(self.is_ready())
-        inputs = data.get("inputs")
-        inputs = {**inputs, **self.data.get("inputs")}
-        image = cv2.imread(inputs.get("image_path"))
-        self.subject_outputs = {**data, "outputs": {"image": image}}
+    def treatment(self, data={}):
+        image = cv2.imread(data.get("image_path"))
+        return {"image": image}
 
 
+## Pas changé
 class Camera(Block):
-    def treat(self, data=dict()):
+    def treatment(self, data=dict()):
         # self.subject_outputs = {"image": "camera_image"}
         self.subject_outputs = data
         print("inputs : " + str(data))
@@ -146,65 +191,70 @@ class Camera(Block):
 
 
 class Blur(Block):
-    def treat(self, data=dict()):
-        inputs = data.get("outputs")
-        inputs = {**inputs, **self.data.get("inputs")}
-        image = inputs.get("image")
-        ksize = inputs.get("ksize")
+    def treatment(self, data={}):
+        image = data.get("image")
+        ksize = data.get("ksize")
         blured_image = cv2.medianBlur(image, ksize)
-        self.subject_outputs = {**data, "outputs": {"image": blured_image}}
+        return {"image": blured_image}
 
 
 class Gradient(Block):
-    def treat(self, data=dict()):
-        inputs = data.get("outputs")
-        inputs = {**inputs, **self.data.get("inputs")}
-        image = inputs.get("image")
+    def treatment(self, data={}):
+        image = data.get("image")
         gradient_image = cv2.convertScaleAbs(cv2.Laplacian(image, cv2.CV_64F))
-        self.subject_outputs = {"inputs": inputs, "outputs": {"image": gradient_image}}
+        return {"image": gradient_image}
+
 
 class Liaison(Block):
-    def treat(self, data=dict()):
-        inputs = data.get("outputs")
-        inputs = {**inputs, **self.data.get("inputs")}
-        old_name = inputs.get("old_name")
-        new_name = inputs.get("new_name")
-        self.subject_outputs = {**data, "outputs": {new_name: inputs.get(old_name)}}
-        print(self.subject_outputs)
+    def treatment(self, data={}):
+        # inputs = {**inputs, **self.data.get("inputs")}
+        old_name = data.get("old_name")
+        new_name = data.get("new_name")
+        data = copy.deepcopy(data)
+        if old_name and new_name:
+            if old_name != new_name:
+                print(old_name + " --> " + new_name)
+                data[new_name] = data[old_name]
+                del data[old_name]
+        return data
 
 
 class Display(Block):
-    def treat(self, data=dict()):
-        image = data.get("outputs").get("image")
-        show_images([image], False)
+    image_name = "image"
 
-class Display2(Block):
-    def treat(self, data=dict()):
-        image = data.get("outputs").get("image2")
-        print(data.get("outputs").get("image2"))
-        show_images([image], False)
+    def treatment(self, data={}):
+        image = data.get(self.image_name)
+
+        if image is not None:
+            show_images([image], self.name, False)
+        else:
+            print("No image in " + self.name)
+
+
+class Display2(Display):
+    image_name = "image2"
+
 
 class Mask(Block):
-    def treat(self, data=dict()):
-        inputs = data.get("outputs")
-        inputs = {**inputs, **self.data.get("inputs")}
-        color = inputs.get("color")
-        amplitude = inputs.get("amplitude")
-        low_threshold = inputs.get("low_threshold")
+    def treatment(self, data={}):
+        color = data.get("color")
+        amplitude = data.get("amplitude")
+        low_threshold = data.get("low_threshold")
 
-        type = inputs.get("type")
+        type = data.get("type")
+
+        image = data.get("image")
+        if image is None:
+            return
 
         if type == "grey":
-            image = inputs.get("mask")
             res = self.get_mask_grey(image, color, amplitude, low_threshold)
         elif type == "grey_inverted":
-            image = inputs.get("mask")
             res = self.get_mask_grey_inverted(image, color, amplitude, low_threshold)
         else:
-            image = inputs.get("image")
             res = self.get_mask(image, color, amplitude, low_threshold)
 
-        self.subject_outputs = {"inputs": inputs, "outputs": {"mask": res}}
+        return {"mask": res}
 
     def get_mask(self, image, color, amplitude, low_threshold):
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -235,21 +285,16 @@ class Mask(Block):
         mask_inv = cv2.bitwise_not(mask)
         return mask_inv
 
+
 class SuppressWithMask(Block):
-    def treat(self, data=dict()):
-        inputs = data.get("outputs")
-        self.data = {"inputs": {**inputs, **self.data.get("inputs")}}
-        #TODO: réussir à lier plusieurs entrées ...
-
-        if None in self.data:
-            return
-        image = self.data.get("image")
-        mask = self.data.get("mask")
+    def treatment(self, data={}):
+        image = data.get("image")
+        mask = data.get("mask")
         res = cv2.bitwise_and(image, image, mask=cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY))
-        self.subject_outputs = {"inputs": inputs, "outputs": {"image": res}}
+        return {"image": res}
 
 
-def show_images(images, cv=False):
+def show_images(images, first_name="Source", cv=False):
     """
             Display list of images with matplotlib
             :type images: Array of cv2 image
@@ -263,7 +308,7 @@ def show_images(images, cv=False):
             convert = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             plt.imshow(convert, cmap='gray')
             if i == 1:
-                plt.title("Source"), plt.xticks([]), plt.yticks([])
+                plt.title(first_name), plt.xticks([]), plt.yticks([])
             else:
                 plt.title('Image ' + str(i - 1)), plt.xticks([]), plt.yticks([])
 
@@ -276,6 +321,7 @@ def show_images(images, cv=False):
                 cv2.imshow('Image ' + str(i), image)
         cv2.waitKey()
 
+
 def draw_graph(v_from, v_to, spectral=False):
     import networkx as nx
     G = nx.DiGraph()
@@ -287,8 +333,9 @@ def draw_graph(v_from, v_to, spectral=False):
     if spectral:
         nx.draw_spectral(G, with_labels=True, node_size=2000, node_color="skyblue", node_shape="s")
     else:
-        nx.draw(G, with_labels=True, node_size=2000, node_color="skyblue", node_shape="s")
+        nx.draw_shell(G, with_labels=True, node_size=2000, node_color="skyblue", node_shape="s")
     plt.show()
+
 
 def set_dict_to_value(d, value):
     for k, v in d.items():
@@ -305,55 +352,71 @@ if __name__ == "__main__":
     g_from = []
     g_to = []
 
-    #Define datas
-    image_data = {"inputs": {"image_path": "shark.png"}}
-    blur_data = {"inputs": {"ksize": 21}}
-    mask_data = {"inputs": {"color": [45, 175, 230], "amplitude": 10, "low_threshold": 50, "type": "default"}}
-    mask_grey_data = {"inputs": {"color": [45, 175, 230], "amplitude": 10, "low_threshold": 50, "type": "grey"}}
-    mask_grey_inverted_data = {"inputs": {"color": [45, 175, 230], "amplitude": 10, "low_threshold": 50, "type": "grey_inverted"}}
-    suppress_with_mask_data = {"inputs": {}, "outputs": {}}
+    # Define datas
+    image_data = {"image_path": "shark.png"}
+    blur_data = {"ksize": 21}
+    mask_data = {"color": [45, 175, 230], "amplitude": 10, "low_threshold": 50, "type": "default"}
+    mask_grey_data = {"color": [45, 175, 230], "amplitude": 10, "low_threshold": 50, "type": "grey"}
+    mask_grey_inverted_data = {"color": [45, 175, 230], "amplitude": 10, "low_threshold": 50, "type": "grey_inverted"}
+    suppress_with_mask_data = {}
 
-    #Define blocks
-    blockImage = Image("IMAGE")
-    blockGradient = Gradient("GRADIENT")
-    blockDisplay = Display("DISPLAY")
-    blockBlur = Blur("BLUR")
-    blockMask = Mask("MASK")
-    blockMaskGrey = Mask("MASK GREY")
-    blockMaskGreyInverted = Mask("MASK GREY INVERTED")
-    blockSuppressWithMask = SuppressWithMask("SUPPRESS WITH MASK")
+    # Define blocks
+    blockImage = Image("IMAGE", block_inputs={"image_path": "string"}, block_outputs={"image": "image"})
+    blockGradient = Gradient("GRADIENT", block_inputs={"image": "image"})
+    blockDisplay = Display("DISPLAY", block_inputs={"image": "image"})
+    blockBlur = Blur("BLUR", block_inputs={"image": "image"})
 
-    blockLiaison = Liaison("LIAISON")
-    blockLiaison.data = {"inputs": {"old_name": "image", "new_name": "image2"}, "outputs": {}}
-    blockDisplay2 = Display2("DISPLAY 2")
+    blockMask = Mask("MASK", block_inputs={"image": "image"})
+    blockMaskGrey = Mask("MASK GREY", block_inputs={"image": "image"})
+    blockMaskGreyInverted = Mask("MASK GREY INVERTED", block_inputs={"image": "image"})
 
-    #Set data
-    #blockImage.data = image_data
+    blockSuppressWithMask = SuppressWithMask("SUPPRESS WITH MASK", block_inputs={"image": "image", "mask": "mask"})
+    blockDisplay2 = Display2("DISPLAY 2", block_inputs={"image2": "image"})
+
+    # Set data
+    blockImage.data = image_data
     blockBlur.data = blur_data
     blockMask.data = mask_data
     blockMaskGrey.data = mask_grey_data
     blockMaskGreyInverted.data = mask_grey_inverted_data
     blockSuppressWithMask.data = suppress_with_mask_data
 
-    blockImage.attach(blockDisplay)
+    blockImage.connect_to(blockBlur)
+    blockBlur.connect_to(blockDisplay)
 
-    blockImage.attach(blockGradient)
-    blockGradient.attach(blockDisplay)
+    blockImage.connect_to(blockDisplay2, "image", "image2")
+    # blockImage.connect_to(blockDisplay, "image", "image")
 
-    blockImage.attach(blockLiaison)
-    blockLiaison.attach(blockDisplay2)
-
-    #blockImage.attach(blockBlur)
-    #blockBlur.attach(blockDisplay)
+    blockImage.connect_to(blockGradient)
+    blockGradient.connect_to(blockDisplay)
 
 
-    #Link blocks
-    #blockImage.attach(blockDisplay)
-    #blockMask.attach(blockMaskGrey)
-    #blockMaskGrey.attach(blockMaskGreyInverted)
-    #blockMaskGreyInverted.attach(blockSuppressWithMask)
-    #blockSuppressWithMask.attach(blockDisplay)
+
+    blockImage.connect_to(blockSuppressWithMask)
+
+    blockImage.connect_to(blockMaskGreyInverted)
+    blockMaskGreyInverted.connect_to(blockSuppressWithMask)
+
+    blockImage.connect_to(blockDisplay)
+    blockMaskGreyInverted.connect_to(blockDisplay, "mask", "image")
+    blockSuppressWithMask.connect_to(blockDisplay)
+
+    # Link blocks
+    # blockImage.attach(blockDisplay)
+    # blockMask.attach(blockMaskGrey)
+    # blockMaskGrey.attach(blockMaskGreyInverted)
+    # blockMaskGreyInverted.attach(blockSuppressWithMask)
+    # blockSuppressWithMask.attach(blockDisplay)
 
     draw_graph(g_from, g_to)
-    blockImage.treat(image_data)
+
+    # print(blockDisplay.data)
+    # print(blockDisplay.data_ready)
+    # print(blockDisplay.is_ready())
+    blockImage._treat()
+
+    # print(blockDisplay.data)
+    # print(blockDisplay.data_ready)
+    # print(blockDisplay.is_ready())
+
     print("End")
