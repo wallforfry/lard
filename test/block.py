@@ -7,8 +7,10 @@ Date : 08/12/18
 import abc
 import copy
 import cv2
+import json
 import matplotlib.pyplot as plt
 import numpy as np
+import pickle
 
 
 class Subject:
@@ -72,14 +74,16 @@ class Block(Subject, Observer):
     consistent with the subject's.
     Store state that should stay consistent with the subject's.
     """
+    blocks = []
 
     def __init__(self, name="Block", block_inputs=dict(), block_outputs=dict(), data={}):
         self.name = name
         self._data = data
         self.inputs_dict = block_inputs
         self.outputs_dict = block_outputs
-        self._data_ready = {}
+        self._data_ready = set_dict_to_value(self.inputs_dict, None)
         super().__init__()
+        Block.blocks.append(self)
 
     def update(self, inputs):
         self._observer_inputs = inputs
@@ -116,9 +120,6 @@ class Block(Subject, Observer):
     def _treat(self, data={}):
         self.data.update(data)
 
-        if self.name == "SUPPRESS WITH MASK":
-            print(self.name)
-
         _data_ready = copy.deepcopy(self.inputs_dict)
         _data_ready = set_dict_to_value(_data_ready, None)
 
@@ -154,30 +155,53 @@ class Block(Subject, Observer):
     @data.setter
     def data(self, arg):
         self._data = arg
-        self._data_ready = set_dict_to_value({"inputs": copy.deepcopy(self.inputs_dict)}, None)
-        self._data_ready = {**self._data_ready, **self._data}
+        _data_ready = copy.deepcopy(self.inputs_dict)
+        _data_ready = set_dict_to_value(_data_ready, None)
+        self._data_ready = {**_data_ready, **self.data}
 
     @property
     def data_ready(self):
         return self._data_ready
 
     def __str__(self):
-        print(self.dump())
+        return str(self.dump())
 
     def dump(self):
-        dumped_data = {"name": self.name, "data": self.data, "inputs": self.inputs_dict, "ouputs": self.outputs_dict,
-                       "data_ready": self.data_ready}
+        dumped_data = {
+            "name": self.name,
+            "type": str(self.__class__.__name__),
+            "data": self.data,
+            "inputs": self.inputs_dict,
+            "ouputs": self.outputs_dict,
+            "data_ready": self.data_ready}
+
+        print(self._observers)
         return dumped_data
 
-    def load(self, block):
-        pass
+    @staticmethod
+    def loads(filename="dump.json"):
+        with open(filename, mode="rb") as f:
+            j = json.load(f)
+        blocks = []
+        for block in j:
+            blocks.append(globals()[block.get("type")](block.get("name"), block_inputs=block.get("inputs"), block_outputs=block.get("outputs"), data=block.get("data_ready")))
+        return blocks
 
+    @staticmethod
+    def dumps(blocks, filename="dump.json"):
+        with open(filename, mode="w") as f:
+            json.dump(blocks, f, cls=BlockEncoder, indent=4)
+
+class BlockEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if issubclass(type(obj), Block):
+            return obj.dump()
+        return json.JSONEncoder.default(self, obj)
 
 class Image(Block):
     def treatment(self, data={}):
         image = cv2.imread(data.get("image_path"))
         return {"image": image}
-
 
 ## Pas changé
 class Camera(Block):
@@ -189,7 +213,6 @@ class Camera(Block):
         print()
         return {"block_name": self.name, "inputs": data, "outputs": self.subject_outputs}
 
-
 class Blur(Block):
     def treatment(self, data={}):
         image = data.get("image")
@@ -197,13 +220,17 @@ class Blur(Block):
         blured_image = cv2.medianBlur(image, ksize)
         return {"image": blured_image}
 
-
 class Gradient(Block):
     def treatment(self, data={}):
         image = data.get("image")
         gradient_image = cv2.convertScaleAbs(cv2.Laplacian(image, cv2.CV_64F))
         return {"image": gradient_image}
 
+class Invert(Block):
+    def treatment(self, data={}):
+        image = data.get("image")
+        result = cv2.bitwise_not(image)
+        return {"image": result}
 
 class Liaison(Block):
     def treatment(self, data={}):
@@ -293,6 +320,15 @@ class SuppressWithMask(Block):
         res = cv2.bitwise_and(image, image, mask=cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY))
         return {"image": res}
 
+class Inpaint(Block):
+    def treatment(self, data={}):
+        img = data.get("image")
+        mask = data.get("mask")
+        radius = data.get("radius")
+        method = data.get("method")
+        mask = cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY)
+        dst = cv2.inpaint(img, mask, radius, method)
+        return {"image": dst}
 
 def show_images(images, first_name="Source", cv=False):
     """
@@ -362,16 +398,21 @@ if __name__ == "__main__":
 
     # Define blocks
     blockImage = Image("IMAGE", block_inputs={"image_path": "string"}, block_outputs={"image": "image"})
-    blockGradient = Gradient("GRADIENT", block_inputs={"image": "image"})
-    blockDisplay = Display("DISPLAY", block_inputs={"image": "image"})
+
     blockBlur = Blur("BLUR", block_inputs={"image": "image"})
+    blockGradient = Gradient("GRADIENT", block_inputs={"image": "image"})
+
+    blockDisplay = Display("DISPLAY", block_inputs={"image": "image"})
+    blockDisplay2 = Display2("DISPLAY 2", block_inputs={"image2": "image"})
 
     blockMask = Mask("MASK", block_inputs={"image": "image"})
     blockMaskGrey = Mask("MASK GREY", block_inputs={"image": "image"})
     blockMaskGreyInverted = Mask("MASK GREY INVERTED", block_inputs={"image": "image"})
 
     blockSuppressWithMask = SuppressWithMask("SUPPRESS WITH MASK", block_inputs={"image": "image", "mask": "mask"})
-    blockDisplay2 = Display2("DISPLAY 2", block_inputs={"image2": "image"})
+    blockInpainting = Inpaint("INPAINT", block_inputs={"mask": "image", "image": "image"}, data={"radius": 200, "method": cv2.INPAINT_TELEA})
+
+    blockInvert = Invert("INVERT", block_inputs={"image": "image"})
 
     # Set data
     blockImage.data = image_data
@@ -381,42 +422,37 @@ if __name__ == "__main__":
     blockMaskGreyInverted.data = mask_grey_inverted_data
     blockSuppressWithMask.data = suppress_with_mask_data
 
-    blockImage.connect_to(blockBlur)
-    blockBlur.connect_to(blockDisplay)
+    # Test pour la serialization
+    """
+    blockImage.connect_to(blockDisplay)
+    Block.dumps([blockImage, blockDisplay])
+    a = Block.loads()
+    print(a)
+    #"""
 
-    blockImage.connect_to(blockDisplay2, "image", "image2")
-    # blockImage.connect_to(blockDisplay, "image", "image")
+    # Démo d'inpainting
+    """
+    imP = Image("PEOPLE", block_inputs={"image_path": "string"}, block_outputs={"image": "image"}, data={"image_path": "picture.png"})
+    imP2 = Image("PEOPLE2", block_inputs={"image_path": "string"}, block_outputs={"image": "image"}, data={"image_path": "picture2.png"})
+    imP.connect_to(blockDisplay)
+    imP.connect_to(blockInpainting)
+    imP2.connect_to(blockInpainting, "image", "mask")
+    blockInpainting.connect_to(blockDisplay)
+    imP._treat()
+    imP2._treat()
+    #"""
 
-    blockImage.connect_to(blockGradient)
-    blockGradient.connect_to(blockDisplay)
-
-
-
+    # Démo de récupération de mask et de suppression avec
+    """
     blockImage.connect_to(blockSuppressWithMask)
-
     blockImage.connect_to(blockMaskGreyInverted)
     blockMaskGreyInverted.connect_to(blockSuppressWithMask)
-
     blockImage.connect_to(blockDisplay)
-    blockMaskGreyInverted.connect_to(blockDisplay, "mask", "image")
     blockSuppressWithMask.connect_to(blockDisplay)
-
-    # Link blocks
-    # blockImage.attach(blockDisplay)
-    # blockMask.attach(blockMaskGrey)
-    # blockMaskGrey.attach(blockMaskGreyInverted)
-    # blockMaskGreyInverted.attach(blockSuppressWithMask)
-    # blockSuppressWithMask.attach(blockDisplay)
+    blockImage._treat()
+    #"""
 
     draw_graph(g_from, g_to)
 
-    # print(blockDisplay.data)
-    # print(blockDisplay.data_ready)
-    # print(blockDisplay.is_ready())
-    blockImage._treat()
-
-    # print(blockDisplay.data)
-    # print(blockDisplay.data_ready)
-    # print(blockDisplay.is_ready())
 
     print("End")
