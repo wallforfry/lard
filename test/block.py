@@ -165,9 +165,9 @@ class Block(Subject, Observer):
         return self._data_ready
 
     def __str__(self):
-        return str(self.dump())
+        return str(self.to_dict())
 
-    def dump(self):
+    def to_dict(self):
         next = []
         for o in self._observers:
             next.append(o._data)
@@ -203,19 +203,24 @@ class Block(Subject, Observer):
         return blocks
 
     @staticmethod
-    def loads(filename="dump.json"):
+    def load(filename="dump.json"):
         with open(filename, mode="rb") as f:
             return json.load(f)
 
     @staticmethod
-    def dumps(blocks, filename="dump.json"):
+    def load_and_instanciate(filename="dump.json"):
+        j = Block.load(filename)
+        return Block.instanciate(j)
+
+    @staticmethod
+    def dump(blocks, filename="dump.json"):
         with open(filename, mode="w") as f:
             json.dump(blocks, f, cls=BlockEncoder, indent=4)
 
 class BlockEncoder(json.JSONEncoder):
     def default(self, obj):
         if issubclass(type(obj), Block):
-            return obj.dump()
+            return obj.to_dict()
         return json.JSONEncoder.default(self, obj)
 
 class Image(Block):
@@ -471,9 +476,8 @@ if __name__ == "__main__":
     #"""
 
     # Load list of block and re-instanciate
-    """
-    a = Block.loads()
-    b = Block.instanciate(a)
+    #"""
+    b = Block.load_and_instanciate()
     b[0]._treat()
     #"""
 
