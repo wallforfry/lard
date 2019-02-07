@@ -12,6 +12,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pickle
 
+# Ignore warning matplotlib
+import warnings
+warnings.filterwarnings(
+    action='ignore', module='matplotlib.figure', category=UserWarning,
+    message=('This figure includes Axes that are not compatible with tight_layout, '
+             'so results might be incorrect.')
+)
 
 class Subject:
     """
@@ -70,9 +77,8 @@ class Observer(metaclass=abc.ABCMeta):
 
 class Block(Subject, Observer):
     """
-    Implement the Observer updating interface to keep its state
-    consistent with the subject's.
-    Store state that should stay consistent with the subject's.
+    Implement Observer and Subject
+    All Blocks must redefine treatment() method
     """
     blocks = []
 
@@ -92,9 +98,9 @@ class Block(Subject, Observer):
     def connect_to(self, block, output_name=None, input_name=None):
         """
         Use to connect a block to another
-        :param block:
-        :param output_name: {"name": "type"}
-        :param input_name: {"name": "type"}
+        :param block: Block to connect
+        :param output_name: name of the output to connect
+        :param input_name: name of the input to connect
         """
         names = {"from": self.name, "to": block.name}
         if output_name and input_name:
@@ -117,6 +123,13 @@ class Block(Subject, Observer):
                 # g_from.pop(i)
                 g_to[i] = None
 
+    def launch(self, data={}):
+        """
+        Use launch on initials blocks
+        :param data:
+        """
+        self._treat(data)
+
     def _treat(self, data={}):
         self.data.update(data)
 
@@ -134,6 +147,10 @@ class Block(Subject, Observer):
         pass
 
     def is_ready(self):
+        """
+        Check if all required datas are ready
+        :return:
+        """
         return self._is_ready(self._data_ready)
 
     def _is_ready(self, d):
@@ -168,6 +185,10 @@ class Block(Subject, Observer):
         return str(self.to_dict())
 
     def to_dict(self):
+        """
+        Serialize Block
+        :return: dict()
+        """
         next = []
         for o in self._observers:
             next.append(o._data)
@@ -182,7 +203,6 @@ class Block(Subject, Observer):
             "next": next}
         return dumped_data
 
-    # À créer pour instancier puis lier tous les blocks
     @staticmethod
     def instanciate(j=[]):
         blocks = []
@@ -204,16 +224,30 @@ class Block(Subject, Observer):
 
     @staticmethod
     def load(filename="dump.json"):
+        """
+        Load blocks from json
+        :param filename: string
+        """
         with open(filename, mode="rb") as f:
             return json.load(f)
 
     @staticmethod
     def load_and_instanciate(filename="dump.json"):
+        """
+        Load blocks and instanciate
+        :param filename: string
+        :return: list(Block)
+        """
         j = Block.load(filename)
         return Block.instanciate(j)
 
     @staticmethod
     def dump(blocks, filename="dump.json"):
+        """
+        Dump blocks to file
+        :param blocks: list(blocks)
+        :param filename: string
+        """
         with open(filename, mode="w") as f:
             json.dump(blocks, f, cls=BlockEncoder, indent=4)
 
