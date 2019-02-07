@@ -14,11 +14,13 @@ import pickle
 
 # Ignore warning matplotlib
 import warnings
+
 warnings.filterwarnings(
     action='ignore', module='matplotlib.figure', category=UserWarning,
     message=('This figure includes Axes that are not compatible with tight_layout, '
              'so results might be incorrect.')
 )
+
 
 class Subject:
     """
@@ -208,13 +210,13 @@ class Block(Subject, Observer):
         blocks = []
         for block in j:
             b = globals()[block.get("type")](block.get("name"), block_inputs=block.get("inputs"),
-                                             block_outputs=block.get("outputs"), data=block.get("data_ready"))
+                                             block_outputs=block.get("outputs"), data=block.get("data"))
 
             blocks.append(b)
         for b in blocks:
             for i in j:
                 if b.name == i["name"]:
-                    #J'ai le bloc et le json du bloc
+                    # J'ai le bloc et le json du bloc
                     for n in i["next"]:
                         for c in blocks:
                             if c.name == n["to"]:
@@ -251,16 +253,19 @@ class Block(Subject, Observer):
         with open(filename, mode="w") as f:
             json.dump(blocks, f, cls=BlockEncoder, indent=4)
 
+
 class BlockEncoder(json.JSONEncoder):
     def default(self, obj):
         if issubclass(type(obj), Block):
             return obj.to_dict()
         return json.JSONEncoder.default(self, obj)
 
+
 class Image(Block):
     def treatment(self, data={}):
         image = cv2.imread(data.get("image_path"))
         return {"image": image}
+
 
 ## Pas changé
 class Camera(Block):
@@ -272,6 +277,7 @@ class Camera(Block):
         print()
         return {"block_name": self.name, "inputs": data, "outputs": self.subject_outputs}
 
+
 class Blur(Block):
     def treatment(self, data={}):
         image = data.get("image")
@@ -279,17 +285,20 @@ class Blur(Block):
         blured_image = cv2.medianBlur(image, ksize)
         return {"image": blured_image}
 
+
 class Gradient(Block):
     def treatment(self, data={}):
         image = data.get("image")
         gradient_image = cv2.convertScaleAbs(cv2.Laplacian(image, cv2.CV_64F))
         return {"image": gradient_image}
 
+
 class Invert(Block):
     def treatment(self, data={}):
         image = data.get("image")
         result = cv2.bitwise_not(image)
         return {"image": result}
+
 
 class Liaison(Block):
     def treatment(self, data={}):
@@ -379,6 +388,7 @@ class SuppressWithMask(Block):
         res = cv2.bitwise_and(image, image, mask=cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY))
         return {"image": res}
 
+
 class Inpaint(Block):
     def treatment(self, data={}):
         img = data.get("image")
@@ -388,6 +398,7 @@ class Inpaint(Block):
         mask = cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY)
         dst = cv2.inpaint(img, mask, radius, method)
         return {"image": dst}
+
 
 def show_images(images, first_name="Source", cv=False):
     """
@@ -442,6 +453,23 @@ def set_dict_to_value(d, value):
     return d
 
 
+def find_block_in_blocks(name, blocks):
+    for block in blocks:
+        if name == block.name:
+            return block
+    return None
+
+def find_block_by_type(type, blocks):
+    result = []
+    for block in blocks:
+        if isinstance(type, list):
+            if block.__class__.__name__ in type:
+                result.append(block)
+        else:
+            if block.__class__.__name__ == type:
+                result.append(block)
+    return result
+
 if __name__ == "__main__":
     global g_from
     global g_to
@@ -470,7 +498,8 @@ if __name__ == "__main__":
     blockMaskGreyInverted = Mask("MASK GREY INVERTED", block_inputs={"image": "image"})
 
     blockSuppressWithMask = SuppressWithMask("SUPPRESS WITH MASK", block_inputs={"image": "image", "mask": "mask"})
-    blockInpainting = Inpaint("INPAINT", block_inputs={"mask": "image", "image": "image"}, data={"radius": 200, "method": cv2.INPAINT_TELEA})
+    blockInpainting = Inpaint("INPAINT", block_inputs={"mask": "image", "image": "image"},
+                              data={"radius": 200, "method": cv2.INPAINT_TELEA})
 
     blockInvert = Invert("INVERT", block_inputs={"image": "image"})
 
@@ -506,17 +535,16 @@ if __name__ == "__main__":
 
     # Save list of blocks
     """
-    Block.dumps([blockImage, blockMaskGreyInverted, blockSuppressWithMask, blockDisplay])
+    Block.dump([blockImage, blockMaskGreyInverted, blockSuppressWithMask, blockDisplay])
     #"""
 
     # Load list of block and re-instanciate
-    #"""
+    # """
     b = Block.load_and_instanciate()
-    b[0]._treat()
-    #"""
+    [i.launch() for i in find_block_by_type(["Image"], b)]
+    # """
 
     # Draw Graph
     draw_graph(g_from, g_to)
-
 
     print("End")
