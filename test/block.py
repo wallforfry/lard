@@ -83,15 +83,20 @@ class Block(Subject, Observer):
     All Blocks must redefine treatment() method
     """
     blocks = []
+    liaisons = []
 
-    def __init__(self, name="Block", block_inputs=dict(), block_outputs=dict(), data={}):
+    def __init__(self, name="Block", block_inputs=dict(), block_outputs=dict(), data={}, on_launch=False):
+        self.on_launch = on_launch
         self.name = name
         self._data = data
         self.inputs_dict = block_inputs
         self.outputs_dict = block_outputs
         self._data_ready = set_dict_to_value(self.inputs_dict, None)
         super().__init__()
-        Block.blocks.append(self)
+        if isinstance(self, Liaison):
+            Block.liaisons.append(self)
+        else:
+            Block.blocks.append(self)
 
     def update(self, inputs):
         self._observer_inputs = inputs
@@ -197,31 +202,32 @@ class Block(Subject, Observer):
 
         dumped_data = {
             "name": self.name,
+            "on_launch": self.on_launch,
             "type": str(self.__class__.__name__),
             "data": self.data,
             "inputs": self.inputs_dict,
             "ouputs": self.outputs_dict,
-            "data_ready": self.data_ready,
-            "next": next}
+            "data_ready": self.data_ready}
+            #"next": next}
         return dumped_data
 
     @staticmethod
-    def instanciate(j=[]):
-        blocks = []
-        for block in j:
+    def instanciate(j={}):
+        blocks = {}
+        for block_name in j["blocks"]:
+            block = j["blocks"][block_name]
             b = globals()[block.get("type")](block.get("name"), block_inputs=block.get("inputs"),
-                                             block_outputs=block.get("outputs"), data=block.get("data"))
+                                             block_outputs=block.get("outputs"), data=block.get("data_ready"), on_launch=block.get("on_launch"))
 
-            blocks.append(b)
-        for b in blocks:
-            for i in j:
-                if b.name == i["name"]:
-                    # J'ai le bloc et le json du bloc
-                    for n in i["next"]:
-                        for c in blocks:
-                            if c.name == n["to"]:
-                                # J'ai le bon block à lier
-                                b.connect_to(c, n.get("input", None), n.get("output", None))
+            blocks[block.get("name")] = b
+        for l in j["liaisons"]:
+            try:
+                b_from = blocks[l.get("from")]
+                b_to = blocks[l.get("to")]
+                b_from.connect_to(b_to, l.get("input", None), l.get("output", None))
+            except:
+                pass
+
         return blocks
 
     @staticmethod
@@ -250,9 +256,22 @@ class Block(Subject, Observer):
         :param blocks: list(blocks)
         :param filename: string
         """
-        with open(filename, mode="w") as f:
-            json.dump(blocks, f, cls=BlockEncoder, indent=4)
+        json_blocks = {b.name: b.to_dict() for b in blocks}
+        json_liaisons = []
+        for b in Block.liaisons:
+            if b.data.get("from") in json_blocks and b.data.get("to") in json_blocks:
+                json_liaisons.append(b.data)
 
+        with open(filename, mode="w") as f:
+            json.dump({"blocks": json_blocks, "liaisons": json_liaisons}, f, indent=4)
+
+    @staticmethod
+    def launch_all(blocks=[]):
+        if not blocks:
+            blocks = Block.blocks
+        for b in blocks:
+            if b.on_launch:
+                b.launch()
 
 class BlockEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -459,6 +478,7 @@ def find_block_in_blocks(name, blocks):
             return block
     return None
 
+
 def find_block_by_type(type, blocks):
     result = []
     for block in blocks:
@@ -485,7 +505,7 @@ if __name__ == "__main__":
     suppress_with_mask_data = {}
 
     # Define blocks
-    blockImage = Image("IMAGE", block_inputs={"image_path": "string"}, block_outputs={"image": "image"})
+    blockImage = Image("IMAGE", block_inputs={"image_path": "string"}, block_outputs={"image": "image"}, on_launch=True)
 
     blockBlur = Blur("BLUR", block_inputs={"image": "image"})
     blockGradient = Gradient("GRADIENT", block_inputs={"image": "image"})
@@ -539,9 +559,9 @@ if __name__ == "__main__":
     #"""
 
     # Load list of block and re-instanciate
-    # """
+    """
     b = Block.load_and_instanciate()
-    [i.launch() for i in find_block_by_type(["Image"], b)]
+    Block.launch_all([b[name] for name in b])
     # """
 
     # Draw Graph
