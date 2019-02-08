@@ -236,7 +236,7 @@ class Block(Subject, Observer):
         Load blocks from json
         :param filename: string
         """
-        with open(filename, mode="rb") as f:
+        with open(filename, mode="r") as f:
             return json.load(f)
 
     @staticmethod
