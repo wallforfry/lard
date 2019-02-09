@@ -236,8 +236,33 @@ class Block(Subject, Observer):
         Load blocks from json
         :param filename: string
         """
-        with open(filename, mode="rb") as f:
+        with open(filename, mode="r") as f:
             return json.load(f)
+
+    @staticmethod
+    def write_cyto_graph(blocks_dict, graph_file_name="graph.json"):
+        """
+        Write a json repesentation of a cytoscape graph
+        :param filename: string
+        """
+        cytoJSON = []
+        blocks = blocks_dict.get("blocks")
+
+        for key in blocks:
+            block = blocks[key]
+            data_dict = {"id": block.get("name"), "name": block.get("type")}
+            node_dict = {"data": data_dict}
+            cytoJSON.append(node_dict)
+
+        liaisons = blocks_dict.get("liaisons")
+        for liaison in liaisons:
+            data_dict = {"source": liaison.get("from"), "target": liaison.get("to")}
+            edge_dict = {"data": data_dict}
+            cytoJSON.append(edge_dict)
+
+        with open(graph_file_name, mode="w") as f:
+            json.dump(cytoJSON, f, indent=4)
+
 
     @staticmethod
     def load_and_instanciate(filename="dump.json"):
@@ -563,6 +588,16 @@ if __name__ == "__main__":
     b = Block.load_and_instanciate()
     Block.launch_all([b[name] for name in b])
     # """
+
+    #Ecriture d'un cytograph json
+    """
+    blockImage.connect_to(blockBlur)
+    blockBlur.connect_to(blockDisplay)
+    b = [blockImage, blockBlur, blockDisplay]
+    Block.dump(b)
+    c = Block.load()
+    Block.write_cyto_graph(c)
+    #"""
 
     # Draw Graph
     draw_graph(g_from, g_to)
