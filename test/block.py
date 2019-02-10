@@ -572,6 +572,11 @@ def test_video():
 
 @click.group()
 def main():
+    """
+    This is the Lard cli app
+
+    You can load a Lard model to run it or just display graph
+    """
     pass
 
 
