@@ -140,14 +140,15 @@ class Block(Subject, Observer):
     def _treat(self, data={}):
         self.data.update(data)
 
-        _data_ready = copy.deepcopy(self.inputs_dict)
-        _data_ready = set_dict_to_value(_data_ready, None)
+        _data_ready = set_dict_to_value(self.inputs_dict, None)
 
         self._data_ready = {**_data_ready, **self.data}
         if not self.is_ready():
             print(self.name + " Not ready")
         else:
-            self.subject_outputs = self.treatment(self.data)
+            result = self.treatment(self.data)
+            if result:
+                self.subject_outputs = result
 
     @abc.abstractmethod
     def treatment(self, data={}):
@@ -208,7 +209,7 @@ class Block(Subject, Observer):
             "inputs": self.inputs_dict,
             "ouputs": self.outputs_dict,
             "data_ready": self.data_ready}
-            #"next": next}
+        # "next": next}
         return dumped_data
 
     @staticmethod
@@ -217,14 +218,15 @@ class Block(Subject, Observer):
         for block_name in j["blocks"]:
             block = j["blocks"][block_name]
             b = globals()[block.get("type")](block.get("name"), block_inputs=block.get("inputs"),
-                                             block_outputs=block.get("outputs"), data=block.get("data_ready"), on_launch=block.get("on_launch"))
+                                             block_outputs=block.get("outputs"), data=block.get("data_ready"),
+                                             on_launch=block.get("on_launch"))
 
             blocks[block.get("name")] = b
         for l in j["liaisons"]:
             try:
                 b_from = blocks[l.get("from")]
                 b_to = blocks[l.get("to")]
-                b_from.connect_to(b_to, l.get("input", None), l.get("output", None))
+                b_from.connect_to(b_to, l.get("old_name", None), l.get("new_name", None))
             except:
                 pass
 
@@ -263,7 +265,6 @@ class Block(Subject, Observer):
         with open(graph_file_name, mode="w") as f:
             json.dump(cytoJSON, f, indent=4)
 
-
     @staticmethod
     def load_and_instanciate(filename="dump.json"):
         """
@@ -298,6 +299,7 @@ class Block(Subject, Observer):
             if b.on_launch:
                 b.launch()
 
+
 class BlockEncoder(json.JSONEncoder):
     def default(self, obj):
         if issubclass(type(obj), Block):
@@ -311,15 +313,25 @@ class Image(Block):
         return {"image": image}
 
 
-## Pas changé
 class Camera(Block):
     def treatment(self, data=dict()):
-        # self.subject_outputs = {"image": "camera_image"}
-        self.subject_outputs = data
-        print("inputs : " + str(data))
-        print("outputs : " + str(self.subject_outputs))
-        print()
-        return {"block_name": self.name, "inputs": data, "outputs": self.subject_outputs}
+        cap = data.get("cap")
+        #while (True):
+        # Capture frame-by-frame
+        ret, frame = cap.read()
+        # Our operations on the frame come here
+        #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # Display the resulting frame
+            #cv2.imshow('frame', gray)
+            #break;
+            #if cv2.waitKey(1) & 0xFF == ord('q'):
+            #    break
+        # When everything done, release the capture
+        #cap.release()
+        #cv2.destroyAllWindows()
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            cap.release()
+        self.subject_outputs = {"image": frame}
 
 
 class Blur(Block):
@@ -368,6 +380,8 @@ class Display(Block):
             show_images([image], self.name, False)
         else:
             print("No image in " + self.name)
+
+        return {}
 
 
 class Display2(Display):
@@ -469,7 +483,9 @@ def show_images(images, first_name="Source", cv=False):
                 cv2.imshow('Source', image)
             else:
                 cv2.imshow('Image ' + str(i), image)
-        cv2.waitKey()
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            cv2.destroyAllWindows()
+            exit(0)
 
 
 def draw_graph(v_from, v_to, spectral=False):
@@ -515,6 +531,43 @@ def find_block_by_type(type, blocks):
                 result.append(block)
     return result
 
+def test_video():
+    cam_data = {"cap": cv2.VideoCapture(0)}
+    #"""
+    cam = Camera("CAMERA", block_inputs={"cap": "capture"})
+    cam.connect_to(blockBlur)
+    blockBlur.connect_to(blockDisplay)
+    while True:
+        cam.launch(cam_data)
+        if cv2.waitKey(1) & 0xFF == ord('s'):
+            cam_data.get("cap").release()
+            cv2.destroyAllWindows()
+            break
+    #"""
+    """
+    rect = (220, 50, 430, 350)
+    while True:
+        ret, img = cam_data.get("cap").read()
+        cv2.rectangle(img, (rect[0], rect[1]), (rect[2], rect[3]), (255, 255, 255), 3)
+        cv2.imshow("Capture", img)
+        #plt.imshow(img), plt.colorbar(), plt.show()
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            cam_data.get("cap").release()
+            #cv2.destroyAllWindows()
+            break
+
+    mask = np.zeros(img.shape[:2], np.uint8)
+    bgdModel = np.zeros((1, 65), np.float64)
+    fgdModel = np.zeros((1, 65), np.float64)
+    cv2.grabCut(img, mask, rect, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_RECT)
+    mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
+    img = img * mask2[:, :, np.newaxis]
+    cv2.imshow("Foreground", img)
+
+    cv2.waitKey()
+    cv2.destroyAllWindows()"""
+
 if __name__ == "__main__":
     global g_from
     global g_to
@@ -540,7 +593,7 @@ if __name__ == "__main__":
 
     blockMask = Mask("MASK", block_inputs={"image": "image"})
     blockMaskGrey = Mask("MASK GREY", block_inputs={"image": "image"})
-    blockMaskGreyInverted = Mask("MASK GREY INVERTED", block_inputs={"image": "image"})
+    blockMaskGreyInverted = Mask("MASK GREY INVERTED", block_inputs={"image": "image"}, block_outputs={"mask": "mask"})
 
     blockSuppressWithMask = SuppressWithMask("SUPPRESS WITH MASK", block_inputs={"image": "image", "mask": "mask"})
     blockInpainting = Inpaint("INPAINT", block_inputs={"mask": "image", "image": "image"},
@@ -570,12 +623,16 @@ if __name__ == "__main__":
 
     # Démo de récupération de mask et de suppression avec
     """
-    blockImage.connect_to(blockSuppressWithMask)
-    blockImage.connect_to(blockMaskGreyInverted)
-    blockMaskGreyInverted.connect_to(blockSuppressWithMask)
     blockImage.connect_to(blockDisplay)
+    blockImage.connect_to(blockMaskGreyInverted)
+    blockImage.connect_to(blockSuppressWithMask)
+
+    blockMaskGreyInverted.connect_to(blockSuppressWithMask)
+    blockMaskGreyInverted.connect_to(blockDisplay, "mask", "image")
+
     blockSuppressWithMask.connect_to(blockDisplay)
-    #blockImage._treat()
+
+    #blockImage.launch()
     #"""
 
     # Save list of blocks
@@ -587,9 +644,9 @@ if __name__ == "__main__":
     """
     b = Block.load_and_instanciate()
     Block.launch_all([b[name] for name in b])
-    # """
+    #"""
 
-    #Ecriture d'un cytograph json
+    # Ecriture d'un cytograph json
     """
     blockImage.connect_to(blockBlur)
     blockBlur.connect_to(blockDisplay)
@@ -598,6 +655,9 @@ if __name__ == "__main__":
     c = Block.load()
     Block.write_cyto_graph(c)
     #"""
+
+
+    #test_video()
 
     # Draw Graph
     draw_graph(g_from, g_to)
