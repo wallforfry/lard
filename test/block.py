@@ -10,7 +10,7 @@ import cv2
 import json
 import matplotlib.pyplot as plt
 import numpy as np
-import pickle
+import click
 
 # Ignore warning matplotlib
 import warnings
@@ -316,19 +316,19 @@ class Image(Block):
 class Camera(Block):
     def treatment(self, data=dict()):
         cap = data.get("cap")
-        #while (True):
+        # while (True):
         # Capture frame-by-frame
         ret, frame = cap.read()
         # Our operations on the frame come here
-        #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            # Display the resulting frame
-            #cv2.imshow('frame', gray)
-            #break;
-            #if cv2.waitKey(1) & 0xFF == ord('q'):
-            #    break
+        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # Display the resulting frame
+        # cv2.imshow('frame', gray)
+        # break;
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #    break
         # When everything done, release the capture
-        #cap.release()
-        #cv2.destroyAllWindows()
+        # cap.release()
+        # cv2.destroyAllWindows()
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cap.release()
         self.subject_outputs = {"image": frame}
@@ -531,9 +531,10 @@ def find_block_by_type(type, blocks):
                 result.append(block)
     return result
 
+
 def test_video():
     cam_data = {"cap": cv2.VideoCapture(0)}
-    #"""
+    # """
     cam = Camera("CAMERA", block_inputs={"cap": "capture"})
     cam.connect_to(blockBlur)
     blockBlur.connect_to(blockDisplay)
@@ -543,7 +544,7 @@ def test_video():
             cam_data.get("cap").release()
             cv2.destroyAllWindows()
             break
-    #"""
+    # """
     """
     rect = (220, 50, 430, 350)
     while True:
@@ -568,7 +569,43 @@ def test_video():
     cv2.waitKey()
     cv2.destroyAllWindows()"""
 
-if __name__ == "__main__":
+
+@click.group()
+def main():
+    pass
+
+
+@main.command("load")
+@click.option("--graph", is_flag=True, help="Display graph after run")
+@click.argument("filename", default="dump.json")
+def load_model(graph, filename):
+    """Load a lard file"""
+    global g_from
+    global g_to
+    g_from = []
+    g_to = []
+
+    b = Block.load_and_instanciate(filename)
+    if graph:
+        draw_graph(g_from, g_to)
+    Block.launch_all([b[name] for name in b])
+
+
+@main.command("graph")
+@click.argument("filename", default="dump.json")
+def display_graph(filename):
+    """Display graph of lard file"""
+    global g_from
+    global g_to
+    g_from = []
+    g_to = []
+
+    b = Block.load_and_instanciate(filename)
+    draw_graph(g_from, g_to)
+
+@main.command("demo")
+def demo():
+    """Launch test method in block.py file"""
     global g_from
     global g_to
     g_from = []
@@ -656,10 +693,13 @@ if __name__ == "__main__":
     Block.write_cyto_graph(c)
     #"""
 
-
-    #test_video()
+    # test_video()
 
     # Draw Graph
     draw_graph(g_from, g_to)
 
     print("End")
+
+
+if __name__ == "__main__":
+    main()
