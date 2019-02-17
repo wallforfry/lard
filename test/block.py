@@ -264,7 +264,7 @@ class Block(Subject, Observer):
 
         with open(graph_file_name, mode="w") as f:
             json.dump(cytoJSON, f, indent=4)
-
+        return  cytoJSON
     @staticmethod
     def load_and_instanciate(filename="dump.json"):
         """
@@ -377,7 +377,7 @@ class Display(Block):
         image = data.get(self.image_name)
 
         if image is not None:
-            show_images([image], self.name, False)
+            show_images([image], self.name, True)
         else:
             print("No image in " + self.name)
 
@@ -536,8 +536,15 @@ def test_video():
     cam_data = {"cap": cv2.VideoCapture(0)}
     # """
     cam = Camera("CAMERA", block_inputs={"cap": "capture"})
+    blockGradient = Gradient("GRADIENT", block_inputs={"image": "image"})
+    blockBlur = Blur("BLUR", block_inputs={"image": "image"})
+    blockBlur.data = {"ksize": 21}
+
+    blockDisplay = Display("DISPLAY", block_inputs={"image": "image"})
+
     cam.connect_to(blockBlur)
-    blockBlur.connect_to(blockDisplay)
+    blockBlur.connect_to(blockGradient)
+    blockGradient.connect_to(blockDisplay)
     while True:
         cam.launch(cam_data)
         if cv2.waitKey(1) & 0xFF == ord('s'):
