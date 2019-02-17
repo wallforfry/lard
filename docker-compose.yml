@@ -1,0 +1,21 @@
+version: '3.1'
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "lard"
+      POSTGRES_PASSWORD: "dral"
+      POSTGRES_DB: "lard"
+  web:
+    build: ./lard_website
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - var.env
+    volumes:
+      - ./lard_website:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
