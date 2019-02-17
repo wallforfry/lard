@@ -18,6 +18,10 @@ def index(request):
     return render(request, "index.html")
 
 @login_required
+def editor(request):
+    return render(request, "editor.html")
+
+@login_required
 def protected(request):
     return render(request, "dashboard.html", context={"page": "Dashboard"})
 

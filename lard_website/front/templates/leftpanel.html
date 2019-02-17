@@ -13,8 +13,11 @@
 
             <div id="main-menu" class="main-menu collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active">
+                    <li class="{% if request.resolver_match.view_name == "dashboard" %}active{% endif %}">
                         <a href="{% url 'dashboard' %}"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
+                    </li>
+                    <li class="{% if request.resolver_match.view_name == "editor" %}active{% endif %}">
+                        <a href="{% url 'editor' %}"> <i class="menu-icon fa fa-edit"></i>Editeur </a>
                     </li>
                     <h3 class="menu-title">Mes Projets</h3><!-- /.menu-title -->
                     <li class="menu-item-has-children dropdown">
