@@ -1,6 +1,8 @@
 # Lard
 
 ## Requirements
-- var.env
+- var.env :
     - RECAPTCHA_SITE_KEY
     - RECAPTCHA_SECRET_KEY
+    - GOOGLE_OAUTH2_CLIENT_ID
+    - GOOGLE_OAUTH2_SECRET

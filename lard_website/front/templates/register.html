@@ -41,12 +41,11 @@
                         <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
                         <input id="user_captcha" type="hidden" name="recaptchaResponse" value=""/>
                         <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30">S'enregistrer</button>
-                        <!--<div class="social-login-content">
+                        <div class="social-login-content">
                             <div class="social-button">
-                                <button type="button" class="btn social facebook btn-flat btn-addon mb-3"><i class="ti-facebook"></i>S'enregistrer avec Facebook</button>
-                                <button type="button" class="btn social google-plus btn-flat btn-addon mt-2"><i class="ti-twitter"></i>S'enregistrer avec Google</button>
+                                <a href="{% url "social:begin" "google-oauth2" %}?next={{ request.GET.next }}"><button type="button" class="btn social google-plus btn-flat btn-addon mt-2"><i class="ti-google"></i>Connexion avec Google</button></a>
                             </div>
-                        </div>-->
+                        </div>
                         <div class="register-link m-t-15 text-center">
                             <p>Déjà un compte ? <a href="{% url 'login' %}"> Se Connecter</a></p>
                         </div>
