@@ -26,7 +26,7 @@ SECRET_KEY = 'cvl^x_@d!fv7!!v#xr$%9#^w2lw07i_7@^_%^&ml-vfyjpx=of'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -53,6 +53,7 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = (
     'front.backend.EmailOrUsernameModelBackend',
+    'django.contrib.auth.backends.ModelBackend'
 )
 
 LOGIN_URL = "/login/"
@@ -70,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'front.context_processors.app_processor',
             ],
         },
     },
@@ -126,3 +128,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+RECAPTCHA_SITE_KEY = os.environ.get("RECAPTCHA_SITE_KEY")
+RECAPTCHA_SECRET_KEY = os.environ.get("RECAPTCHA_SECRET_KEY")
+

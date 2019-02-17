@@ -1,8 +1,13 @@
 {% extends 'gabarit.html' %}
 {% block body %}
+
     <body class="bg-dark">
+
+
     <div class="sufee-login d-flex align-content-center flex-wrap">
         <div class="container">
+            {% include 'alert.html' %}
+
             <div class="login-content">
                 <div class="login-logo">
                     <a href="#">
@@ -13,33 +18,37 @@
                     <form method="post">
                         {% csrf_token %}
                         <div class="form-group">
+                            <label>Nom d'utilisateur</label>
+                            <input name="username" type="text" class="form-control" placeholder="Nom d'utilisateur">
+                        </div>
+                        <div class="form-group">
                             <label>Email</label>
-                            <input name="email" type="text" class="form-control" placeholder="Email">
+                            <input name="email" type="email" class="form-control" placeholder="Email">
                         </div>
                         <div class="form-group">
                             <label>Mot de passe</label>
                             <input name="password" type="password" class="form-control" placeholder="Mot de passe">
                         </div>
+                        <div class="form-group">
+                            <label>Confirmation</label>
+                            <input name="confirm" type="password" class="form-control" placeholder="Mot de passe">
+                        </div>
                         <div class="checkbox">
                             <label>
-                                <input name="remember_me" type="checkbox"> Rester connecté
+                                <input name="agree" type="checkbox"> J'accepte les termes et conditions
                             </label>
-                            <label class="pull-right">
-                                <a href="#">Mot de passe oublié ?</a>
-                            </label>
-
                         </div>
                         <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
                         <input id="user_captcha" type="hidden" name="recaptchaResponse" value=""/>
-                        <button type="submit" class="btn btn-success btn-flat m-b-30 m-t-30">Connexion</button>
+                        <button type="submit" class="btn btn-primary btn-flat m-b-30 m-t-30">S'enregistrer</button>
                         <!--<div class="social-login-content">
                             <div class="social-button">
-                                <button type="button" class="btn social facebook btn-flat btn-addon mb-3"><i class="ti-facebook"></i>Connexion avec facebook</button>
-                                <button type="button" class="btn social google-plus btn-flat btn-addon mt-2"><i class="ti-google"></i>Connexion avec Google</button>
+                                <button type="button" class="btn social facebook btn-flat btn-addon mb-3"><i class="ti-facebook"></i>S'enregistrer avec Facebook</button>
+                                <button type="button" class="btn social google-plus btn-flat btn-addon mt-2"><i class="ti-twitter"></i>S'enregistrer avec Google</button>
                             </div>
                         </div>-->
                         <div class="register-link m-t-15 text-center">
-                            <p>Pas encore de compte ? <a href="{% url 'register' %}"> S'enregistrer</a></p>
+                            <p>Déjà un compte ? <a href="{% url 'login' %}"> Se Connecter</a></p>
                         </div>
                     </form>
                 </div>
@@ -48,7 +57,6 @@
     </div>
     </body>
 {% endblock %}
-
 {% block script %}
     {{ block.super }}
     <script>
@@ -59,4 +67,3 @@
         });
     </script>
 {% endblock %}
-</html>

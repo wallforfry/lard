@@ -4,18 +4,18 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js" lang="en">
+<html class="no-js" lang="fr">
 <!--<![endif]-->
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Sufee Admin - HTML5 Admin Template</title>
-    <meta name="description" content="Sufee Admin - HTML5 Admin Template">
+    <title>{{ title }}{% if page %} - {{ page }}{% endif %}</title>
+    <meta name="description" content="{{ description }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="apple-touch-icon" href="apple-icon.png">
-    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="{% static 'images/apple_icon.png' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
 
     <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css'%}">
     <link rel="stylesheet" href="{% static 'vendors/font-awesome/css/font-awesome.min.css'%}">
@@ -43,10 +43,48 @@
 
 
     <!-- Right Panel -->
+<div id="right-panel" class="right-panel">
 
-    {% include 'rightpanel.html' %}
+        <!-- Header-->
+        <header id="header" class="header">
 
-    <!-- /#right-panel -->
+            <div class="header-menu">
+
+                <div class="col-sm-7">
+                    <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
+                    <div class="header-left">
+                        {# include 'searchbar.html' #}
+
+                        {# include 'notifications.html' #}
+
+                        {# include 'messages.html' #}
+                    </div>
+                </div>
+
+               {% include 'account_dropdown.html' %}
+
+                {# include 'language.html' #}
+
+            </div>
+
+        </header><!-- /header -->
+        <!-- Header-->
+
+        <div class="breadcrumbs">
+            {% include 'breadcrumbs.html' %}
+        </div>
+
+        <div class="content mt-3">
+
+            {% include 'alert.html' %}
+
+
+            {% block content %}
+            {% endblock %}
+
+        </div> <!-- .content -->
+    </div>
+<!-- /#right-panel -->
 </body>
 {% endblock %}
 
