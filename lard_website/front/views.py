@@ -42,6 +42,9 @@ def login_view(request):
     return render(request, "login.html", context={"page": "Login", "recaptcha_site_key": settings.RECAPTCHA_SITE_KEY})
 
 def register_view(request):
+    if not settings.ENABLE_REGISTRATION:
+        return redirect(reverse(index))
+
     if request.method == "POST":
         username = request.POST.get("username", "")
         email = request.POST.get("email", "")
@@ -54,9 +57,10 @@ def register_view(request):
             if agree:
                 if password == confirm:
                     try:
-                        if User.objects.get(email=email):
+                        try:
+                            User.objects.get(email=email)
                             messages.error(request, "Cette adresse email est déjà prise")
-                        else:
+                        except:
                             user = User.objects.create_user(email=email, username=username, password=password)
                             user.save()
                             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
