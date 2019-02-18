@@ -16,7 +16,7 @@ from django.shortcuts import render, redirect
 
 
 # Create your views here.
-from front.models import Pipeline, Block, InputOutputType
+from front.models import Pipeline, Block, InputOutputType, InputOutput
 from lard_website import settings
 
 @login_required
@@ -12958,10 +12958,30 @@ def edit_block(request, name):
 def save_block(request, name):
     if request.method == "POST":
         name = request.POST.get("name", "")
-        code = request.POST.get("code", "")
-
         block = Block.objects.get(name=name)
-        block.code = code
+
+        if "code" in request.POST:
+            code = request.POST.get("code", "")
+            block.code = code
+        elif "type" in request.POST:
+            if request.POST.get("type") == "inputs":
+                names = request.POST.getlist("inputs_names")
+                values = request.POST.getlist("inputs_values")
+                for i in block.inputs.all():
+                    i.delete()
+                for i in range(0, len(names)):
+                    new_value = InputOutputType.objects.get(value=values[i])
+                    new_input = InputOutput.objects.create(name=names[i], value=new_value)
+                    block.inputs.add(new_input)
+            elif request.POST.get("type") == "outputs":
+                names = request.POST.getlist("outputs_names")
+                values = request.POST.getlist("outputs_values")
+                for i in block.outputs.all():
+                    i.delete()
+                for i in range(0, len(names)):
+                    new_value = InputOutputType.objects.get(value=values[i])
+                    new_input = InputOutput.objects.create(name=names[i], value=new_value)
+                    block.outputs.add(new_input)
         block.save()
         return redirect('edit_block', name=name)
 

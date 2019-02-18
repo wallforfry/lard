@@ -12,7 +12,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="name" value="{{ file_name }}">
                     <input id="code" type="hidden" name="code">
-                    <button type="submit" class="btn btn-success">Save</button>
+                    <button type="submit" class="btn btn-success" {% if not perms.front.change_block %}disabled{% endif %}>Save</button>
                 </form>
             </div>
             <div id="editor">{{ code }}</div>

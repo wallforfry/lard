@@ -12,22 +12,30 @@
                         Inputs
                     </div>
                     <div class="card-body">
-                        <form method="post">
+                        <form method="post" action="{{ save_url }}">
+                            {% csrf_token %}
+                            <input type="hidden" name="name" value="{{ file_name }}"/>
+                            <input type="hidden" name="type" value="inputs"/>
                             {% for i in inputs %}
                                 <div class="form-row">
                                     <div class="col-sm-6 mb-3">
-                                        <input type="text" value="{{ i.name }}" class="form-control"/>
+                                        <input name="inputs_names" type="text" {% if not perms.front.change_block %}disabled{% endif %}
+                                               value="{{ i.name }}" class="form-control"/>
                                     </div>
                                     <div class="col-sm-6">
-                                        <select class="custom-select">
+                                        <select name="inputs_values" class="custom-select"
+                                                {% if not perms.front.change_block %}disabled{% endif %}>
                                             <option selected>{{ i.value }}</option>
                                             {% for var_type in var_types %}
-                                                <option value="{{ var_type.id }}">{{ var_type.value }}</option>
+                                                <option value="{{ var_type.value }}">{{ var_type.value }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
                             {% endfor %}
+                            {% if perms.front.change_block %}
+                                <button type="submit" class="btn btn-success float-right">Save</button>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
@@ -40,26 +48,43 @@
                         Outputs
                     </div>
                     <div class="card-body">
-                        <form method="post">
+                        <form method="post" action="{{ save_url }}">
+                            {% csrf_token %}
+                            <input type="hidden" name="name" value="{{ file_name }}"/>
+                            <input type="hidden" name="type" value="outputs"/>
                             {% for o in outputs %}
                                 <div class="form-row">
                                     <div class="col-sm-6 mb-3">
-                                        <input type="text" value="{{ o.name }}" class="form-control"/>
+                                        <input name="inputs_names" type="text" {% if not perms.front.change_block %}disabled{% endif %}
+                                               value="{{ o.name }}" class="form-control"/>
                                     </div>
                                     <div class="col-sm-6">
-                                        <select class="custom-select">
+                                        <select name="inputs_values" class="custom-select"
+                                                {% if not perms.front.change_block %}disabled{% endif %}>
                                             <option selected>{{ o.value }}</option>
                                             {% for var_type in var_types %}
-                                                <option value="{{ var_type.id }}">{{ var_type.value }}</option>
+                                                <option value="{{ var_type.value }}">{{ var_type.value }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
                             {% endfor %}
+                            {% if perms.front.change_block %}
+                                <button type="submit" class="btn btn-success float-right">Save</button>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+    {% if not perms.front.change_block %}
+        <script>
+            editor.setReadOnly(true);
+        </script>
+    {% endif %}
 {% endblock %}

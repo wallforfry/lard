@@ -19,7 +19,7 @@ class InputOutputType(models.Model):
 
 class InputOutput(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
-    value = models.ForeignKey(InputOutputType, on_delete=models.SET_NULL, null=True)
+    value = models.ForeignKey(InputOutputType, on_delete=models.SET_NULL, null=True, default=None)
 
     def __str__(self):
         return self.name+" : "+str(self.value)
