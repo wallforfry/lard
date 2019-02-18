@@ -12931,7 +12931,7 @@ def datasets(request, name):
 
 @login_required
 def pipeline_execute(request, name):
-    p = Pipeline.objects.first()
+    p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
     p = LibPipeline(name)
     p.load_json(j)
@@ -12965,6 +12965,14 @@ def save_block(request, name):
 @login_required
 def list_blocks(request):
     return render(request, "block_list.html", context={"blocks": Block.objects.all()})
+
+@login_required
+def get_cytoscape(request, name):
+    p = Pipeline.objects.get(name=name)
+    j = json.loads(p.json_value)
+    p = LibPipeline(name)
+    p.load_json(j)
+    return JsonResponse(p.get_cytoscape(), safe=False)
 
 def login_view(request):
     if request.user.is_authenticated:

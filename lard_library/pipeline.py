@@ -51,6 +51,33 @@ class Pipeline:
     def get_blocks(self):
         print(self.blocks)
 
+    def get_json(self):
+        json_blocks = {self.blocks[name].name: self.blocks[name].to_dict() for name in self.blocks}
+        json_liaisons = []
+        for b in self.liaisons:
+            if b.data.get("from") in json_blocks and b.data.get("to") in json_blocks:
+                json_liaisons.append(b.data)
+
+        return {"blocks": json_blocks, "liaisons": json_liaisons}
+
+    def get_cytoscape(self):
+        cytoJSON = []
+        blocks = self.get_json().get("blocks")
+
+        for key in blocks:
+            block = blocks[key]
+            data_dict = {"id": block.get("name"), "name": block.get("type")}
+            node_dict = {"data": data_dict}
+            cytoJSON.append(node_dict)
+
+        liaisons = self.get_json().get("liaisons")
+        for liaison in liaisons:
+            data_dict = {"source": liaison.get("from"), "target": liaison.get("to")}
+            edge_dict = {"data": data_dict}
+            cytoJSON.append(edge_dict)
+
+        return cytoJSON
+
     def get_outputs(self):
         results = {}
         for name in self.blocks:
@@ -59,7 +86,6 @@ class Pipeline:
                 results[b.name] = b.to_dict()
 
         return results
-        #return [self.blocks[name].to_dict() for name in self.blocks]
 
     def get_liaisons(self):
         return [l.to_dict() for l in self.liaisons]
