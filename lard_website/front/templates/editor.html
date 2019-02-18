@@ -1,14 +1,54 @@
 {% extends 'gabarit.html' %}
+{% load static %}
 {% block style %}
     {{ block.super }}
-    {# Placer ici les balise de style #}
+    <style>
+        body {
+            font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
+            font-size: 14px;
+        }
+
+        #cy {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 999;
+        }
+
+        h1 {
+            opacity: 0.5;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        #buttons {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            z-index: 99999;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
     <p>Remplacer ce contenu par cytoscape</p>
+    <div id="cy"></div>
+    <div id="buttons">
+        <button id="start">Start on selected</button>
+        <button id="draw-on">Draw mode on</button>
+        <button id="draw-off">Draw mode off</button>
+    </div>
 {% endblock %}
 
 {% block script %}
     {{ block.super }}
+
+    <script src="{% static 'js/Cytoscape/cytoscape.min.js' %}"></script>
+    <script src="{% static 'js/Cytoscape/lodash.js' %}"></script>
+    <script src="{% static 'js/Cytoscape/cytoscape-edgehandles/cytoscape-edgehandles.js' %}"></script>
+    <script src="{% static 'js/Cytoscape/main.js' %}"></script>
+
     {# Placer ici les balise de js #}
 {% endblock %}
