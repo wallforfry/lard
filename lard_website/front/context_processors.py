@@ -14,6 +14,9 @@ def app_processor(request):
 
     registration_enabled = settings.ENABLE_REGISTRATION
 
-    pipelines = Pipeline.objects.filter(owner=request.user).all()
+    if request.user.is_authenticated:
+        pipelines = Pipeline.objects.filter(owner=request.user).all()
+    else:
+        pipelines = []
 
     return {"title": title, "description": description, "registration_enabled": registration_enabled, "pipelines": pipelines}

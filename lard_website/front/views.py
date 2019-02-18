@@ -10,7 +10,6 @@ from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
 
 from lard_library.pipeline import Pipeline as LibPipeline
-from lard_library.pipeline import Block as LibBlock
 from front import utils
 from front.backend import EmailOrUsernameModelBackend
 from django.shortcuts import render, redirect
