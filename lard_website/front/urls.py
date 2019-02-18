@@ -19,4 +19,8 @@ urlpatterns = [
     path('editor/', views.editor, name="editor"),
     path('datasets/<str:name>/', views.datasets, name="datasets"),
     path('administration/users', views.admin_users, name="admin_users"),
+    path('pipelines/<str:name>/execute', views.pipeline_execute, name="pipeline_execute"),
+    path('blocks/', views.list_blocks, name="list_blocks"),
+    path('blocks/<str:name>/edit', views.edit_block, name="edit_block"),
+    path('blocks/<str:name>/save', views.save_block, name="save_block")
 ]

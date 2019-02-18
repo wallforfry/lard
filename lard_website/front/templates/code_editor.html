@@ -1,0 +1,59 @@
+{% extends 'gabarit.html' %}
+{% load static %}
+
+{% block content %}
+    <div id="ace-container" class="card">
+        <div class="card-header">
+            <strong>{{ file_name }}</strong>
+        </div>
+        <div id="editor-card" class="card-body">
+            <div class="btn-group float-right" role="group" aria-label="Editor toolbar">
+                <form method="post" action="{{ save_url }}">
+                    {% csrf_token %}
+                    <input type="hidden" name="name" value="{{ file_name }}">
+                    <input id="code" type="hidden" name="code">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </form>
+            </div>
+            <div id="editor">{{ code }}</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+
+    <script src="{% static 'js/ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/dracula");
+        editor.getSession().setMode("ace/mode/{{ language }}");
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("editor").style.width = (document.getElementById("editor-card").clientWidth - 50) + "px";
+            document.getElementById("editor").style.height = (document.getElementById("right-panel").clientHeight - 270) + "px";
+            document.getElementById('editor').style.fontSize = '14px';
+            document.getElementById("code").value = editor.getValue();
+        });
+
+        window.onresize = function () {
+            document.getElementById("editor").style.width = (document.getElementById("editor-card").clientWidth - 50) + "px";
+            document.getElementById("editor").style.height = (document.getElementById("right-panel").clientHeight - 270) + "px";
+        }
+
+        editor.session.on('change', function (delta) {
+            document.getElementById("code").value = editor.getValue();
+        });
+    </script>
+
+    <style type="text/css">
+        #editor {
+            position: relative; /* Added */
+        }
+
+        #ace-container {
+
+        }
+
+    </style>
+{% endblock %}

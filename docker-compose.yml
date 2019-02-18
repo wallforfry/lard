@@ -15,6 +15,7 @@ services:
       - var.env
     volumes:
       - ./lard_website:/code
+      - ./lard_library:/code/lard_library
     ports:
       - "8000:8000"
     depends_on:

@@ -1,22 +1,26 @@
 import json
 
+import cv2
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db import IntegrityError
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
 
+from lard_library.pipeline import Pipeline as LibPipeline
+from lard_library.pipeline import Block as LibBlock
 from front import utils
 from front.backend import EmailOrUsernameModelBackend
 from django.shortcuts import render, redirect
 
 
 # Create your views here.
+from front.models import Pipeline, Block
 from lard_website import settings
 
-
+@login_required
 def index(request):
     return render(request, "index.html")
 
@@ -12927,8 +12931,51 @@ def datasets(request, name):
     return JsonResponse(data, safe=False)
 
 @login_required
+def pipeline_execute(request, name):
+    p = Pipeline.objects.first()
+    j = json.loads(p.json_value)
+    p = LibPipeline(name)
+    p.load_json(j)
+
+    #print(p.blocks["GRADIENT"].data_ready.get("image"))
+    f = p.launch()
+    #f = p.get_blocks()
+    #print("LAUNCHED")
+    #print(p.blocks["GRADIENT"].data_ready.get("image"))
+    #print(f)
+    #p.blocks["IMAGE"].launch()
+    #print(p.blocks["GRADIENT"].data_ready)
+    print(p.blocks)
+    print(p.blocks["BLUR"])
+    img_str = cv2.imencode('.png', p.blocks["BLUR"].data_ready.get("image"))[1].tostring()
+    return HttpResponse(img_str,content_type="image/png")
+    #return HttpResponse(str([a.to_dict() for a in f]))
+
+    #return HttpResponse(str(p.get_outputs())+"<br/>"+str(p.get_liaisons()))
+
+@login_required
 def protected(request):
     return render(request, "dashboard.html", context={"page": "Dashboard"})
+
+@login_required
+def edit_block(request, name):
+    block = Block.objects.get(name=name)
+    return render(request, "code_editor.html", context={"code": block.code, "file_name": block.name, "language": "python", "save_url": reverse(save_block, kwargs={"name": name})})
+
+@login_required
+def save_block(request, name):
+    if request.method == "POST":
+        name = request.POST.get("name", "")
+        code = request.POST.get("code", "")
+
+        block = Block.objects.get(name=name)
+        block.code = code
+        block.save()
+        return redirect('edit_block', name=name)
+
+@login_required
+def list_blocks(request):
+    return render(request, "block_list.html", context={"blocks": Block.objects.all()})
 
 def login_view(request):
     if request.user.is_authenticated:

@@ -31,13 +31,17 @@
 
                 <h3 class="menu-title">Store</h3><!-- /.menu-title -->
 
-                <li class="menu-item-has-children dropdown">
+                <!--<li class="menu-item-has-children dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                        aria-expanded="false"> <i class="menu-icon fa fa-puzzle-piece"></i>Blocks</a>
                     <ul class="sub-menu children dropdown-menu">
                         <li><i class="menu-icon fa fa-puzzle-piece"></i><a href="#">Input</a></li>
                         <li><i class="menu-icon fa fa-puzzle-piece"></i><a href="#">Output</a></li>
                     </ul>
+
+                </li>-->
+                <li>
+                    <a href="{% url 'list_blocks' %}"> <i class="menu-icon fa fa-puzzle-piece {% if request.resolver_match.view_name == "list_blocks" %}active{% endif %}"></i>Blocks</a>
                 </li>
                 <li>
                     <a href="#"> <i class="menu-icon fa fa-folder"></i>OpenCV</a>
