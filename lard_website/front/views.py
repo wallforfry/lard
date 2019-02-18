@@ -16,7 +16,7 @@ from django.shortcuts import render, redirect
 
 
 # Create your views here.
-from front.models import Pipeline, Block
+from front.models import Pipeline, Block, InputOutputType
 from lard_website import settings
 
 @login_required
@@ -12949,7 +12949,10 @@ def protected(request):
 @login_required
 def edit_block(request, name):
     block = Block.objects.get(name=name)
-    return render(request, "code_editor.html", context={"code": block.code, "file_name": block.name, "language": "python", "save_url": reverse(save_block, kwargs={"name": name})})
+    inputs = block.inputs.all()
+    outputs = block.outputs.all()
+    var_types = InputOutputType.objects.all()
+    return render(request, "block_editor.html", context={"code": block.code, "file_name": block.name, "language": "python", "save_url": reverse(save_block, kwargs={"name": name}), "inputs": inputs, "outputs": outputs, "var_types": var_types})
 
 @login_required
 def save_block(request, name):

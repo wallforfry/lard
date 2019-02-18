@@ -1,0 +1,65 @@
+{% extends 'code_editor.html' %}
+
+{% block content %}
+    <div class="col-sm-8">
+        {{ block.super }}
+    </div>
+    <div class="col-sm-4">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        Inputs
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% for i in inputs %}
+                                <div class="form-row">
+                                    <div class="col-sm-6 mb-3">
+                                        <input type="text" value="{{ i.name }}" class="form-control"/>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <select class="custom-select">
+                                            <option selected>{{ i.value }}</option>
+                                            {% for var_type in var_types %}
+                                                <option value="{{ var_type.id }}">{{ var_type.value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        Outputs
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% for o in outputs %}
+                                <div class="form-row">
+                                    <div class="col-sm-6 mb-3">
+                                        <input type="text" value="{{ o.name }}" class="form-control"/>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <select class="custom-select">
+                                            <option selected>{{ o.value }}</option>
+                                            {% for var_type in var_types %}
+                                                <option value="{{ var_type.id }}">{{ var_type.value }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

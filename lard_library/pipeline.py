@@ -97,9 +97,15 @@ class Pipeline:
         for block_name in j["blocks"]:
             block = j["blocks"][block_name]
             lard_block = WebBlock.objects.get(name=block.get("type"))
-            b = self.create_block(code=lard_block.code, name=block.get("name"), data=block.get("data_ready"), inputs=block.get("inputs"),
-                               outputs=block.get("outputs"), on_launch=block.get("on_launch"), block_type=block.get("type"))
+            inputs = {}
+            for i in lard_block.inputs.all():
+                inputs[i.name] = i.value
+            outputs = {}
+            for i in lard_block.outputs.all():
+                outputs[i.name] = i.value
 
+            b = self.create_block(code=lard_block.code, name=block.get("name"), data=block.get("data_ready"), inputs=inputs,
+                               outputs=outputs, on_launch=block.get("on_launch"), block_type=block.get("type"))
         for l in j["liaisons"]:
             try:
                 b_from = self.blocks[l.get("from")]
