@@ -52,7 +52,14 @@ class Pipeline:
         print(self.blocks)
 
     def get_outputs(self):
-        return [self.blocks[name].to_dict() for name in self.blocks]
+        results = {}
+        for name in self.blocks:
+            b = self.blocks[name]
+            if len(b._observers) == 0:
+                results[b.name] = b.to_dict()
+
+        return results
+        #return [self.blocks[name].to_dict() for name in self.blocks]
 
     def get_liaisons(self):
         return [l.to_dict() for l in self.liaisons]

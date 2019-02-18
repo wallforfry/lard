@@ -25,7 +25,9 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                        aria-expanded="false"> <i class="menu-icon fa fa-laptop"></i>Traitements</a>
                     <ul class="sub-menu children dropdown-menu">
-                        <li><i class="fa fa-puzzle-piece"></i><a href="#">Projet 1</a></li>
+                        {% for p in pipelines %}
+                            <li><i class="fa fa-puzzle-piece"></i><a href="{% url 'pipeline_execute' name=p.name %}">{{ p.name }}</a></li>
+                        {% endfor %}
                     </ul>
                 </li>
 
@@ -42,9 +44,6 @@
                 </li>-->
                 <li>
                     <a href="{% url 'list_blocks' %}"> <i class="menu-icon fa fa-puzzle-piece {% if request.resolver_match.view_name == "list_blocks" %}active{% endif %}"></i>Blocks</a>
-                </li>
-                <li>
-                    <a href="#"> <i class="menu-icon fa fa-folder"></i>OpenCV</a>
                 </li>
 
                 <h3 class="menu-title">Extras</h3><!-- /.menu-title -->

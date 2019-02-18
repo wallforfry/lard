@@ -12937,21 +12937,11 @@ def pipeline_execute(request, name):
     p = LibPipeline(name)
     p.load_json(j)
 
-    #print(p.blocks["GRADIENT"].data_ready.get("image"))
     f = p.launch()
-    #f = p.get_blocks()
-    #print("LAUNCHED")
-    #print(p.blocks["GRADIENT"].data_ready.get("image"))
-    #print(f)
-    #p.blocks["IMAGE"].launch()
-    #print(p.blocks["GRADIENT"].data_ready)
-    print(p.blocks)
-    print(p.blocks["BLUR"])
-    img_str = cv2.imencode('.png', p.blocks["BLUR"].data_ready.get("image"))[1].tostring()
+    results = p.get_outputs()
+    final = results.popitem()[1]
+    img_str = cv2.imencode('.png', final["data_ready"].get("image"))[1].tostring()
     return HttpResponse(img_str,content_type="image/png")
-    #return HttpResponse(str([a.to_dict() for a in f]))
-
-    #return HttpResponse(str(p.get_outputs())+"<br/>"+str(p.get_liaisons()))
 
 @login_required
 def protected(request):
