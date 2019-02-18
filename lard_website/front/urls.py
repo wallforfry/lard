@@ -16,5 +16,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name="logout"),
     path('register/', views.register_view, name="register"),
     path('dashboard/', views.protected, name="dashboard"),
-    path('editor/', views.editor, name="editor")
+    path('editor/', views.editor, name="editor"),
+    path('datasets/<str:name>/', views.datasets, name="datasets"),
+    path('administration/users', views.admin_users, name="admin_users"),
 ]
