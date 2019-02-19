@@ -5,6 +5,18 @@
         {{ block.super }}
     </div>
     <div class="col-sm-4">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    Description
+                </div>
+                <div class="card-body">
+                    {{ description }}
+                </div>
+            </div>
+        </div>
+    </div>
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -12,18 +24,19 @@
                         Inputs
                     </div>
                     <div class="card-body">
-                        <form method="post" action="{{ save_url }}">
+                        <form id="inputs_form" method="post" action="{{ save_url }}">
                             {% csrf_token %}
                             <input type="hidden" name="name" value="{{ file_name }}"/>
                             <input type="hidden" name="type" value="inputs"/>
                             {% for i in inputs %}
-                                <div class="form-row">
+                                <div class="form-row btn-toolbar col-sm-12">
                                     <div class="col-sm-6 mb-3">
-                                        <input name="inputs_names" type="text" {% if not perms.front.change_block %}disabled{% endif %}
+                                        <input name="inputs_names" type="text" required
+                                               {% if not perms.front.change_block %}disabled{% endif %}
                                                value="{{ i.name }}" class="form-control"/>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <select name="inputs_values" class="custom-select"
+                                    <div class="col-sm-5">
+                                        <select name="inputs_values" class="custom-select" required
                                                 {% if not perms.front.change_block %}disabled{% endif %}>
                                             <option selected>{{ i.value }}</option>
                                             {% for var_type in var_types %}
@@ -31,10 +44,18 @@
                                             {% endfor %}
                                         </select>
                                     </div>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-outline-danger"
+                                                onclick="jQuery(this).parents('.form-row').remove()"><span
+                                                class="fa fa-close"/></button>
+                                    </div>
                                 </div>
                             {% endfor %}
                             {% if perms.front.change_block %}
-                                <button type="submit" class="btn btn-success float-right">Save</button>
+                                <div class="btn-group float-right" role="group" aria-label="Inputs Toolbar">
+                                    <button id="button-add-input" type="button" class="btn btn-primary">Add</button>
+                                    <button type="submit" class="btn btn-success">Save</button>
+                                </div>
                             {% endif %}
                         </form>
                     </div>
@@ -48,18 +69,19 @@
                         Outputs
                     </div>
                     <div class="card-body">
-                        <form method="post" action="{{ save_url }}">
+                        <form id="outputs_form" method="post" action="{{ save_url }}">
                             {% csrf_token %}
                             <input type="hidden" name="name" value="{{ file_name }}"/>
                             <input type="hidden" name="type" value="outputs"/>
                             {% for o in outputs %}
-                                <div class="form-row">
+                                <div class="form-row btn-toolbar col-sm-12">
                                     <div class="col-sm-6 mb-3">
-                                        <input name="inputs_names" type="text" {% if not perms.front.change_block %}disabled{% endif %}
+                                        <input name="outputs_names" type="text" required
+                                               {% if not perms.front.change_block %}disabled{% endif %}
                                                value="{{ o.name }}" class="form-control"/>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <select name="inputs_values" class="custom-select"
+                                    <div class="col-sm-5">
+                                        <select name="outputs_values" class="custom-select" required
                                                 {% if not perms.front.change_block %}disabled{% endif %}>
                                             <option selected>{{ o.value }}</option>
                                             {% for var_type in var_types %}
@@ -67,10 +89,18 @@
                                             {% endfor %}
                                         </select>
                                     </div>
+                                    <div class="col-sm-1">
+                                        <button type="button" class="btn btn-outline-danger"
+                                                onclick="jQuery(this).parents('.form-row').remove()"><span
+                                                class="fa fa-close"/></button>
+                                    </div>
                                 </div>
                             {% endfor %}
                             {% if perms.front.change_block %}
-                                <button type="submit" class="btn btn-success float-right">Save</button>
+                                <div class="btn-group float-right" role="group" aria-label="Outputs Toolbar">
+                                    <button id="button-add-output" type="button" class="btn btn-primary">Add</button>
+                                    <button type="submit" class="btn btn-success">Save</button>
+                                </div>
                             {% endif %}
                         </form>
                     </div>
@@ -85,6 +115,46 @@
     {% if not perms.front.change_block %}
         <script>
             editor.setReadOnly(true);
+        </script>
+    {% else %}
+        <script>
+            jQuery("#button-add-input").click(function () {
+                var field = jQuery("<div class='form-row btn-toolbar col-sm-12'> \
+                                    <div class='col-sm-6 mb-3'> \
+                                        <input name='inputs_names' type='text' required value='' class='form-control'/> \
+                                    </div> \
+                                    <div class='col-sm-5'> \
+                                        <select name='inputs_values' class='custom-select' required> \
+                                            {% for var_type in var_types %} \
+                                                <option value='{{ var_type.value }}'>{{ var_type.value }}</option> \
+                                            {% endfor %} \
+                                        </select> \
+                                    </div> \
+                                    <div class='col-sm-1'> \
+                                        <button type='button' class='btn btn-outline-danger' onclick='jQuery(this).parents(\".form-row\").remove()'><span class='fa fa-close'/></button> \
+                                    </div> \
+                                </div>");
+                jQuery("#inputs_form").find(".btn-group").before(field);
+            });
+
+            jQuery("#button-add-output").click(function () {
+                var field = jQuery("<div class='form-row btn-toolbar col-sm-12'> \
+                                        <div class='col-sm-6 mb-3'> \
+                                            <input name='outputs_names' type='text' required value='' class='form-control'/> \
+                                        </div> \
+                                        <div class='col-sm-5'> \
+                                            <select name='outputs_values' class='custom-select' required> \
+                                                {% for var_type in var_types %} \
+                                                    <option value='{{ var_type.value }}'>{{ var_type.value }}</option> \
+                                                {% endfor %} \
+                                            </select> \
+                                        </div> \
+                                        <div class='col-sm-1'> \
+                                            <button type='button' class='btn btn-outline-danger' onclick='jQuery(this).parents(\".form-row\").remove()'><span class='fa fa-close'/></button> \
+                                        </div> \
+                                    </div>");
+                jQuery("#outputs_form").find(".btn-group").before(field);
+            });
         </script>
     {% endif %}
 {% endblock %}

@@ -12952,7 +12952,17 @@ def edit_block(request, name):
     inputs = block.inputs.all()
     outputs = block.outputs.all()
     var_types = InputOutputType.objects.all()
-    return render(request, "block_editor.html", context={"code": block.code, "file_name": block.name, "language": "python", "save_url": reverse(save_block, kwargs={"name": name}), "inputs": inputs, "outputs": outputs, "var_types": var_types})
+
+    context = {
+        "code": block.code,
+        "file_name": block.name,
+        "description": block.description,
+        "language": "python",
+        "save_url": reverse(save_block, kwargs={"name": name}),
+        "inputs": inputs,
+        "outputs": outputs,
+        "var_types": var_types}
+    return render(request, "block_editor.html", context=context)
 
 @login_required
 def save_block(request, name):

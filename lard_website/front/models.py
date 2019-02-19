@@ -26,6 +26,7 @@ class InputOutput(models.Model):
 
 class Block(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
+    description = models.TextField(blank=False)
     code = models.TextField(default="", blank=False, null=False)
     inputs = models.ManyToManyField(InputOutput, related_name="inputs")
     outputs = models.ManyToManyField(InputOutput, related_name="outputs")
