@@ -25,6 +25,7 @@
                                 <thead>
                                 <tr>
                                     <th>Nom</th>
+                                    <th>Description</th>
                                     <th>Inputs</th>
                                     <th>Outputs</th>
                                 </tr>
@@ -33,6 +34,7 @@
                                 {% for b in blocks %}
                                     <tr>
                                         <td><a href="{% url 'edit_block' name=b.name %}">{{ b.name }}</a></td>
+                                        <td>{{ b.description |truncatechars:100 }}</td>
                                         <td>{% for i in b.inputs.all %}{{ i }}{% endfor %}</td>
                                         <td>{% for i in b.outputs.all %}{{ i }}{% endfor %}</td>
                                     </tr>
