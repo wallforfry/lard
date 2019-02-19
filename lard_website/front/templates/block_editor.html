@@ -30,12 +30,12 @@
                             <input type="hidden" name="type" value="inputs"/>
                             {% for i in inputs %}
                                 <div class="form-row btn-toolbar col-sm-12">
-                                    <div class="col-sm-6 mb-3">
+                                    <div class="col-6 mb-3">
                                         <input name="inputs_names" type="text" required
                                                {% if not perms.front.change_block %}disabled{% endif %}
                                                value="{{ i.name }}" class="form-control"/>
                                     </div>
-                                    <div class="col-sm-5">
+                                    <div class="col-5">
                                         <select name="inputs_values" class="custom-select" required
                                                 {% if not perms.front.change_block %}disabled{% endif %}>
                                             <option selected>{{ i.value }}</option>
@@ -44,7 +44,7 @@
                                             {% endfor %}
                                         </select>
                                     </div>
-                                    <div class="col-sm-1">
+                                    <div class="col-1">
                                         <button type="button" class="btn btn-outline-danger"
                                                 onclick="jQuery(this).parents('.form-row').remove()"><span
                                                 class="fa fa-close"/></button>
@@ -75,12 +75,12 @@
                             <input type="hidden" name="type" value="outputs"/>
                             {% for o in outputs %}
                                 <div class="form-row btn-toolbar col-sm-12">
-                                    <div class="col-sm-6 mb-3">
+                                    <div class="col-6 mb-3">
                                         <input name="outputs_names" type="text" required
                                                {% if not perms.front.change_block %}disabled{% endif %}
                                                value="{{ o.name }}" class="form-control"/>
                                     </div>
-                                    <div class="col-sm-5">
+                                    <div class="col-5">
                                         <select name="outputs_values" class="custom-select" required
                                                 {% if not perms.front.change_block %}disabled{% endif %}>
                                             <option selected>{{ o.value }}</option>
@@ -89,7 +89,7 @@
                                             {% endfor %}
                                         </select>
                                     </div>
-                                    <div class="col-sm-1">
+                                    <div class="col-1">
                                         <button type="button" class="btn btn-outline-danger"
                                                 onclick="jQuery(this).parents('.form-row').remove()"><span
                                                 class="fa fa-close"/></button>
@@ -147,17 +147,17 @@
         <script>
             jQuery("#button-add-input").click(function () {
                 var field = jQuery("<div class='form-row btn-toolbar col-sm-12'> \
-                                    <div class='col-sm-6 mb-3'> \
+                                    <div class='col-6 mb-3'> \
                                         <input name='inputs_names' type='text' required value='' class='form-control'/> \
                                     </div> \
-                                    <div class='col-sm-5'> \
+                                    <div class='col-5'> \
                                         <select name='inputs_values' class='custom-select' required> \
                                             {% for var_type in var_types %} \
                                                 <option value='{{ var_type.value }}'>{{ var_type.value }}</option> \
                                             {% endfor %} \
                                         </select> \
                                     </div> \
-                                    <div class='col-sm-1'> \
+                                    <div class='col-1'> \
                                         <button type='button' class='btn btn-outline-danger' onclick='jQuery(this).parents(\".form-row\").remove()'><span class='fa fa-close'/></button> \
                                     </div> \
                                 </div>");
@@ -166,17 +166,17 @@
 
             jQuery("#button-add-output").click(function () {
                 var field = jQuery("<div class='form-row btn-toolbar col-sm-12'> \
-                                        <div class='col-sm-6 mb-3'> \
+                                        <div class='col-6 mb-3'> \
                                             <input name='outputs_names' type='text' required value='' class='form-control'/> \
                                         </div> \
-                                        <div class='col-sm-5'> \
+                                        <div class='col-5'> \
                                             <select name='outputs_values' class='custom-select' required> \
                                                 {% for var_type in var_types %} \
                                                     <option value='{{ var_type.value }}'>{{ var_type.value }}</option> \
                                                 {% endfor %} \
                                             </select> \
                                         </div> \
-                                        <div class='col-sm-1'> \
+                                        <div class='col-1'> \
                                             <button type='button' class='btn btn-outline-danger' onclick='jQuery(this).parents(\".form-row\").remove()'><span class='fa fa-close'/></button> \
                                         </div> \
                                     </div>");
