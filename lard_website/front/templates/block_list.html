@@ -19,6 +19,13 @@
                     <div class="card">
                         <div class="card-header">
                             <strong class="card-title">Blocks</strong>
+                            <div class="btn-group float-right">
+                                {% if perms.front.add_block %}
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#addBlockModal">Créer un block
+                                    </button>
+                                {% endif %}
+                            </div>
                         </div>
                         <div class="card-body">
                             <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
@@ -34,9 +41,9 @@
                                 {% for b in blocks %}
                                     <tr>
                                         <td><a href="{% url 'edit_block' name=b.name %}">{{ b.name }}</a></td>
-                                        <td>{{ b.description |truncatechars:100 }}</td>
-                                        <td>{% for i in b.inputs.all %}{{ i }}{% endfor %}</td>
-                                        <td>{% for i in b.outputs.all %}{{ i }}{% endfor %}</td>
+                                        <td>{{ b.description |truncatechars:80 }}</td>
+                                        <td>{% for i in b.inputs.all %}{{ i.value }}, {% endfor %}</td>
+                                        <td>{% for i in b.outputs.all %}{{ i.value }}, {% endfor %}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -49,4 +56,41 @@
             </div>
         </div><!-- .animated -->
     </div><!-- .content -->
+
+    {% if perms.front.add_block %}
+        <!-- Modal -->
+        <div class="modal fade" id="addBlockModal" tabindex="-1" role="dialog" aria-labelledby="addBlockModal"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addBlockModal">Ajouter un block</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="addBlockForm" method="post" action="{% url 'add_block' %}">
+                        <div class="modal-body">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="nameInput">Nom du block</label>
+                                <input type="text" class="form-control" required id="nameInput" name="name"
+                                       placeholder="Nom du Block"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="descriptionTextarea">Description</label>
+                                <textarea class="form-control" required id="descriptionTextarea" rows="3"
+                                          name="description"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

@@ -22,6 +22,8 @@ urlpatterns = [
     path('pipelines/<str:name>/execute', views.pipeline_execute, name="pipeline_execute"),
     path('pipelines/<str:name>/cytoscape', views.get_cytoscape, name="pipeline_get_cytoscape"),
     path('blocks/', views.list_blocks, name="list_blocks"),
+    path('blocks/add', views.add_block, name="add_block"),
     path('blocks/<str:name>/edit', views.edit_block, name="edit_block"),
-    path('blocks/<str:name>/save', views.save_block, name="save_block")
+    path('blocks/<str:name>/save', views.save_block, name="save_block"),
+    path('blocks/<str:name>/delete', views.delete_block, name="delete_block")
 ]

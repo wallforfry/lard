@@ -12947,6 +12947,23 @@ def protected(request):
     return render(request, "dashboard.html", context={"page": "Dashboard"})
 
 @login_required
+def add_block(request):
+    name = request.POST.get("name")
+    description = request.POST.get("description")
+    code = """
+import cv2
+def main(data):
+    resultat = data.get("%nom_input%")
+    return {"%nom_output%": "resultat"}
+"""
+    b = Block.objects.create(name=name, description=description, code=code)
+
+    b.save()
+
+    return redirect('edit_block', name=name)
+
+
+@login_required
 def edit_block(request, name):
     block = Block.objects.get(name=name)
     inputs = block.inputs.all()
@@ -12964,6 +12981,11 @@ def edit_block(request, name):
         "var_types": var_types}
     return render(request, "block_editor.html", context=context)
 
+@login_required
+def delete_block(request, name):
+    Block.objects.get(name=name).delete()
+
+    return redirect('list_blocks')
 @login_required
 def save_block(request, name):
     if request.method == "POST":
