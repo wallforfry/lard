@@ -1,0 +1,21 @@
+<div class="form-row btn-toolbar col-sm-12">
+    <div class="col-6 mb-3">
+        <input name="{{ in_out_type }}_names" type="text" required
+               {% if not perms.front.change_block %}disabled{% endif %}
+               value="{{ o.name }}" class="form-control"/>
+    </div>
+    <div class="col-5">
+        <select name="{{ in_out_type }}_values" class="custom-select" required
+                {% if not perms.front.change_block %}disabled{% endif %}>
+            <option selected>{{ o.value }}</option>
+            {% for var_type in var_types %}
+                <option value="{{ var_type.value }}">{{ var_type.value }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-1">
+        <button type="button" class="btn btn-outline-danger"
+                onclick="jQuery(this).parents('.form-row').remove()"><span
+                class="fa fa-close"/></button>
+    </div>
+</div>
