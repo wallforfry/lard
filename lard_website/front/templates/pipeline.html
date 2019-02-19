@@ -1,0 +1,33 @@
+{% extends 'gabarit.html' %}
+{% block content %}
+    <div class="breadcrumbs">
+        <div class="col-sm-10">
+            <div class="page-header float-left">
+                <div class="page-title">
+                    <h1>{{ name }}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="btn-group float-right">
+                <button id="runButton" type="button" class="btn btn-success btn-lg"><i class="fa fa-play"></i> Run
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="modalDiv"></div>
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+
+    <script>
+        let pipeline_inputs_url = "{% url 'pipeline_empty_inputs' name=name %}";
+
+        jQuery("#runButton").click(function () {
+            jQuery('#modalDiv').load(pipeline_inputs_url, function (result) {
+                jQuery("#pipelineModal").modal({show: true});
+            });
+        });
+    </script>
+{% endblock %}

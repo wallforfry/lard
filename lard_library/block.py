@@ -310,6 +310,14 @@ class Block(Subject, Observer):
             if b.on_launch:
                 b.launch()
 
+        json_blocks = {b.name: b.to_dict() for b in blocks}
+        json_liaisons = []
+        for b in Block.liaisons:
+            if b.data.get("from") in json_blocks and b.data.get("to") in json_blocks:
+                json_liaisons.append(b.data)
+
+        return {"blocks": json_blocks, "liaisons": json_liaisons}
+
 def show_images(images, first_name="Source", cv=False):
     """
             Display list of images with matplotlib

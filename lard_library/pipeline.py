@@ -18,6 +18,7 @@ from lard_library.block import Block
 def random_string(length):
     return ''.join(random.choice(string.ascii_letters) for m in range(length))
 
+
 class Pipeline:
 
     def __init__(self, name=random_string(128)):
@@ -25,7 +26,8 @@ class Pipeline:
         self.blocks = {}
         self.liaisons = []
 
-    def create_block(self, code, block_type=None, name=random_string(128), data={}, inputs={}, outputs={}, on_launch=False):
+    def create_block(self, code, block_type=None, name=random_string(128), data={}, inputs={}, outputs={},
+                     on_launch=False):
 
         class TmpBlock(Block):
             def treatment(self, data={}):
@@ -87,6 +89,39 @@ class Pipeline:
 
         return results
 
+    def get_empty_inputs(self):
+        empty_inputs = []
+        data = Block.launch_all([self.blocks[name] for name in self.blocks])
+        blocks = [data.get("blocks").get(name) for name in data.get("blocks")]
+        liaisons = data.get("liaisons")
+        for b in blocks:
+            #print("==========" + b.get("name") + "============")
+            #print("==========" + str(b.get("inputs")) + "==========")
+            n_b = []
+            exist = False
+            result = set()
+            inputs_set = set([(o_name, b.get("inputs").get(o_name).value) for o_name in b.get("inputs")])
+            for l in liaisons:
+                if l.get("to") == b.get("name"):
+                    from_block = data.get("blocks").get(l.get("from"))
+                    outputs_set = set(
+                        [(o_name, from_block.get("outputs").get(o_name).value) for o_name in from_block.get("outputs")])
+                    #print(str(outputs_set) + " ==> " + str(inputs_set))
+                    result.update(outputs_set ^ inputs_set)
+                    exist = True
+
+            if not exist:
+                for n in b.get("data_ready"):
+                    s = (n, b.get("inputs").get(n).value)
+                    if s not in result:
+                        result.add(s)
+            for r in result:
+                n_b.append({"name": r[0], "type": r[1]})
+                pass
+
+            empty_inputs.append({"name": b.get("name"), "empty_inputs": n_b})
+        return empty_inputs
+
     def get_liaisons(self):
         return [l.to_dict() for l in self.liaisons]
 
@@ -103,9 +138,11 @@ class Pipeline:
             outputs = {}
             for i in lard_block.outputs.all():
                 outputs[i.name] = i.value
-
-            b = self.create_block(code=lard_block.code, name=block.get("name"), data=block.get("data_ready"), inputs=inputs,
-                               outputs=outputs, on_launch=block.get("on_launch"), block_type=block.get("type"))
+            data = {}
+            data.update(block.get("data"))
+            data.update(block.get("data_ready"))
+            b = self.create_block(code=lard_block.code, name=block.get("name"), data=data, inputs=inputs,
+                                  outputs=outputs, on_launch=block.get("on_launch"), block_type=block.get("type"))
         for l in j["liaisons"]:
             try:
                 b_from = self.blocks[l.get("from")]

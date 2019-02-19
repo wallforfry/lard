@@ -26,7 +26,7 @@
                        aria-expanded="false"> <i class="menu-icon fa fa-laptop"></i>Traitements</a>
                     <ul class="sub-menu children dropdown-menu">
                         {% for p in pipelines %}
-                            <li><i class="fa fa-puzzle-piece"></i><a href="{% url 'pipeline_execute' name=p.name %}">{{ p.name }}</a></li>
+                            <li><i class="fa fa-puzzle-piece"></i><a href="{% url 'pipeline' name=p.name %}">{{ p.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </li>

@@ -12930,6 +12930,32 @@ def datasets(request, name):
     return JsonResponse(data, safe=False)
 
 @login_required
+def pipeline(request, name):
+    context = {
+        "name": name
+    }
+
+    p = Pipeline.objects.get(name=name)
+    j = json.loads(p.json_value)
+    p = LibPipeline(name)
+    p.load_json(j)
+    return render(request, 'pipeline.html', context=context)
+
+@login_required
+def pipeline_empty_inputs(request, name):
+    context = {
+        "name": name
+    }
+
+    p = Pipeline.objects.get(name=name)
+    j = json.loads(p.json_value)
+    p = LibPipeline(name)
+    p.load_json(j)
+    context["blocks"] = p.get_empty_inputs()
+    print(context.get("blocks"))
+    return render(request, "pipeline_inputs_modal.html", context=context)
+
+@login_required
 def pipeline_execute(request, name):
     p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
