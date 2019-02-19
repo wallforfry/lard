@@ -12,8 +12,13 @@
                     {% csrf_token %}
                     <input type="hidden" name="name" value="{{ file_name }}">
                     <input id="code" type="hidden" name="code">
-                    <button type="button" class="btn btn-danger" {% if not perms.front.delete_block %}disabled{% endif %} data-toggle="modal" data-target="#deleteBlockModal">Supprimer</button>
-                    <button type="submit" class="btn btn-success" {% if not perms.front.change_block %}disabled{% endif %}>Save</button>
+                    <button type="button" class="btn btn-danger"
+                            {% if not perms.front.delete_block %}disabled{% endif %} data-toggle="modal"
+                            data-target="#deleteBlockModal">Supprimer
+                    </button>
+                    <button type="submit" class="btn btn-success"
+                            {% if not perms.front.change_block %}disabled{% endif %}>Save
+                    </button>
                 </form>
             </div>
             <div id="editor">{{ code }}</div>
@@ -32,14 +37,23 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("editor").style.width = (document.getElementById("editor-card").clientWidth - 40) + "px";
-            document.getElementById("editor").style.height = (document.getElementById("right-panel").clientHeight - 270) + "px";
+            if (document.getElementById("right-panel").clientHeight >= 50) {
+                document.getElementById("editor").style.height = (document.getElementById("right-panel").clientHeight - 270) + "px";
+            } else {
+                document.getElementById("editor").style.height = 270 + "px";
+            }
+
             document.getElementById('editor').style.fontSize = '14px';
             document.getElementById("code").value = editor.getValue();
         });
 
         window.onresize = function () {
             document.getElementById("editor").style.width = (document.getElementById("editor-card").clientWidth - 40) + "px";
-            document.getElementById("editor").style.height = (document.getElementById("right-panel").clientHeight - 270) + "px";
+            if (document.getElementById("right-panel").clientHeight >= 50) {
+                document.getElementById("editor").style.height = (document.getElementById("right-panel").clientHeight - 270) + "px";
+            } else {
+                document.getElementById("editor").style.height = 270 + "px";
+            }
         }
 
         editor.session.on('change', function (delta) {
