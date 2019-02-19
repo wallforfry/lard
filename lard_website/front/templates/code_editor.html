@@ -31,14 +31,14 @@
         editor.getSession().setMode("ace/mode/{{ language }}");
 
         document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("editor").style.width = (document.getElementById("editor-card").clientWidth - 50) + "px";
+            document.getElementById("editor").style.width = (document.getElementById("editor-card").clientWidth - 40) + "px";
             document.getElementById("editor").style.height = (document.getElementById("right-panel").clientHeight - 270) + "px";
             document.getElementById('editor').style.fontSize = '14px';
             document.getElementById("code").value = editor.getValue();
         });
 
         window.onresize = function () {
-            document.getElementById("editor").style.width = (document.getElementById("editor-card").clientWidth - 50) + "px";
+            document.getElementById("editor").style.width = (document.getElementById("editor-card").clientWidth - 40) + "px";
             document.getElementById("editor").style.height = (document.getElementById("right-panel").clientHeight - 270) + "px";
         }
 

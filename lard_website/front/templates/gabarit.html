@@ -17,22 +17,22 @@
     <link rel="apple-touch-icon" href="{% static 'images/apple_icon.png' %}">
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
 
-    <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css'%}">
-    <link rel="stylesheet" href="{% static 'vendors/font-awesome/css/font-awesome.min.css'%}">
-    <link rel="stylesheet" href="{% static 'vendors/themify-icons/css/themify-icons.css'%}">
-    <link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css'%}">
-    <link rel="stylesheet" href="{% static 'vendors/selectFX/css/cs-skin-elastic.css'%}">
-    <link rel="stylesheet" href="{% static 'vendors/jqvmap/dist/jqvmap.min.css'%}">
+    <link rel="stylesheet" href="{% static 'vendors/bootstrap/dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/themify-icons/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/selectFX/css/cs-skin-elastic.css' %}">
+    <link rel="stylesheet" href="{% static 'vendors/jqvmap/dist/jqvmap.min.css' %}">
 
 
-    <link rel="stylesheet" href="{% static 'css/style.css'%}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
 
 </head>
 
 {% block body %}
-<body>
+    <body>
 
 
     <!-- Left Panel -->
@@ -43,7 +43,7 @@
 
 
     <!-- Right Panel -->
-<div id="right-panel" class="right-panel">
+    <div id="right-panel" class="right-panel">
 
         <!-- Header-->
         <header id="header" class="header">
@@ -61,7 +61,7 @@
                     </div>
                 </div>
 
-               {% include 'account_dropdown.html' %}
+                {% include 'account_dropdown.html' %}
 
                 {# include 'language.html' #}
 
@@ -70,9 +70,11 @@
         </header><!-- /header -->
         <!-- Header-->
 
+        <!--
         <div class="breadcrumbs">
             {% include 'breadcrumbs.html' %}
         </div>
+        -->
 
         <div id="content" class="content mt-3">
 
@@ -84,18 +86,18 @@
 
         </div> <!-- .content -->
     </div>
-<!-- /#right-panel -->
-</body>
+    <!-- /#right-panel -->
+    </body>
 {% endblock %}
 
- {% block script %}
-    <script src="{% static 'vendors/jquery/dist/jquery.min.js'%}"></script>
-    <script src="{% static 'vendors/popper.js/dist/umd/popper.min.js'%}"></script>
-    <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.min.js'%}"></script>
-    <script src="{% static 'js/main.js'%}"></script>
+{% block script %}
+    <script src="{% static 'vendors/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vendors/popper.js/dist/umd/popper.min.js' %}"></script>
+    <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 
 
-    <script src="{% static 'vendors/chart.js/dist/Chart.bundle.min.js'%}"></script>
+    <script src="{% static 'vendors/chart.js/dist/Chart.bundle.min.js' %}"></script>
 {% endblock %}
 
 </html>
