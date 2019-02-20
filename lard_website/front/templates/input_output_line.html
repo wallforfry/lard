@@ -4,7 +4,7 @@
                {% if not perms.front.change_block %}disabled{% endif %}
                value="{{ o.name }}" class="form-control"/>
     </div>
-    <div class="col-5">
+    <div class="{% if perms.front.change_block %}col-5{% else %}col-6{% endif %}">
         <select name="{{ in_out_type }}_values" class="custom-select" required
                 {% if not perms.front.change_block %}disabled{% endif %}>
             <option selected>{{ o.value }}</option>
@@ -13,9 +13,11 @@
             {% endfor %}
         </select>
     </div>
-    <div class="col-1">
-        <button type="button" class="btn btn-outline-danger"
-                onclick="jQuery(this).parents('.form-row').remove()"><span
-                class="fa fa-close"/></button>
-    </div>
+    {% if perms.front.change_block %}
+        <div class="col-1">
+            <button type="button" class="btn btn-outline-danger"
+                    onclick="jQuery(this).parents('.form-row').remove()"><span
+                    class="fa fa-close"/></button>
+        </div>
+    {% endif %}
 </div>
