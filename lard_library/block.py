@@ -150,14 +150,18 @@ class Block(Subject, Observer):
 
     def _treat(self, data={}):
         self.data.update(data)
-
         _data_ready = set_dict_to_value(self.inputs_dict, None)
 
         self._data_ready = {**_data_ready, **self.data}
+        self._data_ready = {**self.data_ready, **data}
+
+        save_data = copy.deepcopy(self.data_ready)
+
         if not self.is_ready():
             print(self.name + " Not ready")
         else:
             result = self.treatment(self.data)
+            self.data = save_data
             if result:
                 self.subject_outputs = result
 

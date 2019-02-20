@@ -57,9 +57,9 @@ class Pipeline:
         json_blocks = {self.blocks[name].name: self.blocks[name].to_dict() for name in self.blocks}
         json_liaisons = []
         for b in self.liaisons:
+            #print(b)
             if b.data.get("from") in json_blocks and b.data.get("to") in json_blocks:
                 json_liaisons.append(b.data)
-
         return {"blocks": json_blocks, "liaisons": json_liaisons}
 
     def get_cytoscape(self):
@@ -95,28 +95,29 @@ class Pipeline:
         blocks = [data.get("blocks").get(name) for name in data.get("blocks")]
         liaisons = data.get("liaisons")
         for b in blocks:
-            #print("==========" + b.get("name") + "============")
-            #print("==========" + str(b.get("inputs")) + "==========")
             n_b = []
             exist = False
             result = set()
-            inputs_set = set([(o_name, b.get("inputs").get(o_name).value) for o_name in b.get("inputs")])
+            inputs_set = set([(o_name, b.get("inputs").get(o_name)) for o_name in b.get("inputs")])
             for l in liaisons:
                 if l.get("to") == b.get("name"):
                     from_block = data.get("blocks").get(l.get("from"))
                     outputs_set = set(
-                        [(o_name, from_block.get("outputs").get(o_name).value) for o_name in from_block.get("outputs")])
-                    #print(str(outputs_set) + " ==> " + str(inputs_set))
+                        [(o_name, from_block.get("outputs").get(o_name)) for o_name in from_block.get("outputs")])
                     result.update(outputs_set ^ inputs_set)
                     exist = True
 
             if not exist:
                 for n in b.get("data_ready"):
-                    s = (n, b.get("inputs").get(n).value)
+                    s = (n, b.get("inputs").get(n))
                     if s not in result:
                         result.add(s)
+
             for r in result:
-                n_b.append({"name": r[0], "type": r[1]})
+                v = b.get("data").get(r[0])
+                if v is None:
+                    v = ""
+                n_b.append({"name": r[0], "type": r[1], "value": v})
                 pass
 
             empty_inputs.append({"name": b.get("name"), "empty_inputs": n_b})
@@ -134,10 +135,10 @@ class Pipeline:
             lard_block = WebBlock.objects.get(name=block.get("type"))
             inputs = {}
             for i in lard_block.inputs.all():
-                inputs[i.name] = i.value
+                inputs[i.name] = str(i.value)
             outputs = {}
             for i in lard_block.outputs.all():
-                outputs[i.name] = i.value
+                outputs[i.name] = str(i.value)
             data = {}
             data.update(block.get("data"))
             data.update(block.get("data_ready"))

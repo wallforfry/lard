@@ -12952,13 +12952,29 @@ def pipeline_empty_inputs(request, name):
     p = LibPipeline(name)
     p.load_json(j)
     context["blocks"] = p.get_empty_inputs()
-    print(context.get("blocks"))
     return render(request, "pipeline_inputs_modal.html", context=context)
 
 @login_required
 def pipeline_execute(request, name):
+    blocks_names = request.POST.getlist("blocks_names")
+    inputs_names = request.POST.getlist("inputs_names")
+    inputs_values = request.POST.getlist("inputs_values")
+    inputs_types = request.POST.getlist("inputs_types")
+
     p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
+    for b, n, v, t in zip(blocks_names, inputs_names, inputs_values, inputs_types):
+        d = v
+        if t == "float":
+            d = float(v)
+        elif t == "int":
+            d = int(v)
+
+        j.get("blocks").get(b).get("data")[n] = d
+
+    p.json_value = json.dumps(j)
+    p.save()
+
     p = LibPipeline(name)
     p.load_json(j)
 

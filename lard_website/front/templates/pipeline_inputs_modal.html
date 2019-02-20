@@ -10,26 +10,30 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <form>
+            <form method="post" action="{% url 'pipeline_execute' name=name %}">
+                {% csrf_token %}
+                <div class="modal-body">
                     {% for b in blocks %}
                         {% if b.empty_inputs %}
                             <div class="col">
                                 <p>{{ b.name }} :</p>
                                 {% for i in b.empty_inputs %}
                                     <div class="form-group row">
+                                        <input type="hidden" name="blocks_names" value="{{ b.name }}"/>
+                                        <input type="hidden" name="inputs_names" value="{{ i.name }}"/>
+                                        <input type="hidden" name="inputs_types" value="{{ i.type }}"/>
                                         <label for="input{{ i.name|title }}" class="col-6">{{ i.name }}[{{ i.type }}]
                                             : </label>
                                         {% if i.type == "string" %}
                                             <input type="text" class="form-control col-6" id="input{{ i.name|title }}"
-                                                   placeholder="{{ i.value }}">
+                                                   value="{{ i.value }}" name="inputs_values"/>
                                         {% elif i.type == "int" or i.type == "float" %}
                                             <input type="number" class="form-control col-6" id="input{{ i.name|title }}"
-                                                   placeholder="{{ i.value }}">
+                                                   value="{{ i.value }}" name="inputs_values"/>
                                         {% elif i.type == "image" %}
                                             <div class="custom-file col-6">
                                                 <input type="file" class="custom-file-input"
-                                                       id="input{{ i.name|title }}">
+                                                       id="input{{ i.name|title }}" name="inputs_values"/>
                                                 <label class="custom-file-label" for="customFile">Choose file</label>
                                             </div>
                                         {% endif %}
@@ -38,15 +42,12 @@
                             </div>
                         {% endif %}
                     {% endfor %}
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                <form method="post" action="{% url 'pipeline_execute' name=name %}">
-                    {% csrf_token %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-success"><i class="fa fa-play"></i>Run</button>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
