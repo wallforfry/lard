@@ -19,6 +19,7 @@ from django.shortcuts import render, redirect
 from front.models import Pipeline, Block, InputOutputType, InputOutput
 from lard_website import settings
 
+
 @login_required
 def index(request):
     return render(request, "index.html")
@@ -12940,6 +12941,19 @@ def pipeline(request, name):
     p = LibPipeline(name)
     p.load_json(j)
     return render(request, 'pipeline.html', context=context)
+
+@login_required
+def pipeline_edit(request, name):
+    context = {
+        "name": name
+    }
+
+    p = Pipeline.objects.get(name=name)
+    j = json.loads(p.json_value)
+    p = LibPipeline(name)
+    p.load_json(j)
+    return HttpResponse("OK")
+    #return render(request, 'pipeline.html', context=context)
 
 @login_required
 def pipeline_empty_inputs(request, name):
