@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         container: document.getElementById('cy'),
 
+
         layout: {
             name: 'grid',
             rows: 2,
@@ -84,22 +85,27 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
 
         elements: {
-            nodes: [
-                {data: {id: 'j', name: 'Alex'}},
-                {data: {id: 'e', name: 'Jojo'}},
-                {data: {id: 'k', name: 'Walle'}},
-                {data: {id: 'g', name: 'Pilou'}}
+            "nodes": [
+                {
+                    "data": {
+                        "id": "BLUR",
+                        "name": "Blur"
+                    }
+                },
+                {
+                    "data": {
+                        "id": "IMAGE",
+                        "name": "Image"
+                    }
+                }
             ],
-            edges: [
-                {data: {source: 'j', target: 'e'}},
-                {data: {source: 'j', target: 'k'}},
-                {data: {source: 'j', target: 'g'}},
-                {data: {source: 'e', target: 'j'}},
-                {data: {source: 'e', target: 'k'}},
-                {data: {source: 'k', target: 'j'}},
-                {data: {source: 'k', target: 'e'}},
-                {data: {source: 'k', target: 'g'}},
-                {data: {source: 'g', target: 'j'}}
+            "edges": [
+                {
+                    "data": {
+                        "target": "BLUR",
+                        "source": "IMAGE"
+                    }
+                }
             ]
         }
     });
@@ -189,6 +195,20 @@ document.addEventListener('DOMContentLoaded', function () {
         cy.remove('edge:selected');
     });
 
+    document.querySelector('#create').addEventListener('click', function () {
+        cy.add({
+            group: 'nodes',
+            data: {
+                "id": "AUTRE",
+                "name": "AUTRE"
+            },
+            position: {x: cy.width()/2, y: cy.height()/3}
+        });
+
+        cy.center();
+    });
+
+
     //Permet de delete nodes et edges avec "Suppr"
     document.addEventListener('keydown', function (e) {
         if (e.keyCode === 46) {
@@ -197,17 +217,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }, false);
 
-    //Event lors du début de la création d'un edge
-    cy.on('ehstart', (event, sourceNode, targetNode, addedEles) => {
-        console.log("Edge : " + sourceNode.id() + " à " + targetNode.id());
-
-    });
-
     //Event lors de la fin de la création d'un edge
     cy.on('ehcomplete', (event, sourceNode, targetNode, addedEles) => {
         console.log("Edge : " + sourceNode.id() + " à " + targetNode.id());
 
     });
+
+    cy.resize();
+
 
 });
 
