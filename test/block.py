@@ -21,7 +21,6 @@ warnings.filterwarnings(
              'so results might be incorrect.')
 )
 
-
 class Subject:
     """
     Know its observers. Any number of Observer objects may observe a
@@ -247,24 +246,27 @@ class Block(Subject, Observer):
         Write a json repesentation of a cytoscape graph
         :param filename: string
         """
-        cytoJSON = []
         blocks = blocks_dict.get("blocks")
-
+        all_nodes = []
+        all_edges = []
         for key in blocks:
             block = blocks[key]
             data_dict = {"id": block.get("name"), "name": block.get("type")}
             node_dict = {"data": data_dict}
-            cytoJSON.append(node_dict)
+            all_nodes.append(node_dict)
 
         liaisons = blocks_dict.get("liaisons")
         for liaison in liaisons:
             data_dict = {"source": liaison.get("from"), "target": liaison.get("to")}
             edge_dict = {"data": data_dict}
-            cytoJSON.append(edge_dict)
+            all_edges.append(edge_dict)
+
+        cyto_json = {"nodes": all_nodes, "edges": all_edges}
 
         with open(graph_file_name, mode="w") as f:
-            json.dump(cytoJSON, f, indent=4)
-        return  cytoJSON
+            json.dump(cyto_json, f, indent=4)
+        return cyto_json
+
     @staticmethod
     def load_and_instanciate(filename="dump.json"):
         """
@@ -582,6 +584,7 @@ def main():
     """
     This is the Lard cli app
 
+
     You can load a Lard model to run it or just display graph
     """
     pass
@@ -696,16 +699,15 @@ def demo():
     #"""
 
     # Ecriture d'un cytograph json
-    """
+
     blockImage.connect_to(blockBlur)
     blockBlur.connect_to(blockDisplay)
-    b = [blockImage, blockBlur, blockDisplay]
+    b = [blockImage, blockBlur]
     Block.dump(b)
     c = Block.load()
     Block.write_cyto_graph(c)
-    #"""
 
-    # test_video()
+    # test_video()writ
 
     # Draw Graph
     draw_graph(g_from, g_to)
