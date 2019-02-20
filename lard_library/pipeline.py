@@ -35,8 +35,7 @@ class Pipeline:
                 result.update(data)
                 exec(code, globals(), result)
                 exec("result = main(data)", globals(), result)
-                self.data = result.get("result", {})
-                return self.data
+                return result.get("result", {})
 
         b = TmpBlock(name, inputs, outputs, on_launch=on_launch, block_type=block_type)
         b.data = data
@@ -108,9 +107,9 @@ class Pipeline:
                     exist = True
 
             if not exist:
-                for n in b.get("data_ready"):
-                    s = (n, b.get("inputs").get(n))
-                    if s not in result:
+                for n in b.get("inputs"):
+                    if n in b.get("data") or n not in b.get("data_ready") or (n in b.get("data_ready") and b.get("data_ready").get(n) is None):
+                        s = (n, b.get("inputs").get(n))
                         result.add(s)
 
             for r in result:
@@ -118,7 +117,6 @@ class Pipeline:
                 if v is None:
                     v = ""
                 n_b.append({"name": r[0], "type": r[1], "value": v})
-                pass
 
             empty_inputs.append({"name": b.get("name"), "empty_inputs": n_b})
         return empty_inputs
@@ -141,7 +139,6 @@ class Pipeline:
                 outputs[i.name] = str(i.value)
             data = {}
             data.update(block.get("data"))
-            data.update(block.get("data_ready"))
             b = self.create_block(code=lard_block.code, name=block.get("name"), data=data, inputs=inputs,
                                   outputs=outputs, on_launch=block.get("on_launch"), block_type=block.get("type"))
         for l in j["liaisons"]:

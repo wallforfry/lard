@@ -12981,6 +12981,7 @@ def pipeline_execute(request, name):
     f = p.launch()
     results = p.get_outputs()
     final = results.popitem()[1]
+
     img_str = cv2.imencode('.png', final["data_ready"].get("image"))[1].tostring()
     return HttpResponse(img_str,content_type="image/png")
 

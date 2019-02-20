@@ -149,21 +149,22 @@ class Block(Subject, Observer):
         self._treat(data)
 
     def _treat(self, data={}):
-        self.data.update(data)
-        _data_ready = set_dict_to_value(self.inputs_dict, None)
+        for n in self.data:
+            for m in self.data_ready:
+                if n == m:
+                    self.data_ready.update({n: self.data.get(n)})
 
-        self._data_ready = {**_data_ready, **self.data}
-        self._data_ready = {**self.data_ready, **data}
-
-        save_data = copy.deepcopy(self.data_ready)
+        for n in data:
+            for m in self.data_ready:
+                if n == m:
+                    self.data_ready.update({n: data.get(n)})
 
         if not self.is_ready():
             print(self.name + " Not ready")
         else:
-            result = self.treatment(self.data)
-            self.data = save_data
-            if result:
-                self.subject_outputs = result
+            result = self.treatment(self.data_ready)
+            self._data_ready = result
+            self.subject_outputs = result
 
     @abc.abstractmethod
     def treatment(self, data={}):
@@ -195,10 +196,6 @@ class Block(Subject, Observer):
     @data.setter
     def data(self, arg):
         self._data = arg
-        _data_ready = copy.deepcopy(self.inputs_dict)
-        _data_ready = set_dict_to_value(_data_ready, None)
-        _data_ready.update(self.data)
-        self._data_ready = _data_ready
 
     @property
     def data_ready(self):
@@ -280,6 +277,7 @@ class Block(Subject, Observer):
         with open(graph_file_name, mode="w") as f:
             json.dump(cytoJSON, f, indent=4)
         return  cytoJSON
+
     @staticmethod
     def load_and_instanciate(filename="dump.json"):
         """
@@ -397,7 +395,7 @@ def find_block_by_type(type, blocks):
 
 class Liaison(Block):
     def treatment(self, data={}):
-        # inputs = {**inputs, **self.data.get("inputs")}
+        data = self._observer_inputs
         old_name = data.get("old_name")
         new_name = data.get("new_name")
         data = copy.deepcopy(data)
