@@ -1,4 +1,5 @@
 {% extends 'gabarit.html' %}
+{% load static %}
 {% block content %}
     <div class="breadcrumbs">
         <div class="col-sm-10">
@@ -15,11 +16,40 @@
             </div>
         </div>
     </div>
+
+    <div id="buttons" class="btn-group-lg">
+        <button id="clear" class="btn btn-danger">Remove</button>
+        <button id="create" class="btn btn-success">Create</button>
+    </div>
+
+    <div id="cy"></div>
+
+
     <div id="modalDiv"></div>
 {% endblock %}
 
 {% block script %}
     {{ block.super }}
+    <script src="{% static 'js/Cytoscape/cytoscape.min.js' %}"></script>
+    <script src="{% static 'js/Cytoscape/Iodash.js' %}"></script>
+    <script src="{% static 'js/Cytoscape/cytoscape-edgehandles/cytoscape-edgehandles.js' %}"></script>
+    <script src="{% static 'js/Cytoscape/cytoscape.js-cxtmenu-master/cytoscape-cxtmenu.js' %}"></script>
+    <script src="{% static 'js/Cytoscape/main.js' %}"></script>
+    <script src="{% static 'js/Cytoscape/Communication.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/Cytoscape/style_cytoscape.css' %}">
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            jQuery.getJSON("{% url 'pipeline_get_cytoscape' name=name %}", function (data) {
+                console.log(data);
+                initCytoscape(data);
+            });
+        });
+    </script>
+
+
+
 
     <script>
         let pipeline_inputs_url = "{% url 'pipeline_empty_inputs' name=name %}";

@@ -1,4 +1,33 @@
 document.addEventListener("DOMContentLoaded", function () {
+    var data = {
+            "nodes": [
+                {
+                    "data": {
+                        "id": "BLUR",
+                        "name": "Blur"
+                    }
+                },
+                {
+                    "data": {
+                        "id": "IMAGE",
+                        "name": "Image"
+                    }
+                }
+            ],
+            "edges": [
+                {
+                    "data": {
+                        "target": "BLUR",
+                        "source": "IMAGE"
+                    }
+                }
+            ]
+        }
+
+    //initCytoscape(data);
+});
+
+function initCytoscape(data){
     var cy = window.cy = cytoscape({
 
         container: document.getElementById("cy"),
@@ -84,33 +113,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         ],
 
-        elements: {
-            "nodes": [
-                {
-                    "data": {
-                        "id": "BLUR",
-                        "name": "Blur"
-                    }
-                },
-                {
-                    "data": {
-                        "id": "IMAGE",
-                        "name": "Image"
-                    }
-                }
-            ],
-            "edges": [
-                {
-                    "data": {
-                        "target": "BLUR",
-                        "source": "IMAGE"
-                    }
-                }
-            ]
-        }
+        elements: data
     });
 
-    let defaults = {
+        let defaults = {
         preview: true, // whether to show added edges preview before releasing selection
         hoverDelay: 150, // time spent hovering over a target node before it is considered selected
         handleNodes: "node", // selector/filter function for whether edges can be made from a given node
@@ -179,7 +185,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         ]
     });
-    var num = 1;
+
+     var num = 1;
 
     //Permet de delete nodes et edges avec bouton "Remove"
     document.querySelector("#clear").addEventListener("click", function () {
@@ -223,6 +230,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
-
-});
-
+}
