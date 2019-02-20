@@ -8,9 +8,9 @@
 {% block content %}
 
 
-    <div id="buttons">
-        <button id="clear">Remove</button>
-
+    <div id="buttons" class="btn-group-lg">
+        <button id="clear" class="btn btn-danger">Remove</button>
+        <button id="create" class="btn btn-success">Create</button>
     </div>
     <div id="cy"></div>
 {% endblock %}
@@ -21,6 +21,7 @@
     <script src="{% static 'js/Cytoscape/cytoscape.min.js' %}"></script>
     <script src="{% static 'js/Cytoscape/Iodash.js' %}"></script>
     <script src="{% static 'js/Cytoscape/cytoscape-edgehandles/cytoscape-edgehandles.js' %}"></script>
+    <script src="{% static 'js/Cytoscape/cytoscape.js-cxtmenu-master/cytoscape-cxtmenu.js' %}"></script>
     <script src="{% static 'js/Cytoscape/main.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/Cytoscape/style_cytoscape.css' %}">
     {# Placer ici les balise de js #}
