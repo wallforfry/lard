@@ -26,6 +26,8 @@
 
 
     <div id="modalDiv"></div>
+    <div id="resultModalDiv"></div>
+
 {% endblock %}
 
 {% block script %}
@@ -54,9 +56,21 @@
     <script>
         let pipeline_inputs_url = "{% url 'pipeline_empty_inputs' name=name %}";
 
-        jQuery("#runButton").click(function () {
-            jQuery('#modalDiv').load(pipeline_inputs_url, function (result) {
-                jQuery("#pipelineModal").modal({show: true});
+        document.addEventListener("DOMContentLoaded", function () {
+
+            jQuery("#runButton").click(function () {
+                jQuery('#modalDiv').load(pipeline_inputs_url, function (result) {
+                    jQuery("#pipelineModal").modal({show: true});
+
+                    jQuery("#loadResultButton").click(function () {
+                        jQuery.post("{% url 'pipeline_execute' name=name %}", jQuery("#loadResultForm").serialize(), function (data) {
+                                jQuery('#resultModalDiv').html(data);
+                                jQuery("#pipelineModal").modal('hide');
+                                jQuery('#pipelineResultModal').modal({show: true});
+                            }
+                        );
+                    });
+                });
             });
         });
     </script>

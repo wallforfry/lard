@@ -10,7 +10,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" action="{% url 'pipeline_execute' name=name %}">
+            <form id="loadResultForm" method="post" action="{% url 'pipeline_execute' name=name %}">
                 {% csrf_token %}
                 <div class="modal-body">
                     {% for b in blocks %}
@@ -45,7 +45,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn btn-success"><i class="fa fa-play"></i>Run</button>
+                    <button id="loadResultButton" type="button" class="btn btn-success"><i class="fa fa-play"></i>Run</button>
                 </div>
             </form>
         </div>

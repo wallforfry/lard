@@ -1,3 +1,4 @@
+import base64
 import json
 
 import cv2
@@ -100,8 +101,10 @@ def pipeline_execute(request, name):
     results = p.get_outputs()
     final = results.popitem()[1]
 
-    img_str = cv2.imencode('.png', final["data_ready"].get("image"))[1].tostring()
-    return HttpResponse(img_str,content_type="image/png")
+    ret, img = cv2.imencode('.png', final["data_ready"].get("image"))
+    frame_b64 = base64.b64encode(img).decode("utf-8")
+
+    return render(request,'pipeline_result_modal.html', context={"name": name, "image": frame_b64})
 
 @login_required
 def protected(request):
