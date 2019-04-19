@@ -11,12 +11,45 @@
         </div>
         <div class="col-sm-2">
             <div class="btn-group float-right">
+                <a class="btn btn-dark btn-lg" data-toggle="collapse" href="#collapseExample" role="button"
+                   aria-expanded="false" aria-controls="collapseExample">
+                    <i class="fa fa-caret-down"></i> Add
+                </a>
+            </div>
+            <div class="btn-group float-right">
                 <button id="runButton" type="button" class="btn btn-success btn-lg"><i class="fa fa-play"></i> Run
                 </button>
+
             </div>
         </div>
     </div>
+    <div class="collapse" id="collapseExample">
+        <div class="card" style="width: 100%; z-index: 999">
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <select class="form-control" id="exampleFormControlSelect1">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" id="exampleFormControlInput1"
+                                   placeholder="name">
+                        </div>
+                        <div class="col-md-1">
+                            <button id="create" class="btn btn-success">Create</button>
+                        </div>
+                    </div>
 
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="buttons" class="btn-group-lg">
         <button id="clear" class="btn btn-danger">Remove</button>
         <button id="create" class="btn btn-success">Create</button>
@@ -50,9 +83,6 @@
         });
     </script>
 
-
-
-
     <script>
         let pipeline_inputs_url = "{% url 'pipeline_empty_inputs' name=name %}";
 
@@ -73,5 +103,10 @@
                 });
             });
         });
+    </script>
+
+
+    <script>
+
     </script>
 {% endblock %}
