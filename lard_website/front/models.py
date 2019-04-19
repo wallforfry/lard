@@ -11,11 +11,17 @@ class Pipeline(models.Model):
     def __str__(self):
         return self.name
 
+    def as_json(self):
+        return dict(name=self.name, json_value=self.json_value, owner=self.owner, is_public=self.is_public)
+
 class InputOutputType(models.Model):
     value = models.CharField(max_length=255, blank=False, null=False)
 
     def __str__(self):
         return self.value
+
+    def as_json(self):
+        return dict(value=self.value)
 
 class InputOutput(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
@@ -23,6 +29,9 @@ class InputOutput(models.Model):
 
     def __str__(self):
         return self.name+" : "+str(self.value)
+
+    def as_json(self):
+        return dict(name=self.name, value=self.value.as_json().get("value"))
 
 class Block(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
@@ -33,3 +42,8 @@ class Block(models.Model):
 
     def __str__(self):
         return self.name
+
+    def as_json(self):
+        inputs = [i.as_json() for i in self.inputs.all()]
+        outputs = [o.as_json() for o in self.outputs.all()]
+        return dict(name=self.name, description=self.description, code=self.code, inputs=inputs, outputs=outputs)
