@@ -194,13 +194,15 @@ function initCytoscape(data){
         cy.remove("edge:selected");
     });
 
+    //Permet de faire la création du node
     document.querySelector("#create").addEventListener("click", function () {
-
+        //Récupération
+        var nom = document.getElementById("name").value;
         cy.add({
             group: "nodes",
             data: {
-                "id": "AUTRE_" + num,
-                "name": "AUTRE " + num
+                "id": nom,
+                "name": nom
             },
             position: {
                 x: Math.floor(Math.random() * (cy.width() - 500)) + 300,
