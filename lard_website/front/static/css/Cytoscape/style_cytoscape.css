@@ -1,28 +1,46 @@
-        body {
-            font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
-            font-size: 14px;
-        }
+body {
+    font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
+    font-size: 14px;
+}
 
-        #cy {
-            position: absolute;
-            padding-left: 95px;
-            top: 170px;
-            bottom: 0;
-            right: 0;
+#cy {
+    position: absolute;
+    top: 16%;
+    bottom: 0;
+    width: 83.8%;
+}
 
-            width: 90%;
+@media (max-width: 1024px) {
+    #cy {
+        position: absolute;
+        top: 16%;
+        bottom: 0;
+        width: 83.8%;
+    }
+}
 
-        }
 
-        h1 {
-            opacity: 0.5;
-            font-size: 1em;
-            font-weight: bold;
-        }
+@media (max-width: 575.99px) {
+    #cy {
+        position: absolute;
+        padding-left: 0%;
+        left: 0;
+        top: 215px;
+        bottom: 0;
+        width: 100%;
+    }
+}
 
-        #buttons {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            z-index: 99999;
-        }
+
+h1 {
+    opacity: 0.5;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+#buttons {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 99999;
+}
