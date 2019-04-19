@@ -21,9 +21,12 @@
                     <a href="{% url 'editor' %}"> <i class="menu-icon fa fa-edit"></i>Editeur </a>
                 </li>
                 <h3 class="menu-title">Mes Projets</h3><!-- /.menu-title -->
+                <li class="{% if request.resolver_match.view_name == "pipelines" %}active{% endif %}">
+                    <a href="{% url 'list_pipelines' %}"> <i class="menu-icon fa fa-edit"></i>Traitements</a>
+                </li>
                 <li class="menu-item-has-children dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                       aria-expanded="false"> <i class="menu-icon fa fa-laptop"></i>Traitements</a>
+                       aria-expanded="false"> <i class="menu-icon fa fa-laptop"></i>Récents</a>
                     <ul class="sub-menu children dropdown-menu">
                         {% for p in pipelines %}
                             <li><i class="fa fa-puzzle-piece"></i><a href="{% url 'pipeline' name=p.name %}">{{ p.name }}</a></li>

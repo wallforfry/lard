@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
 
@@ -34,6 +35,10 @@ def datasets(request, name):
     data = """{}"""
     data = json.loads(data)
     return JsonResponse(data, safe=False)
+
+@login_required
+def list_piplines(request):
+    return render(request, "pipelines_list.html", context={"pipelines_list": Pipeline.objects.filter(Q(is_public=True) | Q(owner=request.user))})
 
 @login_required
 def pipeline(request, name):

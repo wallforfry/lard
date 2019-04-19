@@ -19,6 +19,7 @@ urlpatterns = [
     path('editor/', views.editor, name="editor"),
     path('datasets/<str:name>/', views.datasets, name="datasets"),
     path('administration/users', views.admin_users, name="admin_users"),
+    path('pipelines/', views.list_piplines, name="list_pipelines"),
     path('pipelines/<str:name>', views.pipeline, name="pipeline"),
     path('pipelines/<str:name>/inputs', views.pipeline_empty_inputs, name="pipeline_empty_inputs"),
     path('pipelines/<str:name>/execute', views.pipeline_execute, name="pipeline_execute"),
