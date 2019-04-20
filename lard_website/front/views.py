@@ -112,8 +112,8 @@ def pipeline_execute(request, name):
     return render(request,'pipeline_result_modal.html', context={"name": name, "image": frame_b64})
 
 @login_required
-def protected(request):
-    return render(request, "dashboard.html", context={"page": "Dashboard"})
+def dashboard(request):
+    return render(request, "dashboard.html", context={"page": "Dashboard", "total_users": User.objects.count(), "total_pipelines": Pipeline.objects.count(), "total_blocks": Block.objects.count()})
 
 @login_required
 def add_block(request):
