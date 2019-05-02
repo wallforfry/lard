@@ -196,7 +196,8 @@ function initCytoscape(data){
 
     //Permet de faire la création du node
     document.querySelector("#create").addEventListener("click", function () {
-        //Récupération
+
+        //Récupération du nom
         var nom = document.getElementById("name").value;
         cy.add({
             group: "nodes",
