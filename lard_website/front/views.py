@@ -45,11 +45,6 @@ def pipeline(request, name):
         "name": name
     }
 
-    lists = 'http://127.0.0.1:8000/api/block/list'
-    response_list = requests.get(lists)
-    json_list = json.loads(response_list)
-    for j in json_list:
-        print(j)
 
     p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
