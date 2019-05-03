@@ -1,33 +1,33 @@
 document.addEventListener("DOMContentLoaded", function () {
     var data = {
-            "nodes": [
-                {
-                    "data": {
-                        "id": "BLUR",
-                        "name": "Blur"
-                    }
-                },
-                {
-                    "data": {
-                        "id": "IMAGE",
-                        "name": "Image"
-                    }
+        "nodes": [
+            {
+                "data": {
+                    "id": "BLUR",
+                    "name": "Blur"
                 }
-            ],
-            "edges": [
-                {
-                    "data": {
-                        "target": "BLUR",
-                        "source": "IMAGE"
-                    }
+            },
+            {
+                "data": {
+                    "id": "IMAGE",
+                    "name": "Image"
                 }
-            ]
-        }
+            }
+        ],
+        "edges": [
+            {
+                "data": {
+                    "target": "BLUR",
+                    "source": "IMAGE"
+                }
+            }
+        ]
+    }
 
     //initCytoscape(data);
 });
 
-function initCytoscape(data){
+function initCytoscape(data) {
     var cy = window.cy = cytoscape({
 
         container: document.getElementById("cy"),
@@ -116,7 +116,7 @@ function initCytoscape(data){
         elements: data
     });
 
-        let defaults = {
+    let defaults = {
         preview: true, // whether to show added edges preview before releasing selection
         hoverDelay: 150, // time spent hovering over a target node before it is considered selected
         handleNodes: "node", // selector/filter function for whether edges can be made from a given node
@@ -186,7 +186,7 @@ function initCytoscape(data){
         ]
     });
 
-     var num = 1;
+    var num = 1;
 
     //Permet de delete nodes et edges avec bouton "Remove"
     document.querySelector("#clear").addEventListener("click", function () {
@@ -199,11 +199,12 @@ function initCytoscape(data){
 
         //Récupération du nom
         var nom = document.getElementById("name").value;
+        var type = document.getElementById("type").value;
         cy.add({
             group: "nodes",
             data: {
-                "id": nom,
-                "name": nom
+                "name": nom,
+                "id" : type,
             },
             position: {
                 x: Math.floor(Math.random() * (cy.width() - 500)) + 300,
@@ -229,8 +230,7 @@ function initCytoscape(data){
 
     //Event lors de la fin de la création d"un edge
     cy.on("ehcomplete", (event, sourceNode, targetNode) => {
-        console.log("Edge : " + sourceNode.id() + " à " + targetNode.id());
-
+        console.log(cy.elements().jsons());
     });
 
 }

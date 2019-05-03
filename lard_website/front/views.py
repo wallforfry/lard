@@ -42,7 +42,8 @@ def list_piplines(request):
 @login_required
 def pipeline(request, name):
     context = {
-        "name": name
+        "name": name,
+        "blocs" : Block.objects.all()
     }
 
 
