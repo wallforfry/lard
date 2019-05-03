@@ -131,6 +131,7 @@ function initCytoscape(data) {
                 content: '<span class="fa fa-remove fa-2x" style="color: #c53a3a;"></span>',
                 select: function (ele) {
                     cy.remove(ele);
+                    test(cy);
                 },
                 activeFillColor: 'rgba(255,0,0,0.2)',
             }
@@ -149,9 +150,6 @@ function initCytoscape(data) {
             }
         ]
     });
-
-    var num = 1;
-
 
     //Permet de faire la création du node
     document.querySelector("#create").addEventListener("click", function () {
@@ -174,7 +172,6 @@ function initCytoscape(data) {
 
         cy.pan();
         cy.center();
-        num++;
         test(cy);
     });
 
@@ -185,7 +182,7 @@ function initCytoscape(data) {
             cy.remove("node:selected");
             cy.remove("edge:selected");
         }
-
+        test(cy);
     }, false);
 
 
@@ -220,5 +217,5 @@ function test(cy) {
     });
     dict["edges"] = array_edges;
     dict["nodes"] = array_nodes;
-    console.log(dict);
+
 }

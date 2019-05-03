@@ -77,14 +77,11 @@
         document.addEventListener("DOMContentLoaded", function () {
 
             jQuery.getJSON("{% url 'pipeline_get_cytoscape' name=name %}", function (data) {
-                console.log(data);
                 initCytoscape(data);
             });
 
         });
-        jQuery("#close").click(function () {
-            jQuery('#collapseExample').collapse('hide');
-        });
+
 
     </script>
 
@@ -112,6 +109,8 @@
 
 
     <script>
-
+        jQuery("#close").click(function () {
+            jQuery('#collapseExample').collapse('hide');
+        });
     </script>
 {% endblock %}
