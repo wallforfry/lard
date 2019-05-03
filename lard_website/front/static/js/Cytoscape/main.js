@@ -107,7 +107,7 @@ function initCytoscape(data) {
 
     var eh = cy.edgehandles(defaults);
     let menu = cy.cxtmenu(defaults);
-
+    var supp;
     cy.cxtmenu({
         selector: 'node, edge',
 
@@ -116,10 +116,16 @@ function initCytoscape(data) {
             {
                 content: '<span class="fa fa-remove fa-2x" style="color: #c53a3a;"></span>',
                 select: function (ele) {
-                    cy.remove(ele);
+                    supp = cy.remove(ele);
                     test(cy);
                 },
                 activeFillColor: 'rgba(255,0,0,0.2)',
+            },
+            {
+                content: '<span class="fa fa-copy fa-2x" ></span>',
+                select: function () {
+                    supp.move();
+                }
             }
         ]
     });
@@ -132,6 +138,12 @@ function initCytoscape(data) {
                 content: '<span class="fa fa-plus fa-2x" ></span>',
                 select: function () {
                     jQuery('#collapseExample').collapse('toggle');
+                }
+            },
+            {
+                content: '<span class="fa fa-undo fa-2x" ></span>',
+                select: function () {
+                    supp.restore();
                 }
             }
         ]
