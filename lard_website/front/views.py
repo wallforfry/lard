@@ -45,8 +45,6 @@ def pipeline(request, name):
         "name": name,
         "blocs" : Block.objects.all()
     }
-
-
     p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
     p = LibPipeline(name)

@@ -112,20 +112,6 @@ function initCytoscape(data) {
         selector: 'node, edge',
 
         commands: [
-            {
-                content: 'TEST',
-                select: function (ele) {
-                    cy.remove(ele);
-                }
-            },
-
-            {
-                content: '<span class="fa fa-star fa-2x" ></span>',
-                select: function (ele) {
-                    console.log(ele.data('name'));
-                },
-                enabled: false
-            },
 
             {
                 content: '<span class="fa fa-remove fa-2x" style="color: #c53a3a;"></span>',
@@ -181,6 +167,14 @@ function initCytoscape(data) {
         if (e.keyCode === 46) {
             cy.remove("node:selected");
             cy.remove("edge:selected");
+        }
+        test(cy);
+    }, false);
+
+    document.addEventListener("keydown", function (e) {
+        if (e.keyCode === 27) {
+            jQuery('#collapseExample').collapse('hide');
+
         }
         test(cy);
     }, false);
