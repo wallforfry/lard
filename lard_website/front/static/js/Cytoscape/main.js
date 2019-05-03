@@ -1,32 +1,3 @@
-document.addEventListener("DOMContentLoaded", function () {
-    var data = {
-        "nodes": [
-            {
-                "data": {
-                    "id": "BLUR",
-                    "name": "Blur"
-                }
-            },
-            {
-                "data": {
-                    "id": "IMAGE",
-                    "name": "Image"
-                }
-            }
-        ],
-        "edges": [
-            {
-                "data": {
-                    "target": "BLUR",
-                    "source": "IMAGE"
-                }
-            }
-        ]
-    }
-
-    //initCytoscape(data);
-});
-
 function initCytoscape(data) {
     var cy = window.cy = cytoscape({
 
@@ -171,16 +142,9 @@ function initCytoscape(data) {
 
         commands: [
             {
-                content: 'bg1',
+                content: '<span class="fa fa-plus fa-2x" ></span>',
                 select: function () {
-                    console.log('bg1');
-                }
-            },
-
-            {
-                content: 'bg2',
-                select: function () {
-                    console.log('bg2');
+                    jQuery('#collapseExample').collapse('toggle');
                 }
             }
         ]
@@ -203,8 +167,8 @@ function initCytoscape(data) {
         cy.add({
             group: "nodes",
             data: {
-                "name": nom,
-                "id" : type,
+                "name": type,
+                "id": nom
             },
             position: {
                 x: Math.floor(Math.random() * (cy.width() - 500)) + 300,

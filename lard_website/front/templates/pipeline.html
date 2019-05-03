@@ -45,15 +45,14 @@
                         <div class="col-md-1">
                             <button id="create" class="btn btn-success">Create</button>
                         </div>
+                        <div class="col-md-1">
+                            <button id="close" class="btn btn-danger">Close</button>
+                        </div>
                     </div>
 
                 </div>
             </div>
         </div>
-    </div>
-    <div id="buttons" class="btn-group-lg">
-        <button id="clear" class="btn btn-danger">Remove</button>
-        <button id="create" class="btn btn-success">Create</button>
     </div>
 
     <div id="cy"></div>
@@ -81,7 +80,12 @@
                 console.log(data);
                 initCytoscape(data);
             });
+
         });
+        jQuery("#close").click(function () {
+            jQuery('#collapseExample').collapse('hide');
+        });
+
     </script>
 
     <script>
