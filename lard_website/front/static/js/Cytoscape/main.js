@@ -152,11 +152,6 @@ function initCytoscape(data) {
 
     var num = 1;
 
-    //Permet de delete nodes et edges avec bouton "Remove"
-    document.querySelector("#clear").addEventListener("click", function () {
-        cy.remove("node:selected");
-        cy.remove("edge:selected");
-    });
 
     //Permet de faire la création du node
     document.querySelector("#create").addEventListener("click", function () {
@@ -180,7 +175,7 @@ function initCytoscape(data) {
         cy.pan();
         cy.center();
         num++;
-        console.log(cy.width());
+        test(cy);
     });
 
 
@@ -190,11 +185,40 @@ function initCytoscape(data) {
             cy.remove("node:selected");
             cy.remove("edge:selected");
         }
+
     }, false);
+
 
     //Event lors de la fin de la création d"un edge
     cy.on("ehcomplete", (event, sourceNode, targetNode) => {
-        console.log(cy.elements().jsons());
+        test(cy);
     });
 
+
+}
+
+function test(cy) {
+    var dict = {};
+    var array_nodes = [];
+    var array_edges = [];
+    cy.elements().forEach(function (elem) {
+        var dict_data = {};
+        var dict_data_edge = {};
+        if (elem.isNode()) {
+            dict_data["data"] = elem.data();
+            dict_data["block_data"] = {
+                "data": {},
+                "data_ready": {},
+                "on_launch": false
+            };
+            array_nodes.push(dict_data);
+        }
+        if (elem.isEdge()) {
+            dict_data_edge["data"] = elem.data();
+            array_edges.push(dict_data_edge);
+        }
+    });
+    dict["edges"] = array_edges;
+    dict["nodes"] = array_nodes;
+    console.log(dict);
 }
