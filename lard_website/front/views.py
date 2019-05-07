@@ -10,7 +10,7 @@ from django.db import IntegrityError
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 from django.urls import reverse
-
+import requests
 from lard_library.pipeline import Pipeline as LibPipeline
 from front import utils
 from front.backend import EmailOrUsernameModelBackend
@@ -20,7 +20,6 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from front.models import Pipeline, Block, InputOutputType, InputOutput
 from lard_website import settings
-
 
 @login_required
 def index(request):
@@ -43,9 +42,9 @@ def list_piplines(request):
 @login_required
 def pipeline(request, name):
     context = {
-        "name": name
+        "name": name,
+        "blocs" : Block.objects.all()
     }
-
     p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
     p = LibPipeline(name)

@@ -1,33 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
-    var data = {
-            "nodes": [
-                {
-                    "data": {
-                        "id": "BLUR",
-                        "name": "Blur"
-                    }
-                },
-                {
-                    "data": {
-                        "id": "IMAGE",
-                        "name": "Image"
-                    }
-                }
-            ],
-            "edges": [
-                {
-                    "data": {
-                        "target": "BLUR",
-                        "source": "IMAGE"
-                    }
-                }
-            ]
-        }
-
-    //initCytoscape(data);
-});
-
-function initCytoscape(data){
+function initCytoscape(data) {
     var cy = window.cy = cytoscape({
 
         container: document.getElementById("cy"),
@@ -116,7 +87,7 @@ function initCytoscape(data){
         elements: data
     });
 
-        let defaults = {
+    let defaults = {
         preview: true, // whether to show added edges preview before releasing selection
         hoverDelay: 150, // time spent hovering over a target node before it is considered selected
         handleNodes: "node", // selector/filter function for whether edges can be made from a given node
@@ -136,32 +107,25 @@ function initCytoscape(data){
 
     var eh = cy.edgehandles(defaults);
     let menu = cy.cxtmenu(defaults);
-
+    var supp;
     cy.cxtmenu({
         selector: 'node, edge',
 
         commands: [
-            {
-                content: 'TEST',
-                select: function (ele) {
-                    cy.remove(ele);
-                }
-            },
-
-            {
-                content: '<span class="fa fa-star fa-2x" ></span>',
-                select: function (ele) {
-                    console.log(ele.data('name'));
-                },
-                enabled: false
-            },
 
             {
                 content: '<span class="fa fa-remove fa-2x" style="color: #c53a3a;"></span>',
                 select: function (ele) {
-                    cy.remove(ele);
+                    supp = cy.remove(ele);
+                    test(cy);
                 },
                 activeFillColor: 'rgba(255,0,0,0.2)',
+            },
+            {
+                content: '<span class="fa fa-copy fa-2x" ></span>',
+                select: function () {
+                    supp.move();
+                }
             }
         ]
     });
@@ -171,36 +135,31 @@ function initCytoscape(data){
 
         commands: [
             {
-                content: 'bg1',
+                content: '<span class="fa fa-plus fa-2x" ></span>',
                 select: function () {
-                    console.log('bg1');
+                    jQuery('#collapseExample').collapse('toggle');
                 }
             },
-
             {
-                content: 'bg2',
+                content: '<span class="fa fa-undo fa-2x" ></span>',
                 select: function () {
-                    console.log('bg2');
+                    supp.restore();
                 }
             }
         ]
     });
 
-     var num = 1;
-
-    //Permet de delete nodes et edges avec bouton "Remove"
-    document.querySelector("#clear").addEventListener("click", function () {
-        cy.remove("node:selected");
-        cy.remove("edge:selected");
-    });
-
+    //Permet de faire la création du node
     document.querySelector("#create").addEventListener("click", function () {
 
+        //Récupération du nom
+        var nom = document.getElementById("name").value;
+        var type = document.getElementById("type").value;
         cy.add({
             group: "nodes",
             data: {
-                "id": "AUTRE_" + num,
-                "name": "AUTRE " + num
+                "name": type,
+                "id": nom
             },
             position: {
                 x: Math.floor(Math.random() * (cy.width() - 500)) + 300,
@@ -211,8 +170,7 @@ function initCytoscape(data){
 
         cy.pan();
         cy.center();
-        num++;
-        console.log(cy.width());
+        test(cy);
     });
 
 
@@ -222,12 +180,48 @@ function initCytoscape(data){
             cy.remove("node:selected");
             cy.remove("edge:selected");
         }
+        test(cy);
     }, false);
+
+    document.addEventListener("keydown", function (e) {
+        if (e.keyCode === 27) {
+            jQuery('#collapseExample').collapse('hide');
+
+        }
+        test(cy);
+    }, false);
+
 
     //Event lors de la fin de la création d"un edge
     cy.on("ehcomplete", (event, sourceNode, targetNode) => {
-        console.log("Edge : " + sourceNode.id() + " à " + targetNode.id());
-
+        test(cy);
     });
+
+
+}
+
+function test(cy) {
+    var dict = {};
+    var array_nodes = [];
+    var array_edges = [];
+    cy.elements().forEach(function (elem) {
+        var dict_data = {};
+        var dict_data_edge = {};
+        if (elem.isNode()) {
+            dict_data["data"] = elem.data();
+            dict_data["block_data"] = {
+                "data": {},
+                "data_ready": {},
+                "on_launch": false
+            };
+            array_nodes.push(dict_data);
+        }
+        if (elem.isEdge()) {
+            dict_data_edge["data"] = elem.data();
+            array_edges.push(dict_data_edge);
+        }
+    });
+    dict["edges"] = array_edges;
+    dict["nodes"] = array_nodes;
 
 }

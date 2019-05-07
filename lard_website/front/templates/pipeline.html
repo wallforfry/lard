@@ -1,6 +1,7 @@
 {% extends 'gabarit.html' %}
 {% load static %}
 {% block content %}
+
     <div class="breadcrumbs">
         <div class="col-sm-10">
             <div class="page-header float-left">
@@ -23,36 +24,45 @@
             </div>
         </div>
     </div>
+
+
     <div class="collapse" id="collapseExample">
         <div class="card" style="width: 100%; z-index: 999">
             <div class="card-body">
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-2">
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
+                            <select class="form-control" id="type" onchange="selectValue()">
+                                {% for b in blocs %}
+                                    <option>{{ b }}</option>
+                                {% endfor %}
+
                             </select>
                         </div>
+
                         <div class="col-md-2">
-                            <input type="text" class="form-control" id="exampleFormControlInput1"
-                                   placeholder="name">
+                            <input type="text" class="form-control" id="name"
+                                   placeholder="Name">
+                        </div>
+                        <div class="col-md-2" style="display: none" id="path_input">
+                            <input type="text" class="form-control" id="path"
+                                   placeholder="Path">
+                        </div>
+                        <div class="col-md-2" style="display: none" id="number_input">
+                            <input type="number" class="form-control" id="number"
+                                   placeholder="Number">
                         </div>
                         <div class="col-md-1">
                             <button id="create" class="btn btn-success">Create</button>
+                        </div>
+                        <div class="col-md-1">
+                            <button id="close" class="btn btn-danger">Close</button>
                         </div>
                     </div>
 
                 </div>
             </div>
         </div>
-    </div>
-    <div id="buttons" class="btn-group-lg">
-        <button id="clear" class="btn btn-danger">Remove</button>
-        <button id="create" class="btn btn-success">Create</button>
     </div>
 
     <div id="cy"></div>
@@ -77,10 +87,12 @@
         document.addEventListener("DOMContentLoaded", function () {
 
             jQuery.getJSON("{% url 'pipeline_get_cytoscape' name=name %}", function (data) {
-                console.log(data);
                 initCytoscape(data);
             });
+
         });
+
+
     </script>
 
     <script>
@@ -107,6 +119,22 @@
 
 
     <script>
+        jQuery("#close").click(function () {
+            jQuery('#collapseExample').collapse('hide');
+        });
+
+        function selectValue() {
+            if (document.getElementById('type').value === "Image") {
+                document.getElementById('path_input').style.display = "";
+            } else {
+                document.getElementById('path_input').style.display = "none";
+            }
+            if (document.getElementById('type').value === "Blur") {
+                document.getElementById('number_input').style.display = "";
+            } else {
+                document.getElementById('number_input').style.display = "none";
+            }
+        }
 
     </script>
 {% endblock %}
