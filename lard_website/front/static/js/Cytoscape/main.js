@@ -222,12 +222,12 @@ function createArray(cy) {
                 array_edges.push(dict_data_edge);
             }
         }
-
     });
     jsonCytoscape["edges"] = array_edges;
     jsonCytoscape["nodes"] = array_nodes;
-    console.log(jsonCytoscape);
+    updatePipeline(jsonCytoscape)
 }
+
 function updatePipeline(data) {
     jQuery.ajax({
         type: "POST",
