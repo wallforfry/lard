@@ -223,5 +223,21 @@ function test(cy) {
     });
     dict["edges"] = array_edges;
     dict["nodes"] = array_nodes;
+    updatePipeline(dict)
+}
 
+function updatePipeline(data) {
+    jQuery.ajax({
+        type: "POST",
+        url: "/api/piplines/update",
+        dataType: "json",
+        traditional: true,
+        data: {'name': pipelineName, 'pipeline': JSON.stringify(data)},
+        success: function (code, statut) {
+            console.log(pipelineName+" updated");
+        },
+        error: function (code, statut) {
+            console.log("Error during "+pipelineName+" update");
+        }
+    });
 }

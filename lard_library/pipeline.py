@@ -95,11 +95,11 @@ class Pipeline:
                 continue
             block_type = blocks_of_wanted_type[0]
             outputs = {}
-            for output in block_type.outputs:
-                outputs[output.name] = output.value
+            for output in block_type.outputs.all():
+                outputs[output.name] = output.value.value
             inputs = {}
-            for inpt in block_type.inputs:
-                inputs[inpt.name] = inpt.value
+            for inpt in block_type.inputs.all():
+                inputs[inpt.name] = inpt.value.value
             block = {
                 "on_launch": node.get("block_data").get("on_launch"),
                 "outputs": outputs,
