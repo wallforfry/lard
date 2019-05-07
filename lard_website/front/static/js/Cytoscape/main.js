@@ -228,7 +228,6 @@ function createArray(cy) {
     jsonCytoscape["nodes"] = array_nodes;
     console.log(jsonCytoscape);
 }
-
 function updatePipeline(data) {
     jQuery.ajax({
         type: "POST",
