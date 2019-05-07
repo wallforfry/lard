@@ -43,12 +43,13 @@ def list_piplines(request):
 def pipeline(request, name):
     context = {
         "name": name,
-        "blocs" : Block.objects.all()
+        "blocks": Block.objects.all()
     }
-    p = Pipeline.objects.get(name=name)
+    """p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
     p = LibPipeline(name)
-    p.load_json(j)
+    p.load_json(j)"""
+
     return render(request, 'pipeline.html', context=context)
 
 @login_required
