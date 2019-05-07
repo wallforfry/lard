@@ -117,7 +117,7 @@ function initCytoscape(data) {
                 content: '<span class="fa fa-remove fa-2x" style="color: #c53a3a;"></span>',
                 select: function (ele) {
                     supp = cy.remove(ele);
-                    test(cy);
+                    createArray(cy);
                 },
                 activeFillColor: 'rgba(255,0,0,0.2)',
             },
@@ -170,7 +170,7 @@ function initCytoscape(data) {
 
         cy.pan();
         cy.center();
-        test(cy);
+        createArray(cy);
     });
 
 
@@ -179,51 +179,54 @@ function initCytoscape(data) {
         if (e.keyCode === 46) {
             cy.remove("node:selected");
             cy.remove("edge:selected");
+            createArray(cy);
         }
-        test(cy);
-    }, false);
 
-    document.addEventListener("keydown", function (e) {
         if (e.keyCode === 27) {
             jQuery('#collapseExample').collapse('hide');
-
+            createArray(cy);
         }
-        test(cy);
-    }, false);
 
+    }, false);
 
     //Event lors de la fin de la création d"un edge
     cy.on("ehcomplete", (event, sourceNode, targetNode) => {
-        test(cy);
+        createArray(cy);
     });
 
 
 }
 
-function test(cy) {
-    var dict = {};
+function createArray(cy) {
+    var jsonCytoscape = {};
     var array_nodes = [];
     var array_edges = [];
     cy.elements().forEach(function (elem) {
         var dict_data = {};
         var dict_data_edge = {};
+
         if (elem.isNode()) {
-            dict_data["data"] = elem.data();
-            dict_data["block_data"] = {
-                "data": {},
-                "data_ready": {},
-                "on_launch": false
-            };
-            array_nodes.push(dict_data);
+            if (elem.data().id.length <= 20) {
+                dict_data["data"] = elem.data();
+                dict_data["block_data"] = {
+                    "data": {},
+                    "data_ready": {},
+                    "on_launch": false
+                };
+                array_nodes.push(dict_data);
+            }
         }
         if (elem.isEdge()) {
-            dict_data_edge["data"] = elem.data();
-            array_edges.push(dict_data_edge);
+            if (elem.data().target.length <= 20) {
+                dict_data_edge["data"] = elem.data();
+                array_edges.push(dict_data_edge);
+            }
         }
+
     });
-    dict["edges"] = array_edges;
-    dict["nodes"] = array_nodes;
-    updatePipeline(dict)
+    jsonCytoscape["edges"] = array_edges;
+    jsonCytoscape["nodes"] = array_nodes;
+    console.log(jsonCytoscape);
 }
 
 function updatePipeline(data) {
@@ -234,10 +237,10 @@ function updatePipeline(data) {
         traditional: true,
         data: {'name': pipelineName, 'pipeline': JSON.stringify(data)},
         success: function (code, statut) {
-            console.log(pipelineName+" updated");
+            console.log(pipelineName + " updated");
         },
         error: function (code, statut) {
-            console.log("Error during "+pipelineName+" update");
+            console.log("Error during " + pipelineName + " update");
         }
     });
 }
