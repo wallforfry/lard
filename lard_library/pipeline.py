@@ -62,22 +62,61 @@ class Pipeline:
         return {"blocks": json_blocks, "liaisons": json_liaisons}
 
     def get_cytoscape(self):
-        cytoJSON = []
         blocks = self.get_json().get("blocks")
+        all_nodes = []
+        all_edges = []
 
         for key in blocks:
             block = blocks[key]
             data_dict = {"id": block.get("name"), "name": block.get("type")}
-            node_dict = {"data": data_dict}
-            cytoJSON.append(node_dict)
+            block_data = {"data_ready": block.get("data_ready"), "on_launch": block.get("on_launch"), "data": block.get("data")}
+            node_dict = {"data": data_dict, "block_data": block_data}
+            all_nodes.append(node_dict)
 
         liaisons = self.get_json().get("liaisons")
         for liaison in liaisons:
             data_dict = {"source": liaison.get("from"), "target": liaison.get("to")}
             edge_dict = {"data": data_dict}
-            cytoJSON.append(edge_dict)
+            all_edges.append(edge_dict)
+
+        cytoJSON = {"nodes": all_nodes, "edges": all_edges}
 
         return cytoJSON
+
+    @staticmethod
+    def from_cytoscape_to_python_json(cytoscape_format):
+        blocks = {}
+        liaisons = []
+        nodes = cytoscape_format.get("nodes")
+        edges = cytoscape_format.get("edges")
+        for node in nodes:
+            blocks_of_wanted_type = WebBlock.objects.filter(name=node.get("data").get("name")).all()
+            if not blocks_of_wanted_type.exists():
+                continue
+            block_type = blocks_of_wanted_type[0]
+            outputs = {}
+            for output in block_type.outputs:
+                outputs[output.name] = output.value
+            inputs = {}
+            for inpt in block_type.inputs:
+                inputs[inpt.name] = inpt.value
+            block = {
+                "on_launch": node.get("block_data").get("on_launch"),
+                "outputs": outputs,
+                "inputs": inputs,
+                "type": node.get("data").get("name"),
+                "name": node.get("data").get("id"),
+                "data_ready": node.get("block_data").get("data_ready"),
+                "data": node.get("block_data").get("data")
+            }
+            blocks[node.get("data").get("id")] = block
+
+        for edge in edges:
+            liaison = {"from": edge.get("data").get("source"), "to": edge.get("data").get("target")}
+            liaisons.append(liaison)
+
+        return {"blocks": blocks, "liaisons": liaisons}
+
 
     def get_outputs(self):
         results = {}
