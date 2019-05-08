@@ -17,13 +17,18 @@
                             <img src="data:image/png;base64, {{ image }}" style="width:100%;max-width:500px"/>
                         </div>
                     </div>
+                    <br/>
+                    <br/>
+                    <h6>Logs :</h6>
+                    <br/>
+
                     <div class="row">
-                        <div class="col-12 text-center">
-                            <pre>
-                            {% for l in logs %}
-                                {{ l }}
-                            {% endfor %}
-                            </pre>
+                        <div class="col-12" style="background-color: #0d152a">
+                            <code>
+                                {% for l in logs %}
+                                    <b>{{ l.name }}</b> : <span class="text-white">{{ l.message }}</span><br/>
+                                {% endfor %}
+                            </code>
                         </div>
                     </div>
                 </div>
