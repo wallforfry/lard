@@ -124,16 +124,17 @@ function initCytoscape(data) {
             {
                 content: '<span class="fa fa-edit fa-2x" ></span>',
                 select: function (ele) {
-                    var donnees;
-                    for (var dat in ele.data()["data"]) {
-                        console.log(dat);
-                        donnees = ele.data()["data"][dat];
+                    if (ele.isNode()) {
+                        var donnees;
+                        for (var dat in ele.data()["data"]) {
+                            donnees = ele.data()["data"][dat];
+                        }
+                        jQuery('#modalDiv').load("edit/" + ele.data()["name"] + "/" + ele.id() + "/" + ele.data()["on_launch"] + "/" + donnees, function (result) {
+                            jQuery("#pipelineModal").modal({show: true});
+
+                        });
                     }
 
-                    jQuery('#modalDiv').load("edit/" + ele.data()["name"] + "/" + ele.id() + "/" + ele.data()["on_launch"] + "/" + donnees, function (result) {
-                        jQuery("#pipelineModal").modal({show: true});
-
-                    });
                 }
             }
         ]
@@ -201,6 +202,12 @@ function initCytoscape(data) {
         if (e.ctrlKey && e.keyCode === 90) {
             supp.restore();
             createArray(cy);
+
+        }
+        if (e.ctrlKey && (e.which === 83)) {
+            e.preventDefault();
+            createArray(cy);
+            jQuery('#runButton').trigger('click');
 
         }
 
