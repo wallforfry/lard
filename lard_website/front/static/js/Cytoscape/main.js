@@ -88,18 +88,17 @@ function initCytoscape(data) {
     });
 
     let defaults = {
-        preview: true, // whether to show added edges preview before releasing selection
-        hoverDelay: 150, // time spent hovering over a target node before it is considered selected
-        handleNodes: "node", // selector/filter function for whether edges can be made from a given node
-        snap: false, // when enabled, the edge can be drawn by just moving close to a target node (can be confusing on compound graphs)
-        snapThreshold: 50, // the target node must be less than or equal to this many pixels away from the cursor/finger
-        snapFrequency: 15, // the number of times per second (Hz) that snap checks done (lower is less expensive)
-        noEdgeEventsInDraw: false, // set events:no to edges during draws, prevents mouseouts on compounds
-        disableBrowserGestures: true, // during an edge drawing gesture, disable browser gestures such as two-finger trackpad swipe and pinch-to-zoom
+        preview: true,
+        hoverDelay: 150,
+        handleNodes: "node",
+        snap: false,
+        snapThreshold: 50,
+        snapFrequency: 15,
+        noEdgeEventsInDraw: false,
+        disableBrowserGestures: true,
 
         ghostEdgeParams: function () {
-            // return element object to be passed to cy.add() for the ghost edge
-            // (default classes are always added for you)
+
             return {};
         },
 
@@ -108,6 +107,7 @@ function initCytoscape(data) {
     var eh = cy.edgehandles(defaults);
     let menu = cy.cxtmenu(defaults);
     var supp;
+
     cy.cxtmenu({
         selector: 'node, edge',
 
@@ -122,9 +122,18 @@ function initCytoscape(data) {
                 activeFillColor: 'rgba(255,0,0,0.2)',
             },
             {
-                content: '<span class="fa fa-copy fa-2x" ></span>',
-                select: function () {
-                    supp.move();
+                content: '<span class="fa fa-edit fa-2x" ></span>',
+                select: function (ele) {
+                    var donnees;
+                    for (var dat in ele.data()["data"]) {
+                        console.log(dat);
+                        donnees = ele.data()["data"][dat];
+                    }
+
+                    jQuery('#modalDiv').load("edit/" + ele.data()["name"] + "/" + ele.id() + "/" + ele.data()["on_launch"] + "/" + donnees, function (result) {
+                        jQuery("#pipelineModal").modal({show: true});
+
+                    });
                 }
             }
         ]
@@ -144,10 +153,12 @@ function initCytoscape(data) {
                 content: '<span class="fa fa-undo fa-2x" ></span>',
                 select: function () {
                     supp.restore();
+                    createArray(cy);
                 }
             }
         ]
     });
+
 
     //Permet de faire la création du node
     document.querySelector("#create").addEventListener("click", function () {
@@ -159,7 +170,9 @@ function initCytoscape(data) {
             group: "nodes",
             data: {
                 "name": type,
-                "id": nom
+                "id": nom,
+                "data": {},
+                "on_launch": false
             },
             position: {
                 x: Math.floor(Math.random() * (cy.width() - 500)) + 300,
@@ -177,14 +190,18 @@ function initCytoscape(data) {
     //Permet de delete nodes et edges avec "Suppr"
     document.addEventListener("keydown", function (e) {
         if (e.keyCode === 46) {
-            cy.remove("node:selected");
-            cy.remove("edge:selected");
+            supp = cy.remove("node:selected");
             createArray(cy);
         }
 
         if (e.keyCode === 27) {
             jQuery('#collapseExample').collapse('hide');
             createArray(cy);
+        }
+        if (e.ctrlKey && e.keyCode === 90) {
+            supp.restore();
+            createArray(cy);
+
         }
 
     }, false);
@@ -194,7 +211,17 @@ function initCytoscape(data) {
         createArray(cy);
     });
 
+    cy.elements().forEach(function (elem) {
+        console.log(elem.data());
+    });
+}
 
+function edit(cy, param) {
+    var dataNode = cy.$('#' + param[0]).data();
+    dataNode["data"] = param[1];
+    dataNode["on_launch"] = param[2];
+    dataNode["data_ready"] = {};
+    createArray(cy);
 }
 
 function createArray(cy) {
@@ -202,6 +229,7 @@ function createArray(cy) {
     var array_nodes = [];
     var array_edges = [];
     cy.elements().forEach(function (elem) {
+        console.log(elem.data());
         var dict_data = {};
         var dict_data_edge = {};
 
@@ -209,9 +237,9 @@ function createArray(cy) {
             if (elem.data().id.length <= 20) {
                 dict_data["data"] = elem.data();
                 dict_data["block_data"] = {
-                    "data": {},
+                    "data": elem.data()["data"],
                     "data_ready": {},
-                    "on_launch": false
+                    "on_launch": elem.data()["on_launch"]
                 };
                 array_nodes.push(dict_data);
             }
@@ -225,7 +253,9 @@ function createArray(cy) {
     });
     jsonCytoscape["edges"] = array_edges;
     jsonCytoscape["nodes"] = array_nodes;
-    updatePipeline(jsonCytoscape)
+
+    console.log(jsonCytoscape);
+    updatePipeline(jsonCytoscape);
 }
 
 function updatePipeline(data) {

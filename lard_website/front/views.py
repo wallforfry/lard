@@ -16,18 +16,20 @@ from front import utils
 from front.backend import EmailOrUsernameModelBackend
 from django.shortcuts import render, redirect
 
-
 # Create your views here.
 from front.models import Pipeline, Block, InputOutputType, InputOutput
 from lard_website import settings
+
 
 @login_required
 def index(request):
     return render(request, "index.html")
 
+
 @login_required
 def editor(request):
     return render(request, "editor.html")
+
 
 @login_required
 def datasets(request, name):
@@ -35,9 +37,12 @@ def datasets(request, name):
     data = json.loads(data)
     return JsonResponse(data, safe=False)
 
+
 @login_required
 def list_piplines(request):
-    return render(request, "pipelines_list.html", context={"pipelines_list": Pipeline.objects.filter(Q(is_public=True) | Q(owner=request.user))})
+    return render(request, "pipelines_list.html",
+                  context={"pipelines_list": Pipeline.objects.filter(Q(is_public=True) | Q(owner=request.user))})
+
 
 @login_required
 def pipeline(request, name):
@@ -52,6 +57,20 @@ def pipeline(request, name):
 
     return render(request, 'pipeline.html', context=context)
 
+
+@login_required
+def pipeline_edit_inputs(request, type, id, launch, data):
+    context = {
+        "type": type,
+        "id": id,
+        "blocks": Block.objects.all(),
+        "launch": launch,
+        "data": data
+    }
+
+    return render(request, "pipeline_edit_modal.html", context=context)
+
+
 @login_required
 def pipeline_edit(request, name):
     if request.method == 'POST':
@@ -63,7 +82,8 @@ def pipeline_edit(request, name):
         p.load_json(p.json_value)
         return HttpResponse(str(p.get_json()))
     return HttpResponse("ERROR")
-    #return render(request, 'pipeline.html', context=context)
+    # return render(request, 'pipeline.html', context=context)
+
 
 @login_required
 def pipeline_empty_inputs(request, name):
@@ -77,6 +97,7 @@ def pipeline_empty_inputs(request, name):
     p.load_json(j)
     context["blocks"] = p.get_empty_inputs()
     return render(request, "pipeline_inputs_modal.html", context=context)
+
 
 @login_required
 def pipeline_execute(request, name):
@@ -115,9 +136,13 @@ def pipeline_execute(request, name):
 
     return render(request, 'pipeline_result_modal.html', context={"name": name, "image": frame_b64, "logs": p.logs})
 
+
 @login_required
 def dashboard(request):
-    return render(request, "dashboard.html", context={"page": "Dashboard", "total_users": User.objects.count(), "total_pipelines": Pipeline.objects.count(), "total_blocks": Block.objects.count()})
+    return render(request, "dashboard.html", context={"page": "Dashboard", "total_users": User.objects.count(),
+                                                      "total_pipelines": Pipeline.objects.count(),
+                                                      "total_blocks": Block.objects.count()})
+
 
 @login_required
 def add_block(request):
@@ -154,11 +179,14 @@ def edit_block(request, name):
         "var_types": var_types}
     return render(request, "block_editor.html", context=context)
 
+
 @login_required
 def delete_block(request, name):
     Block.objects.get(name=name).delete()
 
     return redirect('list_blocks')
+
+
 @login_required
 def save_block(request, name):
     if request.method == "POST":
@@ -190,9 +218,11 @@ def save_block(request, name):
         block.save()
         return redirect('edit_block', name=name)
 
+
 @login_required
 def list_blocks(request):
     return render(request, "block_list.html", context={"blocks": Block.objects.all()})
+
 
 @login_required
 def get_cytoscape(request, name):
@@ -201,6 +231,7 @@ def get_cytoscape(request, name):
     p = LibPipeline(name)
     p.load_json(j)
     return JsonResponse(p.get_cytoscape(), safe=False)
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -223,6 +254,7 @@ def login_view(request):
         else:
             messages.error(request, "Vous êtes un robot..")
     return render(request, "login.html", context={"page": "Login", "recaptcha_site_key": settings.RECAPTCHA_SITE_KEY})
+
 
 def register_view(request):
     if not settings.ENABLE_REGISTRATION:
@@ -255,11 +287,14 @@ def register_view(request):
             else:
                 messages.error(request, "Vous devez accepter les termes et conditions d'utilisation")
 
-    return render(request, "register.html", context={"page": "Register", "recaptcha_site_key": settings.RECAPTCHA_SITE_KEY})
+    return render(request, "register.html",
+                  context={"page": "Register", "recaptcha_site_key": settings.RECAPTCHA_SITE_KEY})
+
 
 def logout_view(request):
     logout(request)
     return redirect(reverse(index))
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def admin_users(request):

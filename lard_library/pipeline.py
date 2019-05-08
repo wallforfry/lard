@@ -82,7 +82,7 @@ class Pipeline:
 
         for key in blocks:
             block = blocks[key]
-            data_dict = {"id": block.get("name"), "name": block.get("type")}
+            data_dict = {"id": block.get("name"), "name": block.get("type"), "data": block.get("data"), "on_launch": block.get("on_launch"), "data_ready": block.get("data_ready")}
             block_data = {"data_ready": block.get("data_ready"), "on_launch": block.get("on_launch"), "data": block.get("data")}
             node_dict = {"data": data_dict, "block_data": block_data}
             all_nodes.append(node_dict)

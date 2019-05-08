@@ -3,14 +3,14 @@
 {% block content %}
 
     <div class="breadcrumbs">
-        <div class="col-sm-10">
+        <div class="col-sm-8">
             <div class="page-header float-left">
                 <div class="page-title">
                     <h1>{{ name }}</h1>
                 </div>
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <div class="btn-group float-right">
                 <a class="btn btn-dark btn-lg" data-toggle="collapse" href="#collapseExample" role="button"
                    aria-expanded="false" aria-controls="collapseExample">
@@ -20,7 +20,6 @@
             <div class="btn-group float-right">
                 <button id="runButton" type="button" class="btn btn-success btn-lg"><i class="fa fa-play"></i> Run
                 </button>
-
             </div>
         </div>
     </div>
@@ -44,22 +43,6 @@
                             <input type="text" class="form-control" id="name"
                                    placeholder="Name">
                         </div>
-                        {% for b in blocks %}
-                            {% for input in b.inputs.all %}
-                                {% if input.value.value == "image" %}
-                                    <div class="col-md-2">
-                                        <input type="text" class="form-control" id="path"
-                                               placeholder="Path">
-                                    </div>
-                                {% endif %}
-                                {% if input.value.value == "int" %}
-                                    <div class="col-md-2">
-                                        <input type="number" class="form-control" id="size"
-                                               placeholder="Size">
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
                         <div class="col-md-1">
                             <button id="create" class="btn btn-success">Create</button>
                         </div>
@@ -96,7 +79,6 @@
             jQuery.getJSON("{% url 'pipeline_get_cytoscape' name=name %}", function (data) {
                 initCytoscape(data);
             });
-
         });
 
 
@@ -104,7 +86,6 @@
 
     <script>
         let pipeline_inputs_url = "{% url 'pipeline_empty_inputs' name=name %}";
-
         document.addEventListener("DOMContentLoaded", function () {
 
             jQuery("#runButton").click(function () {
@@ -121,6 +102,14 @@
                     });
                 });
             });
+
+            jQuery("#editButton").click(function () {
+                jQuery('#modalDiv').load("edit/test", function (result) {
+                    jQuery("#pipelineModal").modal({show: true});
+
+                });
+            });
+
         });
     </script>
 
