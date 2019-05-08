@@ -2,14 +2,19 @@ body {
     font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
     font-size: 14px;
 }
+/*
+#content {
+    height: 90vh;
+}*/
 
 #cy {
-    position: absolute;
+    height: 500px;
+    /*position: absolute;
     top: 16%;
     bottom: 0;
-    width: 83.8%;
+    width: 83.8%;*/
 }
-
+/*
 @media (max-width: 1024px) {
     #cy {
         position: absolute;
@@ -29,7 +34,7 @@ body {
         bottom: 0;
         width: 100%;
     }
-}
+}*/
 
 
 h1 {
