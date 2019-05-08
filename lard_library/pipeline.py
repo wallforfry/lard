@@ -28,6 +28,7 @@ class Pipeline:
         self.blocks = {}
         self.liaisons = []
         self.logs = []
+        self.outputs = []
 
     def create_block(self, code, block_type=None, name=random_string(128), data={}, inputs={}, outputs={},
                      on_launch=False):
@@ -51,7 +52,7 @@ class Pipeline:
 
                 return result.get("result", {})
 
-        b = TmpBlock(name, inputs, outputs, on_launch=on_launch, block_type=block_type)
+        b = TmpBlock(name, inputs, outputs, on_launch=on_launch, block_type=block_type, pipeline=self)
         b.data = data
         self.blocks[name] = b
         return b
@@ -133,13 +134,7 @@ class Pipeline:
 
 
     def get_outputs(self):
-        results = {}
-        for name in self.blocks:
-            b = self.blocks[name]
-            if len(b._observers) == 0:
-                results[b.name] = b.to_dict()
-
-        return results
+        return self.outputs
 
     def get_empty_inputs(self):
         empty_inputs = []
@@ -178,7 +173,8 @@ class Pipeline:
         return [l.to_dict() for l in self.liaisons]
 
     def launch(self):
-            Block.launch_all([self.blocks[name] for name in self.blocks])
+        result = Block.launch_all([self.blocks[name] for name in self.blocks])
+        return result
 
     def load_json(self, j):
         for block_name in j["blocks"]:

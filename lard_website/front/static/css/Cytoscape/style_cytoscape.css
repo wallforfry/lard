@@ -2,6 +2,15 @@ body {
     font-family: helvetica neue, helvetica, liberation sans, arial, sans-serif;
     font-size: 14px;
 }
+
+.modal-dialog{
+    overflow-y: initial !important
+}
+.modal-body.pipeline-result{
+    height: 87vh;
+    overflow-y: auto;
+}
+
 /*
 #content {
     height: 90vh;

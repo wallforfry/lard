@@ -125,16 +125,17 @@ def pipeline_execute(request, name):
 
     f = p.launch()
     results = p.get_outputs()
-    final = results.popitem()[1]
 
-    try:
-        ret, img = cv2.imencode('.png', final["data_ready"].get("image"))
-        frame_b64 = base64.b64encode(img).decode("utf-8")
-    except Exception as e:
-        frame_b64 = None
-        p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
+    frames_b64 = []
+    for r in results:
+        try:
+            ret, img = cv2.imencode('.png', r["value"])
+            frame_b64 = base64.b64encode(img).decode("utf-8")
+            frames_b64.append({"name": r["name"], "image": frame_b64})
+        except Exception as e:
+            p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
 
-    return render(request, 'pipeline_result_modal.html', context={"name": name, "image": frame_b64, "logs": p.logs})
+    return render(request, 'pipeline_result_modal.html', context={"name": name, "images": frames_b64, "logs": p.logs})
 
 
 @login_required

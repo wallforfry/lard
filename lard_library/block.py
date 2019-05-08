@@ -16,6 +16,8 @@ import networkx as nx
 # Ignore warning matplotlib
 import warnings
 
+from lard_website import settings
+
 warnings.filterwarnings(
     action='ignore', module='matplotlib.figure', category=UserWarning,
     message=('This figure includes Axes that are not compatible with tight_layout, '
@@ -90,7 +92,7 @@ class Block(Subject, Observer):
     g_from = []
     g_to = []
 
-    def __init__(self, name="Block", block_inputs=dict(), block_outputs=dict(), data={}, on_launch=False, block_type=None):
+    def __init__(self, name="Block", block_inputs=dict(), block_outputs=dict(), data={}, on_launch=False, block_type=None, pipeline=None):
         if block_type is None:
             self.type = str(self.__class__.__name__)
         else:
@@ -101,6 +103,7 @@ class Block(Subject, Observer):
         self._data = data
         self.inputs_dict = block_inputs
         self.outputs_dict = block_outputs
+        self.pipeline = pipeline
         self._data_ready = set_dict_to_value(self.inputs_dict, None)
         super().__init__()
         if isinstance(self, Liaison):
@@ -123,7 +126,7 @@ class Block(Subject, Observer):
         if output_name and input_name:
             names.update({"old_name": output_name, "new_name": input_name})
 
-        liaison = Liaison(self.name + " to " + block.name, data=names)
+        liaison = Liaison(self.name + " to " + block.name, data=names, pipeline=self.pipeline)
         self.attach(liaison)
         liaison.attach(block)
 
@@ -158,12 +161,18 @@ class Block(Subject, Observer):
             for m in self.data_ready:
                 if n == m:
                     self.data_ready.update({n: data.get(n)})
-
         if not self.is_ready():
             print(self.name + " Not ready")
         else:
             result = self.treatment(self.data_ready)
             self._data_ready = result
+
+            for o in settings.OUTPUT_BLOCK_OUTPUT_NAME:
+                if o in result:
+                    if result[o] is not None:
+                        self.pipeline.outputs.append({"name": self.name, "value": result[o]})
+                        if self.type in settings.OUTPUT_BLOCK_TYPE:
+                            self._data_ready = set_dict_to_value(self.inputs_dict, None)
             self.subject_outputs = result
 
     @abc.abstractmethod
@@ -317,7 +326,6 @@ class Block(Subject, Observer):
         for b in Block.liaisons:
             if b.data.get("from") in json_blocks and b.data.get("to") in json_blocks:
                 json_liaisons.append(b.data)
-
         return {"blocks": json_blocks, "liaisons": json_liaisons}
 
 def show_images(images, first_name="Source", cv=False):
