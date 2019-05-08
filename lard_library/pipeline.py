@@ -45,8 +45,9 @@ class Pipeline:
                     exec(code, globals())
                     exec("result = main(data)", globals(), result)
                 except Exception as e:
-                    log(e)
-                    log(traceback.format_exc())
+                    exc_type, exc_value, exc_traceback = sys.exc_info()
+                    tb = traceback.format_exception(exc_type, exc_value, exc_traceback)
+                    log("".join(tb[3:]))
 
                 return result.get("result", {})
 
