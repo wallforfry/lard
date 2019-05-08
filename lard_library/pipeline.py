@@ -5,6 +5,8 @@ Author : DELEVACQ Wallerand
 Date : 18/02/19
 """
 import json
+import sys
+import traceback
 
 import cv2
 
@@ -38,8 +40,14 @@ class Pipeline:
                 result.update(data)
                 globals().update({"logs": logs})
                 exec("def log(m): logs.append({'name': \""+name+"\", 'message': m})", globals())
-                exec(code, globals())
-                exec("result = main(data)", globals(), result)
+
+                try:
+                    exec(code, globals())
+                    exec("result = main(data)", globals(), result)
+                except Exception as e:
+                    log(e)
+                    log(traceback.format_exc())
+
                 return result.get("result", {})
 
         b = TmpBlock(name, inputs, outputs, on_launch=on_launch, block_type=block_type)
@@ -169,7 +177,7 @@ class Pipeline:
         return [l.to_dict() for l in self.liaisons]
 
     def launch(self):
-        Block.launch_all([self.blocks[name] for name in self.blocks])
+            Block.launch_all([self.blocks[name] for name in self.blocks])
 
     def load_json(self, j):
         for block_name in j["blocks"]:

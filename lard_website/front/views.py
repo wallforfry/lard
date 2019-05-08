@@ -106,8 +106,12 @@ def pipeline_execute(request, name):
     results = p.get_outputs()
     final = results.popitem()[1]
 
-    ret, img = cv2.imencode('.png', final["data_ready"].get("image"))
-    frame_b64 = base64.b64encode(img).decode("utf-8")
+    try:
+        ret, img = cv2.imencode('.png', final["data_ready"].get("image"))
+        frame_b64 = base64.b64encode(img).decode("utf-8")
+    except Exception as e:
+        frame_b64 = None
+        p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
 
     return render(request, 'pipeline_result_modal.html', context={"name": name, "image": frame_b64, "logs": p.logs})
 
