@@ -191,7 +191,7 @@ function initCytoscape(data) {
     //Permet de delete nodes et edges avec "Suppr"
     document.addEventListener("keydown", function (e) {
         if (e.keyCode === 46) {
-            supp = cy.remove("node:selected");
+            supp = cy.remove(":selected");
             createArray(cy);
         }
 
