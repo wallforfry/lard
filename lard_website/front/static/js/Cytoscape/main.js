@@ -16,6 +16,8 @@ function initCytoscape(data) {
                 style: {
                     "content": "data(name)",
                     "shape": "square",
+                    'color': 'black',
+                    'background-color': '#A9A9A9'
                 }
             },
 
@@ -24,7 +26,9 @@ function initCytoscape(data) {
                 style: {
                     "curve-style": "bezier",
                     "content": "data(name)",
-                    "target-arrow-shape": "triangle"
+                    "target-arrow-shape": "triangle",
+                    'line-color': '#009688',
+                    'target-arrow-color':'#009688'
                 }
             },
 
