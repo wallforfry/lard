@@ -36,6 +36,9 @@
                                                        id="input{{ i.name|title }}" name="inputs_values"/>
                                                 <label class="custom-file-label" for="customFile">Choose file</label>
                                             </div>
+                                        {% else %}
+                                            <input type="text" class="form-control col-6" id="input{{ i.name|title }}"
+                                                   value="{{ i.value }}" name="inputs_values"/>
                                         {% endif %}
                                     </div>
                                 {% endfor %}
