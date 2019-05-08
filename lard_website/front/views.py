@@ -109,7 +109,7 @@ def pipeline_execute(request, name):
     ret, img = cv2.imencode('.png', final["data_ready"].get("image"))
     frame_b64 = base64.b64encode(img).decode("utf-8")
 
-    return render(request,'pipeline_result_modal.html', context={"name": name, "image": frame_b64, "logs": p.logs})
+    return render(request, 'pipeline_result_modal.html', context={"name": name, "image": frame_b64, "logs": p.logs})
 
 @login_required
 def dashboard(request):
