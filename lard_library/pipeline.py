@@ -25,15 +25,20 @@ class Pipeline:
         self.name = name
         self.blocks = {}
         self.liaisons = []
+        self.logs = []
 
     def create_block(self, code, block_type=None, name=random_string(128), data={}, inputs={}, outputs={},
                      on_launch=False):
+
+        logs = self.logs
 
         class TmpBlock(Block):
             def treatment(self, data={}):
                 result = locals()
                 result.update(data)
-                exec(code, globals(), result)
+                globals().update({"logs": logs})
+                exec("def log(m): logs.append({'name': \""+name+"\", 'message': m})", globals())
+                exec(code, globals())
                 exec("result = main(data)", globals(), result)
                 return result.get("result", {})
 

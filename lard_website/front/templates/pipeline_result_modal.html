@@ -17,6 +17,15 @@
                             <img src="data:image/png;base64, {{ image }}" style="width:100%;max-width:500px"/>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <pre>
+                            {% for l in logs %}
+                                {{ l }}
+                            {% endfor %}
+                            </pre>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
