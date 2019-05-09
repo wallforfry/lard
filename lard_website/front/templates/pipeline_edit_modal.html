@@ -16,22 +16,22 @@
                         {% for b in blocks %}
                             {% for a in b.inputs.all %}
                                 {% if b.name == type %}
-                                    {% if a.value.value == "string" %}
-                                        <label class="col-6">{{ a.name }} : </label>
-                                        <input type="text" name="in path" class="form-control col-6" id="image_path"
-                                               placeholder="Path" value={{ data }}>
-                                    {% endif %}
-                                    {% if a.value.value == "int" %}
+
+                                    {% if a.value.value == "int"  or  a.value.value == "float" %}
                                         <label class="col-6">{{ a.name }} : </label>
                                         <input type="number" name="in ksize" class="form-control col-6" id="ksize"
                                                value={{ data }}>
+                                    {% else %}
+                                        <label class="col-6">{{ a.name }} : </label>
+                                        <input type="text" name="in path" class="form-control col-6" id="image_path"
+                                               placeholder="Path" value={{ data }}>
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}
 
                         {% endfor %}
                     </div>
-                <hr>
+                    <hr>
 
                     <div class="row">
                         <label class="col-6">On launch : </label>
