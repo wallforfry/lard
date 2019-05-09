@@ -146,7 +146,13 @@ function initCytoscape(data) {
                         for (var dat in ele.data()["data"]) {
                             donnees = ele.data()["data"][dat];
                         }
-                        jQuery('#modalDiv').load("edit/" + ele.data()["name"] + "/" + ele.id() + "/" + ele.data()["on_launch"] + "/" + donnees, function (result) {
+                        jQuery('#modalDiv').load("edit/" + ele.data()["type"] + "/" + ele.id() + "/" + ele.data()["on_launch"] + "/" + donnees, function (result) {
+                            jQuery("#pipelineModal").modal({show: true});
+
+                        });
+                    }
+                    if (ele.isEdge()) {
+                        jQuery('#modalDiv').load("editEdge/" + cy.filter('[id = "' + ele.data()["source"] + '"]').data()["type"] + "/" + cy.filter('[id = "' + ele.data()["target"] + '"]').data()["type"] + "/" +  ele.id(), function (result) {
                             jQuery("#pipelineModal").modal({show: true});
 
                         });
@@ -187,8 +193,9 @@ function initCytoscape(data) {
         cy.add({
             group: "nodes",
             data: {
-                "name": type,
+                "name": nom,
                 "id": nom,
+                "type":type,
                 "data": {},
                 "on_launch": false
             },
@@ -245,6 +252,13 @@ function edit(cy, param) {
     dataNode["data"] = param[1];
     dataNode["on_launch"] = param[2];
     dataNode["data_ready"] = {};
+    createArray(cy);
+}
+
+function editEdge(cy, param) {
+    var dataNode = cy.$('#' + param[0]).data();
+    dataNode["old_name"] = param[1];
+    dataNode["new_name"] = param[2];
     createArray(cy);
 }
 

@@ -1,0 +1,93 @@
+<!-- Modal -->
+<div class="modal fade" id="pipelineModal" tabindex="-1" role="dialog"
+     aria-labelledby="runPipelineModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="runPipelineModalLabel">Edit EDGE : {{ type }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    Source
+                                </div>
+                                <div class="card-body">
+                                    {% for t in source %}
+                                        {% for r in t.outputs.all %}
+                                            <div class="row">
+                                                <input type="checkbox" class="form-control col-3" id="{{ r.name }}"
+                                                       name="in"
+                                                       style="height: 20px">
+                                                <h1>{{ r }}</h1>
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    Target
+                                </div>
+                                <div class="card-body">
+                                    {% for t in target %}
+                                        {% for r in t.inputs.all %}
+                                            <div class="row">
+                                                <input type="checkbox" class="form-control col-3" id="{{ r.name }}"
+                                                       name="out"
+                                                       style="height: 20px">
+                                                <h1>{{ r }}</h1>
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <button id="validerButton" type="button" class="btn btn-success" data-dismiss="modal"><i
+                        class="fa fa-check"></i> Valider
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery("#validerButton").click(function () {
+        var inputs = "";
+        var outputs = "";
+        jQuery("input[name^='in']").each(function () {
+            if (document.getElementById(jQuery(this).attr('id')).checked) {
+                inputs = jQuery(this).attr('id');
+            }
+
+
+        });
+        jQuery("input[name^='out']").each(function () {
+            if (document.getElementById(jQuery(this).attr('id')).checked) {
+                outputs = jQuery(this).attr('id');
+            }
+
+
+        });
+
+
+        editEdge(cy, ["{{ id }}", inputs, outputs]);
+    });
+
+</script>

@@ -70,6 +70,17 @@ def pipeline_edit_inputs(request, type, id, launch, data):
 
     return render(request, "pipeline_edit_modal.html", context=context)
 
+@login_required
+def pipeline_edit_edge_inputs(request, source, target, id):
+    context = {
+        "blocks": Block.objects.all(),
+        "source": Block.objects.all().filter(name=source),
+        "target": Block.objects.all().filter(name=target),
+        "id":id
+    }
+
+    return render(request, "pipeline_edit_edge_modal.html", context=context)
+
 
 @login_required
 def pipeline_edit(request, name):
