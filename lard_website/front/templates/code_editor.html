@@ -16,6 +16,9 @@
                             {% if not perms.front.delete_block %}disabled{% endif %} data-toggle="modal"
                             data-target="#deleteBlockModal">Supprimer
                     </button>
+                    <a href="{% url 'export_block' name=file_name %}"><button type="button" class="btn btn-primary"
+                            {% if not perms.front.view_block %}disabled{% endif %}>Exporter
+                    </button></a>
                     <button type="submit" class="btn btn-success"
                             {% if not perms.front.change_block %}disabled{% endif %}>Save
                     </button>

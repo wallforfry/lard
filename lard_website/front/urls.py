@@ -28,7 +28,10 @@ urlpatterns = [
     path('pipelines/<str:name>/edit', views.pipeline_edit, name="pipeline_edit"),
     path('blocks/', views.list_blocks, name="list_blocks"),
     path('blocks/add', views.add_block, name="add_block"),
+    path('blocks/import', views.import_block, name="import_block"),
     path('blocks/<str:name>/edit', views.edit_block, name="edit_block"),
     path('blocks/<str:name>/save', views.save_block, name="save_block"),
-    path('blocks/<str:name>/delete', views.delete_block, name="delete_block")
+    path('blocks/<str:name>/delete', views.delete_block, name="delete_block"),
+    path('blocks/<str:name>/export', views.export_block, name="export_block"),
+
 ]

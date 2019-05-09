@@ -20,8 +20,13 @@
                         <div class="card-header">
                             <strong class="card-title">Blocks</strong>
                             <div class="btn-group float-right">
-                                {% if perms.front.add_block %}
+                                {% if perms.front.add_block and perms.front.change_block%}
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#importBlockModal">Importer
+                                    </button>
+                                {% endif %}
+                                {% if perms.front.add_block %}
+                                    <button type="button" class="btn btn-success" data-toggle="modal"
                                             data-target="#addBlockModal">Créer un block
                                     </button>
                                 {% endif %}
@@ -92,5 +97,9 @@
                 </div>
             </div>
         </div>
+    {% endif %}
+
+    {% if perms.front.add_block and perms.front.change_block %}
+        {% include 'block_import_modal.html' %}
     {% endif %}
 {% endblock %}

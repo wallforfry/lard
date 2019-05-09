@@ -2,15 +2,18 @@ import base64
 import json
 
 import cv2
+import django
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.db.models import Q
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from django.urls import reverse
 import requests
+from django.utils.datastructures import MultiValueDictKeyError
+
 from lard_library.pipeline import Pipeline as LibPipeline
 from front import utils
 from front.backend import EmailOrUsernameModelBackend
@@ -219,6 +222,52 @@ def save_block(request, name):
         block.save()
         return redirect('edit_block', name=name)
 
+@login_required
+def import_block(request):
+    if request.method == 'POST':
+        if "data" not in request.FILES:
+            return HttpResponseBadRequest()
+        if request.FILES['data']:
+            data = json.loads(request.FILES['data'].read())
+            block_name = data["name"]
+            try:
+                block = Block.objects.get(name=block_name)
+            except Block.DoesNotExist:
+                block = Block.objects.create(name=data["name"], description=data["description"], code=data["code"])
+
+            for i in block.inputs.all():
+                i.delete()
+
+            for i in data["inputs"]:
+                new_value = InputOutputType.objects.get(value=i["value"])
+                new_input = InputOutput.objects.create(name=i["name"], value=new_value)
+                block.inputs.add(new_input)
+
+            for i in block.outputs.all():
+                i.delete()
+
+            for i in data["outputs"]:
+                new_value = InputOutputType.objects.get(value=i["value"])
+                new_output = InputOutput.objects.create(name=i["name"], value=new_value)
+                block.outputs.add(new_output)
+
+            return redirect('edit_block', name=block_name)
+        else:
+            return HttpResponseBadRequest()
+    else:
+        return render(request, 'block_import_modal.html')
+
+
+@login_required
+def export_block(request, name):
+    try:
+        block = Block.objects.get(name=name)
+    except Block.DoesNotExist as e:
+        return django.http.HttpResponseNotFound()
+
+    response = JsonResponse(block.as_json(), content_type="application/json")
+    response['Content-Disposition'] = 'attachment; filename=' + name.lower() + '.json'
+    return response
 
 @login_required
 def list_blocks(request):
