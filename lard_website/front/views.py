@@ -151,6 +151,17 @@ def pipeline_execute(request, name):
         except Exception as e:
             p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
 
+    p_model = Pipeline.objects.get(name=name)
+    pipeline_raw = json.loads(p_model.json_value)
+    for bl in pipeline_raw["blocks"].items():
+        b = bl[1]
+        for i in b["inputs"].items():
+            if i[1] == "image":
+                b["data"][i[0]] = None
+
+    p_model.json_value = json.dumps(pipeline_raw)
+    p_model.save()
+
     return render(request, 'pipeline_result_modal.html', context={"name": name, "images": frames_b64, "logs": p.logs})
 
 
