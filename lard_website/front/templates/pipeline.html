@@ -93,12 +93,33 @@
                     jQuery("#pipelineModal").modal({show: true});
 
                     jQuery("#loadResultButton").click(function () {
-                        jQuery.post("{% url 'pipeline_execute' name=name %}", jQuery("#loadResultForm").serialize(), function (data) {
+                        var form = jQuery("#loadResultForm");
+                        console.log(form);
+                        var data = new FormData(form[0]);
+                        /*for(var pair of data.entries()) {
+                             console.log(pair[0]+', '+pair[1]);
+                        }*/
+                        jQuery.ajax({
+                            url: "{% url 'pipeline_execute' name=name %}",
+                            data: data,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            method: 'POST',
+                            enctype: 'multipart/form-data',
+                            type: 'POST', // For jQuery < 1.9
+                            success: function (data) {
                                 jQuery('#resultModalDiv').html(data);
                                 jQuery("#pipelineModal").modal('hide');
                                 jQuery('#pipelineResultModal').modal({show: true});
                             }
-                        );
+                        });
+                        /*jQuery.post("{% url 'pipeline_execute' name=name %}", jQuery("#loadResultForm").serialize(), function (data) {
+                                jQuery('#resultModalDiv').html(data);
+                                jQuery("#pipelineModal").modal('hide');
+                                jQuery('#pipelineResultModal').modal({show: true});
+                            }
+                        );*/
                     });
                 });
             });

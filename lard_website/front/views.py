@@ -1,5 +1,6 @@
 import base64
 import json
+import numpy as np
 
 import cv2
 import django
@@ -7,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
+from django.core.files import File
 from django.db import IntegrityError
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
@@ -22,7 +24,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from front.models import Pipeline, Block, InputOutputType, InputOutput
 from lard_website import settings
-
+from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def index(request):
@@ -103,11 +105,23 @@ def pipeline_empty_inputs(request, name):
 
 
 @login_required
+@csrf_exempt
 def pipeline_execute(request, name):
+
     blocks_names = request.POST.getlist("blocks_names")
     inputs_names = request.POST.getlist("inputs_names")
     inputs_values = request.POST.getlist("inputs_values")
     inputs_types = request.POST.getlist("inputs_types")
+    files = request.FILES.getlist("inputs_values")
+
+
+    file_cptr = 0
+    inputs_cptr = 0
+    for i in inputs_types:
+        if i == "image":
+            inputs_values.insert(inputs_cptr, cv2.imdecode(np.fromstring(files[file_cptr].read(), dtype=np.uint8), 1).tolist())
+            file_cptr += 1
+        inputs_cptr += 1
 
     p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
@@ -119,7 +133,6 @@ def pipeline_execute(request, name):
             d = int(v)
 
         j.get("blocks").get(b).get("data")[n] = d
-
     p.json_value = json.dumps(j)
     p.save()
 
