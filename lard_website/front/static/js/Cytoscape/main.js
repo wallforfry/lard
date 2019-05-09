@@ -16,10 +16,16 @@ function initCytoscape(data) {
                 style: {
                     "content": "data(name)",
                     "shape": "square",
-                    'color': 'black',
-                    'background-color': '#A9A9A9'
+                    'color': 'black'
                 }
             },
+            {
+                selector: 'node:selected',
+                style: {
+                    'background-color': '#2E86C1',
+                }
+            },
+
 
             {
                 selector: "edge",
@@ -28,7 +34,14 @@ function initCytoscape(data) {
                     "content": "data(name)",
                     "target-arrow-shape": "triangle",
                     'line-color': '#009688',
-                    'target-arrow-color':'#009688'
+                    'target-arrow-color': '#009688'
+
+                }
+            },
+            {
+                selector: 'edge:selected',
+                style: {
+                    'line-color': '#2E86C1'
                 }
             },
 
