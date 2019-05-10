@@ -40,7 +40,7 @@ class Pipeline:
                 result = locals()
                 result.update(data)
                 globals().update({"logs": logs})
-                exec("def log(m): logs.append({'name': \""+name+"\", 'message': m})", globals())
+                exec("def log(m): logs.append({'name': \"" + name + "\", 'message': m})", globals())
 
                 try:
                     exec(code, globals())
@@ -71,7 +71,7 @@ class Pipeline:
         json_blocks = {self.blocks[name].name: self.blocks[name].to_dict() for name in self.blocks}
         json_liaisons = []
         for b in self.liaisons:
-            #print(b)
+            # print(b)
             if b.data.get("from") in json_blocks and b.data.get("to") in json_blocks:
                 json_liaisons.append(b.data)
         return {"blocks": json_blocks, "liaisons": json_liaisons}
@@ -83,8 +83,10 @@ class Pipeline:
 
         for key in blocks:
             block = blocks[key]
-            data_dict = {"id": block.get("name"), "name": block.get("type"), "data": block.get("data"), "on_launch": block.get("on_launch"), "data_ready": block.get("data_ready")}
-            block_data = {"data_ready": block.get("data_ready"), "on_launch": block.get("on_launch"), "data": block.get("data")}
+            data_dict = {"id": block.get("name"), "name": block.get("type"), "data": block.get("data"),
+                         "on_launch": block.get("on_launch"), "data_ready": block.get("data_ready")}
+            block_data = {"data_ready": block.get("data_ready"), "on_launch": block.get("on_launch"),
+                          "data": block.get("data")}
             node_dict = {"data": data_dict, "block_data": block_data}
             all_nodes.append(node_dict)
 
@@ -94,7 +96,7 @@ class Pipeline:
             edge_dict = {"data": data_dict}
             all_edges.append(edge_dict)
 
-        cytoJSON = {"nodes": all_nodes, "edges": all_edges}
+            cytoJSON = {"nodes": all_nodes, "edges": all_edges}
 
         return cytoJSON
 
@@ -131,7 +133,6 @@ class Pipeline:
             liaisons.append(liaison)
 
         return {"blocks": blocks, "liaisons": liaisons}
-
 
     def get_outputs(self):
         return self.outputs
