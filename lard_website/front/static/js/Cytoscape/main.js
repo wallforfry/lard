@@ -146,12 +146,12 @@ function initCytoscape(data) {
                         for (var dat in ele.data()["data"]) {
                             donnees = ele.data()["data"][dat];
                         }
-                        jQuery('#modalDiv').load("/pipelines/" + "UploadPipe" + "/edit/block/" + ele.data()["name"] + "/" + ele.id(), function (result) {
+                        jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/block/" + ele.data()["name"] + "/" + ele.id(), function (result) {
                             jQuery("#pipelineModal").modal({show: true});
                         });
                     }
                     if (ele.isEdge()) {
-                        jQuery('#modalDiv').load("editEdge/" + cy.filter('[id = "' + ele.data()["source"] + '"]').data()["type"] + "/" + cy.filter('[id = "' + ele.data()["target"] + '"]').data()["type"] + "/" +  ele.id(), function (result) {
+                        jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/edge/" + cy.filter('[id = "' + ele.data()["source"] + '"]').data()["type"] + "/" + cy.filter('[id = "' + ele.data()["target"] + '"]').data()["type"], function (result) {
                             jQuery("#pipelineModal").modal({show: true});
 
                         });
@@ -194,7 +194,7 @@ function initCytoscape(data) {
             data: {
                 "name": nom,
                 "id": nom,
-                "type":type,
+                "type": type,
                 "data": {},
                 "on_launch": false
             },
@@ -271,14 +271,18 @@ function createArray(cy) {
         var dict_data_edge = {};
 
         if (elem.isNode()) {
+
             if (elem.data().id.length <= 20) {
+
                 dict_data["data"] = elem.data();
+
                 dict_data["block_data"] = {
                     "data": elem.data()["data"],
                     "data_ready": {},
                     "on_launch": elem.data()["on_launch"]
                 };
                 array_nodes.push(dict_data);
+
             }
         }
         if (elem.isEdge()) {
