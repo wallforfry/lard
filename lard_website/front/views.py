@@ -77,12 +77,14 @@ def pipeline_edit_inputs(request, name, block_name, block_id):
     return render(request, "pipeline_edit_modal.html", context=context)
 
 @login_required
-def pipeline_edit_edge_inputs(request, source, target, id):
+def pipeline_edit_edge_inputs(request, name, edge_id, edge_source, edge_target, edge_old_name, edge_new_name):
+    p = Pipeline.objects.get(name=name)
+    data = json.loads(p.json_value)
+
+    edge = data.get("liaisons").get(edge_source)
     context = {
-        "blocks": Block.objects.all(),
-        "source": Block.objects.all().filter(name=source),
-        "target": Block.objects.all().filter(name=target),
-        "id":id
+        "edge_id": edge_id,
+        "edge": edge,
     }
 
     return render(request, "pipeline_edit_edge_modal.html", context=context)
