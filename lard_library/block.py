@@ -156,7 +156,6 @@ class Block(Subject, Observer):
             for m in self.data_ready:
                 if n == m:
                     self.data_ready.update({n: self.data.get(n)})
-
         for n in data:
             for m in self.data_ready:
                 if n == m:

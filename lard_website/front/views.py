@@ -133,9 +133,9 @@ def pipeline_execute(request, name):
     inputs_cptr = 0
     for i in inputs_types:
         if i == "image":
-            img = None
-            if file_cptr in files:
-                img = cv2.imdecode(np.fromstring(files[file_cptr].read(), dtype=np.uint8), 1).tolist()
+            #img = None
+            #if file_cptr in files:
+            img = cv2.imdecode(np.fromstring(files[file_cptr].read(), dtype=np.uint8), 1).tolist()
             inputs_values.insert(inputs_cptr, img)
             file_cptr += 1
         inputs_cptr += 1

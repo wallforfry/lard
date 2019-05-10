@@ -29,6 +29,7 @@ class Pipeline:
         self.liaisons = []
         self.logs = []
         self.outputs = []
+        self.is_running = False
 
     def create_block(self, code, block_type=None, name=random_string(128), data={}, inputs={}, outputs={},
                      on_launch=False):
@@ -44,7 +45,8 @@ class Pipeline:
 
                 try:
                     exec(code, globals())
-                    exec("result = main(data)", globals(), result)
+                    if self.pipeline.is_running:
+                        exec("result = main(data)", globals(), result)
                 except Exception as e:
                     exc_type, exc_value, exc_traceback = sys.exc_info()
                     tb = traceback.format_exception(exc_type, exc_value, exc_traceback)
@@ -185,6 +187,7 @@ class Pipeline:
         return [l.to_dict() for l in self.liaisons]
 
     def launch(self):
+        self.is_running = True
         result = Block.launch_all([self.blocks[name] for name in self.blocks])
         return result
 
