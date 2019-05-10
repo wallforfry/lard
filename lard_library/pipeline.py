@@ -83,20 +83,30 @@ class Pipeline:
 
         for key in blocks:
             block = blocks[key]
-            data_dict = {"id": block.get("name"), "name": block.get("type"), "data": block.get("data"),
-                         "on_launch": block.get("on_launch"), "data_ready": block.get("data_ready")}
-            block_data = {"data_ready": block.get("data_ready"), "on_launch": block.get("on_launch"),
-                          "data": block.get("data")}
+            data_dict = {"id": block.get("name"), "name": block.get("name"), "type": block.get("type")}
+            block_data = {"data_ready": block.get("data_ready"), "on_launch": block.get("on_launch"), "data": block.get("data")}
             node_dict = {"data": data_dict, "block_data": block_data}
             all_nodes.append(node_dict)
 
         liaisons = self.get_json().get("liaisons")
         for liaison in liaisons:
-            data_dict = {"source": liaison.get("from"), "target": liaison.get("to")}
-            edge_dict = {"data": data_dict}
-            all_edges.append(edge_dict)
+            if "old_name" in liaison and "new_name" in liaison:
+                data_dict = {"source": liaison.get("from"), "target": liaison.get("to"),
+                             "old_name": liaison.get("old_name"), "new_name": liaison.get("new_name")}
+                edge_dict = {"data": data_dict}
+                all_edges.append(edge_dict)
+            else:
+                source_outputs = blocks.get(liaison.get("from")).get("outputs")
+                target_inputs = blocks.get(liaison.get("to")).get("inputs")
 
-            cytoJSON = {"nodes": all_nodes, "edges": all_edges}
+                for output_name in source_outputs:
+                    if output_name in target_inputs and source_outputs.get(output_name) == target_inputs.get(output_name):
+                        data_dict = {"source": liaison.get("from"), "target": liaison.get("to"),
+                                     "old_name": output_name, "new_name": output_name}
+                        edge_dict = {"data": data_dict}
+                        all_edges.append(edge_dict)
+
+        cytoJSON = {"nodes": all_nodes, "edges": all_edges}
 
         return cytoJSON
 
@@ -133,6 +143,7 @@ class Pipeline:
             liaisons.append(liaison)
 
         return {"blocks": blocks, "liaisons": liaisons}
+
 
     def get_outputs(self):
         return self.outputs
