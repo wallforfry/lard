@@ -105,6 +105,15 @@ def pipeline_edit(request, name):
     return HttpResponse("ERROR")
     # return render(request, 'pipeline.html', context=context)
 
+@login_required
+def pipeline_delete(request, name):
+    if request.method == 'POST':
+        try:
+            p = Pipeline.objects.get(name=name, owner=request.user)
+            p.delete()
+        except Pipeline.DoesNotExist:
+            return HttpResponseBadRequest()
+    return redirect(reverse(list_piplines))
 
 @login_required
 def pipeline_empty_inputs(request, name):

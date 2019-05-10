@@ -16,10 +16,11 @@
                    aria-expanded="false" aria-controls="collapseExample">
                     <i class="fa fa-caret-down"></i> Add
                 </a>
-            </div>
-            <div class="btn-group float-right">
                 <button id="runButton" type="button" class="btn btn-success btn-lg"><i class="fa fa-play"></i> Run
                 </button>
+                <button type="button" class="btn btn-danger btn-lg" data-toggle="modal"
+                                        data-target="#deletePipelineModal">Supprimer
+                                </button>
             </div>
         </div>
     </div>
@@ -61,6 +62,31 @@
     <div id="modalDiv"></div>
     <div id="resultModalDiv"></div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="deletePipelineModal" tabindex="-1" role="dialog"
+         aria-labelledby="deletePipelineModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deletePipelineModalLabel">Supprimer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Êtes vous sûr de vouloir supprimer ce pipeline ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <form action="{% url 'pipeline_delete' name=name %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block script %}
