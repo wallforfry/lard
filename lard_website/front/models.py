@@ -47,3 +47,10 @@ class Block(models.Model):
         inputs = [i.as_json() for i in self.inputs.all()]
         outputs = [o.as_json() for o in self.outputs.all()]
         return dict(name=self.name, description=self.description, code=self.code, inputs=inputs, outputs=outputs)
+
+class PipelineResult(models.Model):
+    pipeline = models.ForeignKey(Pipeline, on_delete=models.SET_NULL, null=True, default=None)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=False, null=True)
+    images = models.TextField()
+    logs = models.TextField()
+    created_at = models.DateTimeField(auto_now=True)

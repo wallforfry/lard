@@ -22,7 +22,7 @@ from front.backend import EmailOrUsernameModelBackend
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from front.models import Pipeline, Block, InputOutputType, InputOutput
+from front.models import Pipeline, Block, InputOutputType, InputOutput, PipelineResult
 from lard_website import settings
 from django.views.decorators.csrf import csrf_exempt
 
@@ -178,9 +178,20 @@ def pipeline_execute(request, name):
 
     p_model.json_value = json.dumps(pipeline_raw)
     p_model.save()
-
+    PipelineResult.objects.create(user=request.user, pipeline=p_model, images=frames_b64, logs=p.logs)
     return render(request, 'pipeline_result_modal.html', context={"name": name, "images": frames_b64, "logs": p.logs})
 
+def pipeline_results_list(request):
+    return render(request, "pipelines_results_list.html",
+                  context={"results": PipelineResult.objects.filter(user=request.user).order_by("-created_at")})
+
+def pipeline_results(request, id):
+    r = PipelineResult.objects.get(id=id)
+    images = json.loads(r.images.replace("'", "\""))
+    logs = json.loads(r.logs.replace("'", "\""))
+
+    return render(request, "pipeline_results.html",
+                  context={"result": r, "images": images, "logs": logs})
 
 @login_required
 def dashboard(request):

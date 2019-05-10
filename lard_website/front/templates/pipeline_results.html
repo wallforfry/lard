@@ -1,0 +1,59 @@
+{% extends 'gabarit.html' %}
+{% load static %}
+{% block script %}
+    {{ block.super }}
+
+    <script src="{% static 'js/init-scripts/data-table/datatables-init.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'vendors/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="content mt-3">
+        <div class="animated fadeIn">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Pipelines Results</strong>
+                            : {{ result.pipeline }}
+                            <div class="btn-group float-right">
+                                {{ result.created_at }}
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="col col-8">
+                                <h6>Images :</h6>
+                                {% for i in images %}
+                                    <b>{{ i.name }} :</b>
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <img src="data:image/png;base64, {{ i.image }}"
+                                                 style="width:100%;max-width:500px"/>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="col col-4">
+                                <h6>Logs :</h6>
+                                <div class="col-12" style="background-color: #0d152a">
+                                    <code>
+                                        {% for l in logs %}
+                                            <span style="white-space: pre-line"><b>{{ l.name }}</b> : <span
+                                                    class="text-white">{{ l.message }}</span></span><br/>
+                                        {% endfor %}
+                                    </code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+{% endblock %}

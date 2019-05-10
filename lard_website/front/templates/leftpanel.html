@@ -33,6 +33,9 @@
                         {% endfor %}
                     </ul>
                 </li>
+                <li class="{% if request.resolver_match.view_name == "pipelines_results_list" %}active{% endif %}">
+                    <a href="{% url 'pipelines_results_list' %}"> <i class="menu-icon fa fa-edit"></i>Resultats</a>
+                </li>
 
                 <h3 class="menu-title">Store</h3><!-- /.menu-title -->
 
