@@ -12,7 +12,7 @@ from django.core.files import File
 from django.db import IntegrityError
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 import requests
 from django.utils.datastructures import MultiValueDictKeyError
 
@@ -25,6 +25,7 @@ from django.shortcuts import render, redirect
 from front.models import Pipeline, Block, InputOutputType, InputOutput, PipelineResult
 from lard_website import settings
 from django.views.decorators.csrf import csrf_exempt
+
 
 @login_required
 def index(request):
@@ -76,6 +77,7 @@ def pipeline_edit_inputs(request, name, block_name, block_id):
 
     return render(request, "pipeline_edit_modal.html", context=context)
 
+
 @login_required
 def pipeline_edit_edge_inputs(request, name, edge_id, edge_source, edge_target, edge_old_name, edge_new_name):
     p = Pipeline.objects.get(name=name)
@@ -121,20 +123,18 @@ def pipeline_empty_inputs(request, name):
 @login_required
 @csrf_exempt
 def pipeline_execute(request, name):
-
     blocks_names = request.POST.getlist("blocks_names")
     inputs_names = request.POST.getlist("inputs_names")
     inputs_values = request.POST.getlist("inputs_values")
     inputs_types = request.POST.getlist("inputs_types")
     files = request.FILES.getlist("inputs_values")
 
-
     file_cptr = 0
     inputs_cptr = 0
     for i in inputs_types:
         if i == "image":
-            #img = None
-            #if file_cptr in files:
+            # img = None
+            # if file_cptr in files:
             img = cv2.imdecode(np.fromstring(files[file_cptr].read(), dtype=np.uint8), 1).tolist()
             inputs_values.insert(inputs_cptr, img)
             file_cptr += 1
@@ -181,10 +181,14 @@ def pipeline_execute(request, name):
     PipelineResult.objects.create(user=request.user, pipeline=p_model, images=frames_b64, logs=p.logs)
     return render(request, 'pipeline_result_modal.html', context={"name": name, "images": frames_b64, "logs": p.logs})
 
+
+@login_required
 def pipeline_results_list(request):
     return render(request, "pipelines_results_list.html",
                   context={"results": PipelineResult.objects.filter(user=request.user).order_by("-created_at")})
 
+
+@login_required
 def pipeline_results(request, id):
     r = PipelineResult.objects.get(id=id)
     images = json.loads(r.images.replace("'", "\""))
@@ -192,6 +196,19 @@ def pipeline_results(request, id):
 
     return render(request, "pipeline_results.html",
                   context={"result": r, "images": images, "logs": logs})
+
+@login_required
+def pipeline_result_delete(request, id):
+    if request.POST:
+        try:
+            result = PipelineResult.objects.get(id=id, user=request.user)
+            result.delete()
+            return redirect(reverse(pipeline_results_list))
+        except PipelineResult.DoesNotExist as e:
+            return HttpResponseBadRequest()
+    else:
+        return redirect(reverse(pipeline_results_list))
+
 
 @login_required
 def dashboard(request):
@@ -274,6 +291,7 @@ def save_block(request, name):
         block.save()
         return redirect('edit_block', name=name)
 
+
 @login_required
 def import_block(request):
     if request.method == 'POST':
@@ -320,6 +338,7 @@ def export_block(request, name):
     response = JsonResponse(block.as_json(), content_type="application/json")
     response['Content-Disposition'] = 'attachment; filename=' + name.lower() + '.json'
     return response
+
 
 @login_required
 def list_blocks(request):
