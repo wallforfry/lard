@@ -2,20 +2,21 @@
 {% load static %}
 
 {% block content %}
-    <div class="col-xl-3 col-lg-6">
-        <div class="card">
-            <div class="card-body">
-                <div class="stat-widget-one">
-                    <div class="stat-icon dib"><i class="ti-rocket text-success border-success"></i></div>
-                    <div class="stat-content dib">
-                        <div class="stat-text">Pipelines</div>
-                        <div class="stat-digit">{{ total_pipelines }}</div>
+    <a href="{% url 'list_pipelines' %}">
+        <div class="col-xl-3 col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="stat-widget-one">
+                        <div class="stat-icon dib"><i class="ti-rocket text-success border-success"></i></div>
+                        <div class="stat-content dib">
+                            <div class="stat-text">Pipelines</div>
+                            <div class="stat-digit">{{ total_pipelines }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    </a>
 
     <div class="col-xl-3 col-lg-6">
         <a href="{% url 'list_blocks' %}">
@@ -34,19 +35,36 @@
     </div>
 
     <div class="col-xl-3 col-lg-6">
-        <div class="card">
-            <div class="card-body">
-                <div class="stat-widget-one">
-                    <div class="stat-icon dib"><i class="ti-user text-warning border-warning"></i></div>
-                    <div class="stat-content dib">
-                        <div class="stat-text">Users</div>
-                        <div class="stat-digit">{{ total_users }}</div>
+        <a href="{% url 'admin_users' %}">
+            <div class="card">
+                <div class="card-body">
+                    <div class="stat-widget-one">
+                        <div class="stat-icon dib"><i class="ti-user text-warning border-warning"></i></div>
+                        <div class="stat-content dib">
+                            <div class="stat-text">Users</div>
+                            <div class="stat-digit">{{ total_users }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
+    <div class="col-xl-3 col-lg-6">
+        <a href="{% url 'pipelines_results_list' %}">
+            <div class="card">
+                <div class="card-body">
+                    <div class="stat-widget-one">
+                        <div class="stat-icon dib"><i class="ti-save text-danger border-danger"></i></div>
+                        <div class="stat-content dib">
+                            <div class="stat-text">Results</div>
+                            <div class="stat-digit">{{ total_results }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
 {% endblock %}
 
 {% block script %}

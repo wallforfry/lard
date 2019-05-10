@@ -214,7 +214,7 @@ def pipeline_result_delete(request, id):
 def dashboard(request):
     return render(request, "dashboard.html", context={"page": "Dashboard", "total_users": User.objects.count(),
                                                       "total_pipelines": Pipeline.objects.count(),
-                                                      "total_blocks": Block.objects.count()})
+                                                      "total_blocks": Block.objects.count(), "total_results": PipelineResult.objects.count()})
 
 
 @login_required
