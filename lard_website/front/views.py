@@ -64,13 +64,14 @@ def pipeline(request, name):
 
 
 @login_required
-def pipeline_edit_inputs(request, type, id, launch, data):
+def pipeline_edit_inputs(request, name, block_name, block_id):
+    p = Pipeline.objects.get(name=name)
+    data = json.loads(p.json_value)
+
+    block = data.get("blocks").get(block_name)
     context = {
-        "type": type,
-        "id": id,
-        "blocks": Block.objects.all(),
-        "launch": launch,
-        "data": data
+        "block_id": block_id,
+        "block": block,
     }
 
     return render(request, "pipeline_edit_modal.html", context=context)

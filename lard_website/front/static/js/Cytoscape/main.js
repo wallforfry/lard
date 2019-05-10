@@ -146,9 +146,8 @@ function initCytoscape(data) {
                         for (var dat in ele.data()["data"]) {
                             donnees = ele.data()["data"][dat];
                         }
-                        jQuery('#modalDiv').load("edit/" + ele.data()["type"] + "/" + ele.id() + "/" + ele.data()["on_launch"] + "/" + donnees, function (result) {
+                        jQuery('#modalDiv').load("/pipelines/" + "UploadPipe" + "/edit/block/" + ele.data()["name"] + "/" + ele.id(), function (result) {
                             jQuery("#pipelineModal").modal({show: true});
-
                         });
                     }
                     if (ele.isEdge()) {
