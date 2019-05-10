@@ -151,7 +151,16 @@ function initCytoscape(data) {
                         });
                     }
                     if (ele.isEdge()) {
-                        jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/edge/" + cy.filter('[id = "' + ele.data()["source"] + '"]').data()["type"] + "/" + cy.filter('[id = "' + ele.data()["target"] + '"]').data()["type"], function (result) {
+                        var old_name = "";
+                        if (ele.data()["old_name"] !== "undefined") {
+                            old_name = ele.data()["old_name"];
+                        }
+                        var new_name = "";
+                        if (ele.data()["new_name"] !== "undefined") {
+                            new_name = ele.data()["new_name"];
+                        }
+                        jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/edge/" + cy.filter('[id = "' + ele.data()["source"] + '"]').data()["name"]
+                            + "/" + cy.filter('[id = "' + ele.data()["target"] + '"]').data()["name"] + "/" + ele.id() + "/" + old_name + "/" + new_name, function (result) {
                             jQuery("#pipelineModal").modal({show: true});
 
                         });

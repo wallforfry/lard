@@ -77,14 +77,30 @@ def pipeline_edit_inputs(request, name, block_name, block_id):
     return render(request, "pipeline_edit_modal.html", context=context)
 
 @login_required
-def pipeline_edit_edge_inputs(request, name, edge_id, edge_source, edge_target, edge_old_name, edge_new_name):
+def pipeline_edit_edge_inputs(request, name, edge_source, edge_target, edge_id, old_name, new_name):
     p = Pipeline.objects.get(name=name)
     data = json.loads(p.json_value)
 
-    edge = data.get("liaisons").get(edge_source)
+    edge_from = ""
+    edge_to =""
+    for i in data.get("liaisons"):
+        if i.get("from") == edge_source:
+            edge_from = i.get("from")
+
+    for i in data.get("liaisons"):
+        if i.get("to") == edge_target:
+            edge_to = i.get("to")
+
+    block_from = data.get("blocks").get(edge_from)
+    block_to = data.get("blocks").get(edge_to)
     context = {
         "edge_id": edge_id,
-        "edge": edge,
+        "block_from": block_from,
+        "block_to": block_to,
+        "input_block_from": Block.objects.get(name=block_from.get("type")),
+        "input_block_to": Block.objects.get(name=block_to.get("type")),
+        "old_name": old_name,
+        "new_name": new_name
     }
 
     return render(request, "pipeline_edit_edge_modal.html", context=context)
