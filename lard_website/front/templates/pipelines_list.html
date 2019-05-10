@@ -32,6 +32,7 @@
                                 <thead>
                                 <tr>
                                     <th>Nom</th>
+                                    <th>Description</th>
                                     <th>Owner</th>
                                     <th class="text-center">Public</th>
                                 </tr>
@@ -40,6 +41,7 @@
                                 {% for b in pipelines_list %}
                                     <tr>
                                         <td><a href="{% url 'pipeline' name=b.name %}">{{ b.name }}</a></td>
+                                        <td>{{ b.description }}</td>
                                         <td>{{ b.owner }}</td>
                                         <td class="text-center">{% if b.is_public %}<span class="fa fa-check-square-o"></span>{% else %}<span class="fa fa-square-o"></span>{% endif %}</td>
                                     </tr>
@@ -67,26 +69,29 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <!--<form id="addBlockForm" method="post" action="{% url 'add_block' %}">
+                    <form id="addPipelineForm" method="post" action="{% url 'pipeline_add' %}">
                         <div class="modal-body">
                             {% csrf_token %}
                             <div class="form-group">
-                                <label for="nameInput">Nom du block</label>
+                                <label for="nameInput">Nom du pipeline</label>
                                 <input type="text" class="form-control" required id="nameInput" name="name"
-                                       placeholder="Nom du Block"/>
+                                       placeholder="Nom du pipeline"/>
                             </div>
                             <div class="form-group">
                                 <label for="descriptionTextarea">Description</label>
                                 <textarea class="form-control" required id="descriptionTextarea" rows="3"
                                           name="description"></textarea>
                             </div>
+                            <div class="form-group">
+                                <label for="isPublic">Public :</label>
+                                <input type="checkbox" class="form-control col-6" id="isPublic" name="public" checked style="height: 20px">
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                             <button type="submit" class="btn btn-primary">Ajouter</button>
                         </div>
-                    </form>-->
-
+                    </form>
                 </div>
             </div>
         </div>

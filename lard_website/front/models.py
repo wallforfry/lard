@@ -4,6 +4,7 @@ from django.db import models
 # Create your models here.
 class Pipeline(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
+    description = models.TextField(blank=True, null=True, default="")
     json_value = models.TextField(default="", blank=True)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=False, null=True)
     is_public = models.BooleanField(default=False)

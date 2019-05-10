@@ -91,6 +91,21 @@ def pipeline_edit_edge_inputs(request, name, edge_id, edge_source, edge_target, 
 
     return render(request, "pipeline_edit_edge_modal.html", context=context)
 
+@login_required
+def pipeline_add(request):
+    if request.POST:
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+        public = True if "public" in request.POST else False
+        value = {"blocks": {}, "liaisons": []}
+        owner = request.user
+
+        Pipeline.objects.create(name=name, description=description, owner=owner, is_public=public, json_value=json.dumps(value))
+        return redirect('pipeline', name=name)
+
+    else:
+        return HttpResponseBadRequest()
+
 
 @login_required
 def pipeline_edit(request, name):
