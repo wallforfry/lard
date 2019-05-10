@@ -116,8 +116,9 @@ class Pipeline:
         liaisons = []
         nodes = cytoscape_format.get("nodes")
         edges = cytoscape_format.get("edges")
+        print(nodes)
         for node in nodes:
-            blocks_of_wanted_type = WebBlock.objects.filter(name=node.get("data").get("name")).all()
+            blocks_of_wanted_type = WebBlock.objects.filter(name=node.get("data").get("type")).all()
             if not blocks_of_wanted_type.exists():
                 continue
             block_type = blocks_of_wanted_type[0]
@@ -131,7 +132,7 @@ class Pipeline:
                 "on_launch": node.get("block_data").get("on_launch"),
                 "outputs": outputs,
                 "inputs": inputs,
-                "type": node.get("data").get("name"),
+                "type": node.get("data").get("type"),
                 "name": node.get("data").get("id"),
                 "data_ready": node.get("block_data").get("data_ready"),
                 "data": node.get("block_data").get("data")
