@@ -40,7 +40,7 @@ class Pipeline:
                 result = locals()
                 result.update(data)
                 globals().update({"logs": logs})
-                exec("def log(m): logs.append({'name': \"" + name + "\", 'message': m})", globals())
+                exec("def log(m): logs.append({'name': \"" + name + "\", 'message': str(m)})", globals())
 
                 try:
                     exec(code, globals())

@@ -3,6 +3,7 @@ import json
 import socket
 import time
 
+import docker
 import numpy as np
 
 import cv2
@@ -252,8 +253,13 @@ def pipeline_results(request, id):
     images = json.loads(r.images)
     logs = json.loads(r.logs)
 
+    try:
+        worker_status = get_docker_client().containers.get(r.worker_id).get("status")
+    except Exception:
+        worker_status = "Removed"
+
     return render(request, "pipeline_results.html",
-                  context={"result": r, "images": images, "logs": logs})
+                  context={"result": r, "images": images, "logs": logs, "worker_status": worker_status})
 
 @login_required
 def pipeline_result_delete(request, id):
