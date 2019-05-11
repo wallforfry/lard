@@ -41,7 +41,6 @@ def from_cytoscape_to_python_json(cytoscape_format):
     liaisons = []
     nodes = cytoscape_format.get("nodes")
     edges = cytoscape_format.get("edges")
-    print(nodes)
     for node in nodes:
         blocks_of_wanted_type = Block.objects.filter(name=node.get("data").get("type")).all()
         if not blocks_of_wanted_type.exists():
