@@ -232,7 +232,11 @@ def pipeline_execute(request, name):
     j["username"] = str(request.user)
     j["update_url"] = "http://"+ local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
 
-    context = requests.post("http://" + ip + ":12300/run", json=j).status_code
+    try:
+        context = requests.post("http://" + ip + ":12300/run", json=j)
+    except Exception:
+        pass
+
     return HttpResponse(status=200)
 
 

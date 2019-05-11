@@ -41,20 +41,10 @@ def update_pipeline(request):
         return django.http.HttpResponseBadRequest
     return JsonResponse({"result": "ok"})
 
-
-@login_required
-@csrf_exempt
-def clean_container(request, worker_id):
-    try:
-        get_docker_client().containers.get(worker_id).remove(force=True)
-    except Exception:
-        print("Impossible de supprimer le container "+worker_id)
-
-    return HttpResponse(status=200)
-
-
 @csrf_exempt
 def update_result(request, worker_id):
+    get_docker_client().containers.get(worker_id).remove(force=True)
+
     body = request.body.decode("utf-8")
     context = json.loads(body)
 
