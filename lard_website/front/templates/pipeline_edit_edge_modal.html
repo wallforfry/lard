@@ -23,13 +23,13 @@
 
                                     {% for r in input_block_from.outputs.all %}
                                         <div class="row">
-                                              {% if old_name == r.name %}
-                                                <input type="checkbox" class="form-control col-3" id="{{ r.name }}"
-                                                       name="out"
+                                            {% if old_name == r.name %}
+                                                <input type="checkbox" class="form-control col-3"
+                                                       name="{{ r.name }}" id="id{{ r.name }}" input-name="in"
                                                        style="height: 20px" checked>
                                             {% else %}
-                                                <input type="checkbox" class="form-control col-3" id="{{ r.name }}"
-                                                       name="out"
+                                                <input type="checkbox" class="form-control col-3"
+                                                       name="{{ r.name }}" id="in{{ r.name }}" input-name="in"
                                                        style="height: 20px">
                                             {% endif %}
                                             <h1>{{ r }}</h1>
@@ -48,12 +48,12 @@
                                     {% for r in input_block_to.inputs.all %}
                                         <div class="row">
                                             {% if new_name == r.name %}
-                                                <input type="checkbox" class="form-control col-3" id="{{ r.name }}"
-                                                       name="out"
+                                                <input type="checkbox" class="form-control col-3"
+                                                       name="{{ r.name }}" id="id{{ r.name }}" input-name="out"
                                                        style="height: 20px" checked>
                                             {% else %}
-                                                <input type="checkbox" class="form-control col-3" id="{{ r.name }}"
-                                                       name="out"
+                                                <input type="checkbox" class="form-control col-3"
+                                                       name="{{ r.name }}" id="id{{ r.name }}" input-name="out"
                                                        style="height: 20px">
                                             {% endif %}
 
@@ -83,23 +83,27 @@
     jQuery("#validerButton").click(function () {
         var inputs = "";
         var outputs = "";
-        jQuery("input[name^='in']").each(function () {
+        jQuery("input[input-name='in']").each(function () {
+            console.log(jQuery(this).attr('name'));
             if (document.getElementById(jQuery(this).attr('id')).checked) {
-                inputs = jQuery(this).attr('id');
+
+                inputs = jQuery(this).attr('name');
             }
 
 
         });
-        jQuery("input[name^='out']").each(function () {
+        jQuery("input[input-name='out']").each(function () {
+            console.log(jQuery(this).attr('name'));
             if (document.getElementById(jQuery(this).attr('id')).checked) {
-                outputs = jQuery(this).attr('id');
+
+                outputs = jQuery(this).attr('name');
             }
 
 
         });
 
 
-        editEdge(cy, ["{{ id }}", inputs, outputs]);
+        editEdge(cy, ["{{ edge_id }}", inputs, outputs]);
     });
 
 </script>

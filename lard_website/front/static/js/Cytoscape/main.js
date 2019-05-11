@@ -264,6 +264,7 @@ function edit(cy, param) {
 }
 
 function editEdge(cy, param) {
+    console.log(param);
     var dataNode = cy.$('#' + param[0]).data();
     dataNode["old_name"] = param[1];
     dataNode["new_name"] = param[2];
