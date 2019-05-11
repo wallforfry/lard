@@ -13,5 +13,6 @@ urlpatterns = [
     path('', views.index),
     path('blocks/list', views.list_blocks),
     path('piplines/update', views.update_pipeline),
-    path('result/<str:worker_id>/update', views.update_result)
+    path('result/<str:worker_id>/update', views.update_result),
+    path('result/<str:worker_id>/clean', views.clean_container)
 ]

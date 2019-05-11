@@ -41,6 +41,18 @@ def update_pipeline(request):
         return django.http.HttpResponseBadRequest
     return JsonResponse({"result": "ok"})
 
+
+@login_required
+@csrf_exempt
+def clean_container(request, worker_id):
+    try:
+        get_docker_client().containers.get(worker_id).remove(force=True)
+    except Exception:
+        print("Impossible de supprimer le container "+worker_id)
+
+    return HttpResponse(status=200)
+
+
 @csrf_exempt
 def update_result(request, worker_id):
     body = request.body.decode("utf-8")
@@ -57,15 +69,17 @@ def update_result(request, worker_id):
 
         if r.images == "[]":
             m.send(json.dumps({"type": "warning", "title": "Pipeline terminé  : ",
-                               "message": "Le pipeline " + r.pipeline.name + " s'est terminé mais n'a pas renvoyé d'image. Cliquez ici pour consulter les logs.", "url": str(reverse("pipeline_results", kwargs={"id": r.id}))}))
+                               "message": "Le pipeline " + r.pipeline.name + " s'est terminé mais n'a pas renvoyé d'image. Cliquez ici pour consulter les logs.",
+                               "url": str(reverse("pipeline_results", kwargs={"id": r.id})), "worker_id": worker_id}))
         else:
-            m.send(json.dumps({"type": "success", "title": "Pipeline terminé : ", "message": "Le pipeline "+r.pipeline.name+" s'est correctement terminé. Cliquez ici pour voir le résultat", "url": str(reverse("pipeline_results", kwargs={"id": r.id}))}))
-        #time.sleep(10)
-        #get_docker_client().containers.get(context["worker_id"]).stop()
-        #get_docker_client().containers.get(context["worker_id"]).remove()
+            m.send(json.dumps({"type": "success", "title": "Pipeline terminé : ",
+                               "message": "Le pipeline " + r.pipeline.name + " s'est correctement terminé. Cliquez ici pour voir le résultat",
+                               "url": str(reverse("pipeline_results", kwargs={"id": r.id})), "worker_id": worker_id}))
+
         return HttpResponse(status=200)
 
     except PipelineResult.DoesNotExist:
-        m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ", "message": "Le pipeline "+r.pipeline.name+" a échoué."}))
+        m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
+                           "message": "Le pipeline a échoué.", "worker_id": worker_id}))
 
         return django.http.HttpResponseBadRequest()

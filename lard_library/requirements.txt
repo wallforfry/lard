@@ -5,3 +5,4 @@ matplotlib==3.0.2
 networkx==2.2
 grequests
 bezier
+PyJWT==1.7.1

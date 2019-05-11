@@ -109,8 +109,8 @@
         const es = new EventSource(subscribeURL, {withCredentials: false})
 
         es.onmessage = ({data}) => {
-            const {type, title, message, url} = JSON.parse(data)
-            if (type && title && message && url) {
+            const {type, title, message, url, worker_id} = JSON.parse(data);
+            if (type && title && message && url && worker_id) {
                 jQuery.notify({
                     // options
                     icon: 'glyphicon glyphicon-warning-sign',
@@ -121,6 +121,17 @@
                 }, {
                     type: type
                 });
+                jQuery.post("/api/result/"+worker_id+"/clean")
+            } else if (type && title && message && worker_id) {
+                jQuery.notify({
+                    // options
+                    icon: 'glyphicon glyphicon-warning-sign',
+                    title: title,
+                    message: message
+                }, {
+                    type: type
+                });
+                jQuery.post("/api/result/"+worker_id+"/clean")
             }
         }
     </script>
