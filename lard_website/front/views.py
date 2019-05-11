@@ -1,5 +1,6 @@
 import base64
 import json
+import socket
 import time
 
 import numpy as np
@@ -18,6 +19,7 @@ from django.urls import reverse, reverse_lazy
 import requests
 from django.utils.datastructures import MultiValueDictKeyError
 
+from api.views import update_result
 from front.utils import create_full_json, spawn_container, get_docker_client
 from lard_library.pipeline import Pipeline as LibPipeline
 from front import utils
@@ -163,9 +165,9 @@ def pipeline_execute(request, name):
     for i in inputs_types:
         if i == "image":
             # img = None
-            # if file_cptr in files:
-            img = cv2.imdecode(np.fromstring(files[file_cptr].read(), dtype=np.uint8), 1).tolist()
-            inputs_values.insert(inputs_cptr, img)
+            if file_cptr < len(files):
+                img = cv2.imdecode(np.fromstring(files[file_cptr].read(), dtype=np.uint8), 1).tolist()
+                inputs_values.insert(inputs_cptr, img)
             file_cptr += 1
         inputs_cptr += 1
 
@@ -185,26 +187,6 @@ def pipeline_execute(request, name):
     j = json.loads(create_full_json(j))
     j["name"] = name
 
-    """
-    #####
-    p = LibPipeline(name)
-    p.load_json(j)
-
-    f = p.launch()
-    results = p.get_outputs()
-
-    frames_b64 = []
-    for r in results:
-        try:
-            ret, img = cv2.imencode('.png', r["value"])
-            frame_b64 = base64.b64encode(img).decode("utf-8")
-            frames_b64.append({"name": r["name"], "image": frame_b64})
-        except Exception as e:
-            p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
-    
-    #####
-    """
-    print("Spawning")
     container = spawn_container()
     for l in container.logs(follow=True, stream=True):
         s = str(l, "utf-8")
@@ -213,40 +195,28 @@ def pipeline_execute(request, name):
     ip = str(container.exec_run("awk 'END{print $1}' /etc/hosts")[1], "utf-8").replace("\n", "")
 
     worker_id = container.short_id
-    p_model = Pipeline.objects.get(name=name)
-    PipelineResult.objects.create(user=request.user, pipeline=p_model, worker_id=worker_id)
+    PipelineResult.objects.create(user=request.user, pipeline=p, worker_id=worker_id)
+
+    local_ip = str(socket.gethostbyname(socket.gethostname()))
+    j["worker_id"] = worker_id
+    j["update_url"] = "http://"+ local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
 
     context = requests.post("http://" + ip + ":12300/run", json=j).json()
-    container.remove(force=True)
-
-    pipeline_raw = json.loads(p_model.json_value)
-    for bl in pipeline_raw["blocks"].items():
-        b = bl[1]
-        for i in b["inputs"].items():
-            if i[1] == "image":
-                b["data"][i[0]] = None
-
-    p_model.json_value = json.dumps(pipeline_raw)
-    p_model.save()
-
-    r = PipelineResult.objects.get(user=request.user, pipeline=p_model, worker_id=worker_id)
-    r.images = context["images"]
-    r.logs = context["logs"]
-    r.save()
+    print(context)
     return render(request, 'pipeline_result_modal.html', context=context)
 
 
 @login_required
 def pipeline_results_list(request):
     return render(request, "pipelines_results_list.html",
-                  context={"results": PipelineResult.objects.filter(user=request.user).order_by("-created_at")})
+                  context={"results": PipelineResult.objects.filter(user=request.user).order_by("-updated_at")})
 
 
 @login_required
 def pipeline_results(request, id):
     r = PipelineResult.objects.get(id=id)
-    images = json.loads(r.images.replace("'", "\""))
-    logs = json.loads(r.logs.replace("'", "\""))
+    images = json.loads(r.images)
+    logs = json.loads(r.logs)
 
     return render(request, "pipeline_results.html",
                   context={"result": r, "images": images, "logs": logs})

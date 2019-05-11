@@ -9,6 +9,8 @@ import json
 
 import cv2
 import requests
+from gevent import monkey
+import grequests as async_requests
 from flask import Flask, request
 
 from lard_library.pipeline import Pipeline
@@ -27,9 +29,10 @@ def up():
 
 @app.route("/run", methods=['POST'])
 def run():
+    monkey.patch_all()
     j = request.json
     name = j.get("name")
-    print(j)
+    update_url = j.get("update_url")
     p = Pipeline(name)
     p.load_json(j)
 
@@ -45,4 +48,6 @@ def run():
         except Exception as e:
             p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
 
-    return json.dumps({"name": name, "images": frames_b64, "logs": p.logs})
+    result = {"name": name, "images": frames_b64, "logs": p.logs, "worker_id": j.get("worker_id")}
+    async_requests.post(update_url, json=result).send()
+    return json.dumps(result)

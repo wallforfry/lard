@@ -54,5 +54,6 @@ class PipelineResult(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=False, null=True)
     images = models.TextField(default="")
     logs = models.TextField(default="")
-    created_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     worker_id = models.CharField(max_length=255, blank=True, null=True, default="")

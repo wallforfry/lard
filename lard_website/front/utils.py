@@ -83,5 +83,5 @@ def get_docker_client():
 
 def spawn_container():
     client = get_docker_client()
-    container = client.containers.run('wallforfry/lard-worker', detach=True, ports={'12300': '12300'}, auto_remove=True, network="lard_default")
+    container = client.containers.run('wallforfry/lard-worker', detach=True, auto_remove=True, network="lard_default")
     return container
