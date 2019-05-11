@@ -5,7 +5,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="runPipelineModalLabel">Edit EDGE : {{ edge }}</h5>
+                <h5 class="modal-title" id="runPipelineModalLabel">Edit : {{ block_from.name }}
+                    to {{ block_to.name }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -19,16 +20,22 @@
                                     Source
                                 </div>
                                 <div class="card-body">
-                                    {% for t in source %}
-                                        {% for r in t.outputs.all %}
-                                            <div class="row">
-                                                <input type="checkbox" class="form-control col-3" id="{{ r.name }}"
-                                                       name="in"
+
+                                    {% for r in input_block_from.outputs.all %}
+                                        <div class="row">
+                                            {% if old_name == r.name %}
+                                                <input type="checkbox" class="form-control col-3"
+                                                       name="{{ r.name }}" id="id{{ r.name }}" input-name="in"
+                                                       style="height: 20px" checked>
+                                            {% else %}
+                                                <input type="checkbox" class="form-control col-3"
+                                                       name="{{ r.name }}" id="in{{ r.name }}" input-name="in"
                                                        style="height: 20px">
-                                                <h1>{{ r }}</h1>
-                                            </div>
-                                        {% endfor %}
+                                            {% endif %}
+                                            <h1>{{ r }}</h1>
+                                        </div>
                                     {% endfor %}
+
                                 </div>
                             </div>
                         </div>
@@ -38,15 +45,20 @@
                                     Target
                                 </div>
                                 <div class="card-body">
-                                    {% for t in target %}
-                                        {% for r in t.inputs.all %}
-                                            <div class="row">
-                                                <input type="checkbox" class="form-control col-3" id="{{ r.name }}"
-                                                       name="out"
+                                    {% for r in input_block_to.inputs.all %}
+                                        <div class="row">
+                                            {% if new_name == r.name %}
+                                                <input type="checkbox" class="form-control col-3"
+                                                       name="{{ r.name }}" id="id{{ r.name }}" input-name="out"
+                                                       style="height: 20px" checked>
+                                            {% else %}
+                                                <input type="checkbox" class="form-control col-3"
+                                                       name="{{ r.name }}" id="id{{ r.name }}" input-name="out"
                                                        style="height: 20px">
-                                                <h1>{{ r }}</h1>
-                                            </div>
-                                        {% endfor %}
+                                            {% endif %}
+
+                                            <h1>{{ r }}</h1>
+                                        </div>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -71,23 +83,27 @@
     jQuery("#validerButton").click(function () {
         var inputs = "";
         var outputs = "";
-        jQuery("input[name^='in']").each(function () {
+        jQuery("input[input-name='in']").each(function () {
+            console.log(jQuery(this).attr('name'));
             if (document.getElementById(jQuery(this).attr('id')).checked) {
-                inputs = jQuery(this).attr('id');
+
+                inputs = jQuery(this).attr('name');
             }
 
 
         });
-        jQuery("input[name^='out']").each(function () {
+        jQuery("input[input-name='out']").each(function () {
+            console.log(jQuery(this).attr('name'));
             if (document.getElementById(jQuery(this).attr('id')).checked) {
-                outputs = jQuery(this).attr('id');
+
+                outputs = jQuery(this).attr('name');
             }
 
 
         });
 
 
-        editEdge(cy, ["{{ id }}", inputs, outputs]);
+        editEdge(cy, ["{{ edge_id }}", inputs, outputs]);
     });
 
 </script>

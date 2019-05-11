@@ -1,0 +1,78 @@
+<!-- Modal -->
+<div class="modal fade" id="pipelineModal" tabindex="-1" role="dialog"
+     aria-labelledby="runPipelineModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="runPipelineModalLabel">Info : {{ block.name }} ({{ block.type }})</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col">
+                    <div class="form-group row">
+
+                        <p class="col-12">Inputs : </p>
+                        {% for name, type in block.inputs.items %}
+
+                            <h5 for="input{{ name|title }}" class="col-6">{{ name }}[{{ type }}]
+                                : </h5>
+
+                            <h5 for="input{{ name|title }}" class="col-6">
+                                {{ block.data|get_item:name|slice:":15" }}</h5>
+                        {% endfor %}
+                        <h5 class="col-6">On launch :</h5>
+                        <h5 class="col-6">{{ block.on_launch }}</h5>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <p class="col-12">Outputs : </p>
+                        {% for name, type in block.outputs.items %}
+
+                            <h5 for="input{{ name|title }}" class="col-6">{{ name }}[{{ type }}]
+                                : </h5>
+
+                            <h5 for="input{{ name|title }}" class="col-6">
+                                {{ block.data|get_item:name|slice:":15" }}</h5>
+                        {% endfor %}
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <h5 class="col-6">Description : </h5>
+
+                        <h5 class="col-6">{{ block_base.description }}</h5>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        {% url 'edit_block' name=block.type as the_url %}
+                        <h5>Voir le code <a href="{{ the_url }}">{{ block.type }}</a></h5>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <button id="validerButton" type="button" class="btn btn-success" data-dismiss="modal"><i
+                        class="fa fa-check"></i> Valider
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery("#validerButton").click(function () {
+        var inputs = {};
+        jQuery("input[name='{{ block.name }}']").each(function () {
+            inputs[jQuery(this).attr('input-name')] = jQuery(this).val();
+
+        });
+
+        edit(cy, ["{{ block_id }}", inputs, document.getElementById('launch').checked]);
+    });
+
+</script>
