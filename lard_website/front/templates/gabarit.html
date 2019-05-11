@@ -119,7 +119,8 @@
                     url: url,
                     target: '_blank'
                 }, {
-                    type: type
+                    type: type,
+                    delay: 5000 ? type === "success" : 0
                 });
                 jQuery.post("/api/result/"+worker_id+"/clean")
             } else if (type && title && message && worker_id) {
