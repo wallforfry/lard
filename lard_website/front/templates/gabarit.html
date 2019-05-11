@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="{% static 'vendors/jqvmap/dist/jqvmap.min.css' %}">
 
 
+    <link rel="stylesheet" href="{% static 'css/lard.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
@@ -33,6 +34,7 @@
 
 {% block body %}
     <body>
+    <div id="loader" class="loader"></div>
 
 
     <!-- Left Panel -->
@@ -79,7 +81,6 @@
         <div id="content" class="content mt-3">
 
             {% include 'alert.html' %}
-
 
             {% block content %}
             {% endblock %}

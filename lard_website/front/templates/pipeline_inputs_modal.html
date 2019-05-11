@@ -10,7 +10,8 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="loadResultForm" method="post" action="{% url 'pipeline_execute' name=name %}" enctype="multipart/form-data">
+            <form id="loadResultForm" method="post" action="{% url 'pipeline_execute' name=name %}"
+                  enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="modal-body">
                     {% for b in blocks %}
@@ -33,7 +34,7 @@
                                         {% elif i.type == "image" %}
                                             <div class="custom-file col-6">
                                                 <input type="file" class="custom-file-input"
-                                                       id="input{{ i.name|title }}" name="inputs_values" />
+                                                       id="input{{ i.name|title }}" name="inputs_values"/>
                                                 <label class="custom-file-label" for="customFile">Choose file</label>
                                             </div>
                                         {% else %}
@@ -48,7 +49,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                    <button id="loadResultButton" type="button" class="btn btn-success"><i class="fa fa-play"></i> Run</button>
+                    <button id="loadResultButton" type="button" class="btn btn-success"><i class="fa fa-play"></i> Run
+                    </button>
                 </div>
             </form>
         </div>

@@ -1,0 +1,24 @@
+.loader {
+    display: none;
+    position: absolute;
+    top: 20%;
+    left: calc(50% - 60px);
+    border-top: 16px solid blue;
+    border-right: 16px solid red;
+    border-bottom: 16px solid green;
+    border-left: 16px solid black;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 3s linear infinite;
+    z-index: 10000;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
