@@ -77,6 +77,20 @@ def pipeline_edit_inputs(request, name, block_name, block_id):
     return render(request, "pipeline_edit_modal.html", context=context)
 
 @login_required
+def pipeline_info_block(request, name, block_name, block_id):
+    p = Pipeline.objects.get(name=name)
+    data = json.loads(p.json_value)
+
+    block = data.get("blocks").get(block_name)
+    context = {
+        "block": block,
+        "block_id": block_id,
+        'block_base': Block.objects.get(name=block.get("type"))
+    }
+
+    return render(request, "pipeline_info_modal.html", context=context)
+
+@login_required
 def pipeline_edit_edge_inputs(request, name, edge_source, edge_target, edge_id, old_name, new_name):
     p = Pipeline.objects.get(name=name)
     data = json.loads(p.json_value)
