@@ -1,5 +1,7 @@
 import base64
 import json
+import time
+
 import numpy as np
 
 import cv2
@@ -16,7 +18,7 @@ from django.urls import reverse, reverse_lazy
 import requests
 from django.utils.datastructures import MultiValueDictKeyError
 
-from front.utils import create_full_json
+from front.utils import create_full_json, spawn_container, get_docker_client
 from lard_library.pipeline import Pipeline as LibPipeline
 from front import utils
 from front.backend import EmailOrUsernameModelBackend
@@ -202,9 +204,21 @@ def pipeline_execute(request, name):
     
     #####
     """
-    context = requests.post("http://172.17.0.1:12300/run", json=j).json()
+    print("Spawning")
+    container = spawn_container()
+    for l in container.logs(follow=True, stream=True):
+        s = str(l, "utf-8")
+        if "Running" in s:
+            break
+    ip = str(container.exec_run("awk 'END{print $1}' /etc/hosts")[1], "utf-8").replace("\n", "")
 
+    worker_id = container.short_id
     p_model = Pipeline.objects.get(name=name)
+    PipelineResult.objects.create(user=request.user, pipeline=p_model, worker_id=worker_id)
+
+    context = requests.post("http://" + ip + ":12300/run", json=j).json()
+    container.remove(force=True)
+
     pipeline_raw = json.loads(p_model.json_value)
     for bl in pipeline_raw["blocks"].items():
         b = bl[1]
@@ -214,7 +228,11 @@ def pipeline_execute(request, name):
 
     p_model.json_value = json.dumps(pipeline_raw)
     p_model.save()
-    PipelineResult.objects.create(user=request.user, pipeline=p_model, images=context["images"], logs=context["logs"])
+
+    r = PipelineResult.objects.get(user=request.user, pipeline=p_model, worker_id=worker_id)
+    r.images = context["images"]
+    r.logs = context["logs"]
+    r.save()
     return render(request, 'pipeline_result_modal.html', context=context)
 
 

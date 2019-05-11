@@ -21,6 +21,10 @@ def main():
 
     return str(requests.post(url="http://localhost:12300/run", json=j).text)
 
+@app.route("/up")
+def up():
+    return "yes"
+
 @app.route("/run", methods=['POST'])
 def run():
     j = request.json
@@ -42,6 +46,3 @@ def run():
             p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
 
     return json.dumps({"name": name, "images": frames_b64, "logs": p.logs})
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=12300, debug=True)

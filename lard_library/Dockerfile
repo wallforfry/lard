@@ -12,8 +12,10 @@ ADD requirements.txt /lard_library/
 RUN pip install -r requirements.txt
 ADD . /lard_library/
 
+ADD ./run.sh /
 ADD ./worker.py /
 WORKDIR /
 
 EXPOSE 12300
-CMD ["python", "./worker.py"]
+ENV FLASK_APP="./worker.py"
+CMD ["bash", "run.sh"]

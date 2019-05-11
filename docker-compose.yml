@@ -16,6 +16,7 @@ services:
     volumes:
       - ./lard_website:/code
       - ./lard_library:/code/lard_library
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "8000:8000"
     depends_on:

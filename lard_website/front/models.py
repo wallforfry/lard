@@ -52,6 +52,7 @@ class Block(models.Model):
 class PipelineResult(models.Model):
     pipeline = models.ForeignKey(Pipeline, on_delete=models.SET_NULL, null=True, default=None)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=False, null=True)
-    images = models.TextField()
-    logs = models.TextField()
+    images = models.TextField(default="")
+    logs = models.TextField(default="")
     created_at = models.DateTimeField(auto_now=True)
+    worker_id = models.CharField(max_length=255, blank=True, null=True, default="")

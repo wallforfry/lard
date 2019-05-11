@@ -7,6 +7,7 @@ Date : 17/02/19
 import json
 import urllib.parse
 
+import docker
 import requests
 
 from front.models import Block
@@ -76,3 +77,11 @@ def create_full_json(j: dict) -> str:
         b[1]["code"] = block.code
 
     return json.dumps(j)
+
+def get_docker_client():
+    return docker.DockerClient(base_url='unix://var/run/docker.sock')
+
+def spawn_container():
+    client = get_docker_client()
+    container = client.containers.run('wallforfry/lard-worker', detach=True, ports={'12300': '12300'}, auto_remove=True, network="lard_default")
+    return container
