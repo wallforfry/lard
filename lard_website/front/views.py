@@ -225,7 +225,7 @@ def pipeline_execute(request, name):
     ip = str(container.exec_run("awk 'END{print $1}' /etc/hosts")[1], "utf-8").replace("\n", "")
 
     worker_id = container.short_id
-    PipelineResult.objects.create(user=request.user, pipeline=p, worker_id=worker_id)
+    PipelineResult.objects.create(user=request.user, pipeline=p, worker_id=worker_id, images="[]", logs="[]")
 
     local_ip = str(socket.gethostbyname(socket.gethostname()))
     j["worker_id"] = worker_id

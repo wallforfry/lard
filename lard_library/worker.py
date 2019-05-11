@@ -10,6 +10,9 @@ import json
 import cv2
 import requests
 from gevent import monkey
+
+monkey.patch_all()
+
 import grequests as async_requests
 from flask import Flask, request
 
@@ -29,7 +32,6 @@ def up():
 
 @app.route("/run", methods=['POST'])
 def run():
-    monkey.patch_all()
     j = request.json
     name = j.get("name")
     update_url = j.get("update_url")
