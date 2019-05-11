@@ -226,6 +226,11 @@ function initCytoscape(data) {
         ]
     });
 
+    cy.on('create', 'node', function (evt) {
+        var node = evt.target;
+        console.log('tapped ' + node.id());
+    });
+
 
 //Permet de faire la création du node
     document.querySelector("#create").addEventListener("click", function () {
