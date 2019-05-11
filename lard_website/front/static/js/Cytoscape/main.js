@@ -3,7 +3,6 @@ function initCytoscape(data) {
 
         container: document.getElementById("cy"),
 
-
         layout: {
             name: "grid",
             rows: 2,
@@ -126,10 +125,8 @@ function initCytoscape(data) {
     var supp;
 
     cy.cxtmenu({
-            selector: 'node, edge',
-
+            selector: 'node',
             commands: [
-
                 {
                     content: '<span class="fa fa-remove fa-2x" style="color: #c53a3a;"></span>',
                     select: function (ele) {
@@ -147,22 +144,6 @@ function initCytoscape(data) {
                                 jQuery("#pipelineModal").modal({show: true});
                             });
                         }
-                        if (ele.isEdge()) {
-                            var old_name = "";
-                            if (ele.data()["old_name"] !== "undefined") {
-                                old_name = ele.data()["old_name"];
-                            }
-                            var new_name = "";
-                            if (ele.data()["new_name"] !== "undefined") {
-                                new_name = ele.data()["new_name"];
-                            }
-                            jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/edge/" + cy.filter('[id = "' + ele.data()["source"] + '"]').data()["name"]
-                                + "/" + cy.filter('[id = "' + ele.data()["target"] + '"]').data()["name"] + "/" + ele.id() + "/" + old_name + "/" + new_name, function (result) {
-                                jQuery("#pipelineModal").modal({show: true});
-
-                            });
-                        }
-
                     }
                 },
                 {
@@ -180,8 +161,43 @@ function initCytoscape(data) {
                 }
             ]
         }
-    )
-    ;
+    );
+
+    cy.cxtmenu({
+            selector: 'edge',
+            commands: [
+                {
+                    content: '<span class="fa fa-remove fa-2x" style="color: #c53a3a;"></span>',
+                    select: function (ele) {
+                        supp = cy.remove(ele);
+                        createArray(cy);
+                    },
+                    activeFillColor: 'rgba(255,0,0,0.2)',
+                },
+                {
+                    content: '<span class="fa fa-edit fa-2x" ></span>',
+                    select: function (ele) {
+                        if (ele.isEdge()) {
+                            var old_name = "";
+                            if (ele.data()["old_name"] !== "undefined") {
+                                old_name = ele.data()["old_name"];
+                            }
+                            var new_name = "";
+                            if (ele.data()["new_name"] !== "undefined") {
+                                new_name = ele.data()["new_name"];
+                            }
+                            jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/edge/" + cy.filter('[id = "' + ele.data()["source"] + '"]').data()["name"]
+                                + "/" + cy.filter('[id = "' + ele.data()["target"] + '"]').data()["name"] + "/" + ele.id() + "/" + old_name + "/" + new_name, function (result) {
+                                jQuery("#pipelineModal").modal({show: true});
+
+                            });
+                        }
+
+                    }
+                }
+            ]
+        }
+    );
 
     cy.cxtmenu({
         selector: 'core',
@@ -260,7 +276,28 @@ function initCytoscape(data) {
 
 //Event lors de la fin de la création d"un edge
     cy.on("ehcomplete", (event, sourceNode, targetNode) => {
+
         createArray(cy);
+
+        /*
+        Pb erreur 500 à cause de la requête Ajax.
+        var edge;
+        cy.elements().forEach(function (elem) {
+            if (elem.isEdge()) {
+                if (elem.data().target === targetNode.data()["name"] && elem.data().source === sourceNode.data()["name"]) {
+                    edge = elem;
+                }
+            }
+        });
+        var old_name = "image";
+        var new_name = "image";
+        jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/edge/" + sourceNode.data()["name"]
+            + "/" + targetNode.data()["name"] + "/" + edge.id() + "/" + old_name + "/" + new_name, function (result) {
+            jQuery("#pipelineModal").modal({show: true});
+
+        });
+         */
+
     });
 
     cy.elements().forEach(function (elem) {
@@ -289,7 +326,6 @@ function createArray(cy) {
     var array_nodes = [];
     var array_edges = [];
     cy.elements().forEach(function (elem) {
-        console.log(elem.data());
         var dict_data = {};
         var dict_data_edge = {};
 
@@ -317,8 +353,6 @@ function createArray(cy) {
     });
     jsonCytoscape["edges"] = array_edges;
     jsonCytoscape["nodes"] = array_nodes;
-
-    console.log(jsonCytoscape);
     updatePipeline(jsonCytoscape);
 }
 

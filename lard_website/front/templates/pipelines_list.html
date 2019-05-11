@@ -43,7 +43,9 @@
                                         <td><a href="{% url 'pipeline' name=b.name %}">{{ b.name }}</a></td>
                                         <td>{{ b.description }}</td>
                                         <td>{{ b.owner }}</td>
-                                        <td class="text-center">{% if b.is_public %}<span class="fa fa-check-square-o"></span>{% else %}<span class="fa fa-square-o"></span>{% endif %}</td>
+                                        <td class="text-center">{% if b.is_public %}
+                                            <span class="fa fa-check-square-o"></span>{% else %}
+                                            <span class="fa fa-square-o"></span>{% endif %}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -83,8 +85,15 @@
                                           name="description"></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="isPublic">Public :</label>
-                                <input type="checkbox" class="form-control col-6" id="isPublic" name="public" checked style="height: 20px">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label for="isPublic">Public :</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="checkbox" class="form-control" id="isPublic" name="public" checked
+                                               style="height: 20px">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
