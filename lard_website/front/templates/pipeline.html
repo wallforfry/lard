@@ -125,6 +125,7 @@
                         /*for(var pair of data.entries()) {
                              console.log(pair[0]+', '+pair[1]);
                         }*/
+                        jQuery("#loader").fadeIn();
                         jQuery.ajax({
                             url: "{% url 'pipeline_execute' name=name %}",
                             data: data,
@@ -135,6 +136,7 @@
                             enctype: 'multipart/form-data',
                             type: 'POST', // For jQuery < 1.9
                             success: function (data) {
+                                jQuery("#loader").fadeOut();
                                 jQuery('#resultModalDiv').html(data);
                                 jQuery("#pipelineModal").modal('hide');
                                 jQuery('#pipelineResultModal').modal({show: true});
