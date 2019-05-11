@@ -3,7 +3,6 @@ function initCytoscape(data) {
 
         container: document.getElementById("cy"),
 
-
         layout: {
             name: "grid",
             rows: 2,
@@ -164,7 +163,7 @@ function initCytoscape(data) {
         }
     );
 
-        cy.cxtmenu({
+    cy.cxtmenu({
             selector: 'edge',
             commands: [
                 {
@@ -277,7 +276,28 @@ function initCytoscape(data) {
 
 //Event lors de la fin de la création d"un edge
     cy.on("ehcomplete", (event, sourceNode, targetNode) => {
+
         createArray(cy);
+
+        /*
+        Pb erreur 500 à cause de la requête Ajax.
+        var edge;
+        cy.elements().forEach(function (elem) {
+            if (elem.isEdge()) {
+                if (elem.data().target === targetNode.data()["name"] && elem.data().source === sourceNode.data()["name"]) {
+                    edge = elem;
+                }
+            }
+        });
+        var old_name = "image";
+        var new_name = "image";
+        jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/edge/" + sourceNode.data()["name"]
+            + "/" + targetNode.data()["name"] + "/" + edge.id() + "/" + old_name + "/" + new_name, function (result) {
+            jQuery("#pipelineModal").modal({show: true});
+
+        });
+         */
+
     });
 
     cy.elements().forEach(function (elem) {
@@ -306,7 +326,6 @@ function createArray(cy) {
     var array_nodes = [];
     var array_edges = [];
     cy.elements().forEach(function (elem) {
-        console.log(elem.data());
         var dict_data = {};
         var dict_data_edge = {};
 
@@ -334,8 +353,6 @@ function createArray(cy) {
     });
     jsonCytoscape["edges"] = array_edges;
     jsonCytoscape["nodes"] = array_nodes;
-
-    console.log(jsonCytoscape);
     updatePipeline(jsonCytoscape);
 }
 
