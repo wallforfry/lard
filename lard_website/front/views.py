@@ -229,6 +229,7 @@ def pipeline_execute(request, name):
 
     local_ip = str(socket.gethostbyname(socket.gethostname()))
     j["worker_id"] = worker_id
+    j["username"] = str(request.user)
     j["update_url"] = "http://"+ local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
 
     context = requests.post("http://" + ip + ":12300/run", json=j).json()

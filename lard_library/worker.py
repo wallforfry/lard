@@ -11,10 +11,12 @@ import cv2
 import requests
 from gevent import monkey
 
+from lard_library.mercure import Mercure
+
 monkey.patch_all()
 
 import grequests as async_requests
-from flask import Flask, request
+from flask import Flask, request, Response
 
 from lard_library.pipeline import Pipeline
 
@@ -34,22 +36,29 @@ def up():
 def run():
     j = request.json
     name = j.get("name")
-    update_url = j.get("update_url")
-    p = Pipeline(name)
-    p.load_json(j)
 
-    f = p.launch()
-    results = p.get_outputs()
+    try:
+        update_url = j.get("update_url")
+        p = Pipeline(name)
+        p.load_json(j)
 
-    frames_b64 = []
-    for r in results:
-        try:
-            ret, img = cv2.imencode('.png', r["value"])
-            frame_b64 = base64.b64encode(img).decode("utf-8")
-            frames_b64.append({"name": r["name"], "image": frame_b64})
-        except Exception as e:
-            p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
+        f = p.launch()
+        results = p.get_outputs()
 
-    result = {"name": name, "images": frames_b64, "logs": p.logs, "worker_id": j.get("worker_id")}
-    async_requests.post(update_url, json=result).send()
-    return json.dumps(result)
+        frames_b64 = []
+        for r in results:
+            try:
+                ret, img = cv2.imencode('.png', r["value"])
+                frame_b64 = base64.b64encode(img).decode("utf-8")
+                frames_b64.append({"name": r["name"], "image": frame_b64})
+            except Exception as e:
+                p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
+
+        result = {"name": name, "images": frames_b64, "logs": p.logs, "worker_id": j.get("worker_id"), "username": j.get("username")}
+        async_requests.post(update_url, json=result).send()
+    except Exception:
+        m = Mercure(j["username"])
+        m.hub_url = 'http://mercure:80/hub'
+        m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ", "message": "Le pipeline " + name + " a échoué."}))
+
+    return Response(status=200)

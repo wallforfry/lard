@@ -4,11 +4,13 @@ import time
 import django
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 from front.models import Block, Pipeline, PipelineResult
 from front.utils import from_cytoscape_to_python_json, get_docker_client
+from lard_library.mercure import Mercure
 from lard_library.pipeline import Pipeline as LibPipeline
 
 
@@ -43,16 +45,27 @@ def update_pipeline(request):
 def update_result(request, worker_id):
     body = request.body.decode("utf-8")
     context = json.loads(body)
+
+    m = Mercure(context["username"])
+    m.hub_url = 'http://mercure:80/hub'
+
     try:
         r = PipelineResult.objects.get(worker_id=worker_id)
         r.images = json.dumps(context["images"])
         r.logs = json.dumps(context["logs"])
         r.save()
 
-        time.sleep(1)
-        get_docker_client().containers.get(context["worker_id"]).stop()
-        get_docker_client().containers.get(context["worker_id"]).remove(force=True)
+        if r.images == "[]":
+            m.send(json.dumps({"type": "warning", "title": "Pipeline terminé  : ",
+                               "message": "Le pipeline " + r.pipeline.name + " s'est terminé mais n'a pas renvoyé d'image. Cliquez ici pour consulter les logs.", "url": str(reverse("pipeline_results", kwargs={"id": r.id}))}))
+        else:
+            m.send(json.dumps({"type": "success", "title": "Pipeline terminé : ", "message": "Le pipeline "+r.pipeline.name+" s'est correctement terminé. Cliquez ici pour voir le résultat", "url": str(reverse("pipeline_results", kwargs={"id": r.id}))}))
+        #time.sleep(10)
+        #get_docker_client().containers.get(context["worker_id"]).stop()
+        #get_docker_client().containers.get(context["worker_id"]).remove()
         return HttpResponse(status=200)
 
     except PipelineResult.DoesNotExist:
+        m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ", "message": "Le pipeline "+r.pipeline.name+" a échoué."}))
+
         return django.http.HttpResponseBadRequest()

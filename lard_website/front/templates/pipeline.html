@@ -19,8 +19,8 @@
                 <button id="runButton" type="button" class="btn btn-success btn-lg"><i class="fa fa-play"></i> Run
                 </button>
                 <button type="button" class="btn btn-danger btn-lg" data-toggle="modal"
-                                        data-target="#deletePipelineModal">Supprimer
-                                </button>
+                        data-target="#deletePipelineModal">Supprimer
+                </button>
             </div>
         </div>
     </div>
@@ -135,7 +135,16 @@
                         /*for(var pair of data.entries()) {
                              console.log(pair[0]+', '+pair[1]);
                         }*/
-                        jQuery("#loader").fadeIn();
+                        jQuery.notify({
+                            // options
+                            icon: 'glyphicon glyphicon-warning-sign',
+                            title: "Lancement du Pipeline : ",
+                            message: "Le Pipeline a commencé son traitement",
+                        }, {
+                            type: 'info',
+                            showProgressbar: true,
+                            delay: 5000
+                        });
                         jQuery.ajax({
                             url: "{% url 'pipeline_execute' name=name %}",
                             data: data,
@@ -145,14 +154,16 @@
                             method: 'POST',
                             enctype: 'multipart/form-data',
                             type: 'POST', // For jQuery < 1.9
-                            success: function (data) {
+                            /*success: function (data) {
                                 jQuery("#loader").fadeOut();
                                 jQuery('#resultModalDiv').html(data);
                                 jQuery("#pipelineModal").modal('hide');
                                 jQuery('#pipelineResultModal').modal({show: true});
-                            }
+                            }*/
                         });
+                        jQuery("#pipelineModal").modal('hide');
                         /*jQuery.post("
+
 
 
 

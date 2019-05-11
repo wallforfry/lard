@@ -21,3 +21,10 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - mercure
+  mercure:
+    image: dunglas/mercure
+    env_file:
+      - var.env
+    ports:
+      - "12301:80"
