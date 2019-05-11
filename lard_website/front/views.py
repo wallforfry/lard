@@ -254,7 +254,7 @@ def pipeline_results(request, id):
     logs = json.loads(r.logs)
 
     try:
-        worker_status = get_docker_client().containers.get(r.worker_id).get("status")
+        worker_status = get_docker_client().containers.get(r.worker_id).status
     except Exception:
         worker_status = "Removed"
 

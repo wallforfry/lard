@@ -57,7 +57,9 @@ def run():
         result = {"name": name, "images": frames_b64, "logs": p.logs, "worker_id": j.get("worker_id"), "username": j.get("username")}
         requests.post(update_url, json=result)
     except Exception as e:
-        print(e)
+        result = {"name": name, "images": [], "logs": [], "worker_id": j.get("worker_id"),
+                  "username": j.get("username")}
+        requests.post(update_url, json=result)
         m = Mercure(j["username"])
         m.hub_url = 'http://mercure:80/hub'
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ", "message": "Le pipeline " + name + " a échoué."}))
