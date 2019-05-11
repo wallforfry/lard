@@ -111,42 +111,6 @@ class Pipeline:
 
         return cytoJSON
 
-    @staticmethod
-    def from_cytoscape_to_python_json(cytoscape_format):
-        blocks = {}
-        liaisons = []
-        nodes = cytoscape_format.get("nodes")
-        edges = cytoscape_format.get("edges")
-        print(nodes)
-        for node in nodes:
-            blocks_of_wanted_type = WebBlock.objects.filter(name=node.get("data").get("type")).all()
-            if not blocks_of_wanted_type.exists():
-                continue
-            block_type = blocks_of_wanted_type[0]
-            outputs = {}
-            for output in block_type.outputs.all():
-                outputs[output.name] = output.value.value
-            inputs = {}
-            for inpt in block_type.inputs.all():
-                inputs[inpt.name] = inpt.value.value
-            block = {
-                "on_launch": node.get("block_data").get("on_launch"),
-                "outputs": outputs,
-                "inputs": inputs,
-                "type": node.get("data").get("type"),
-                "name": node.get("data").get("id"),
-                "data_ready": node.get("block_data").get("data_ready"),
-                "data": node.get("block_data").get("data")
-            }
-            blocks[node.get("data").get("id")] = block
-
-        for edge in edges:
-            liaison = {"from": edge.get("data").get("source"), "to": edge.get("data").get("target")}
-            liaisons.append(liaison)
-
-        return {"blocks": blocks, "liaisons": liaisons}
-
-
     def get_outputs(self):
         return self.outputs
 
@@ -190,26 +154,3 @@ class Pipeline:
         self.is_running = True
         result = Block.launch_all([self.blocks[name] for name in self.blocks])
         return result
-
-    def load_json(self, j):
-        for block_name in j["blocks"]:
-            block = j["blocks"][block_name]
-            lard_block = WebBlock.objects.get(name=block.get("type"))
-            inputs = {}
-            for i in lard_block.inputs.all():
-                inputs[i.name] = str(i.value)
-            outputs = {}
-            for i in lard_block.outputs.all():
-                outputs[i.name] = str(i.value)
-            data = {}
-            data.update(block.get("data"))
-            b = self.create_block(code=lard_block.code, name=block.get("name"), data=data, inputs=inputs,
-                                  outputs=outputs, on_launch=block.get("on_launch"), block_type=block.get("type"))
-        for l in j["liaisons"]:
-            try:
-                b_from = self.blocks[l.get("from")]
-                b_to = self.blocks[l.get("to")]
-                self.connect(b_from, b_to, l.get("old_name", None), l.get("new_name", None))
-            except Exception as e:
-                print("Can't create liaison")
-                pass

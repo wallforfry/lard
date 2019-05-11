@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 from front.models import Block, Pipeline
+from front.utils import from_cytoscape_to_python_json
 from lard_library.pipeline import Pipeline as LibPipeline
 
 
@@ -26,7 +27,7 @@ def update_pipeline(request):
     pipeline_name = request.POST.get("name")
     pipeline_raw = request.POST.get("pipeline")
 
-    pipeline_dict = LibPipeline.from_cytoscape_to_python_json(json.loads(pipeline_raw))
+    pipeline_dict = from_cytoscape_to_python_json(json.loads(pipeline_raw))
 
     try:
         pipeline = Pipeline.objects.get(name=pipeline_name)
