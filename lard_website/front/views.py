@@ -232,7 +232,6 @@ def pipeline_execute(request, name):
     j["update_url"] = "http://"+ local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
 
     context = requests.post("http://" + ip + ":12300/run", json=j).json()
-    print(context)
     return render(request, 'pipeline_result_modal.html', context=context)
 
 
