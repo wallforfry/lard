@@ -126,10 +126,8 @@ function initCytoscape(data) {
     var supp;
 
     cy.cxtmenu({
-            selector: 'node, edge',
-
+            selector: 'node',
             commands: [
-
                 {
                     content: '<span class="fa fa-remove fa-2x" style="color: #c53a3a;"></span>',
                     select: function (ele) {
@@ -147,22 +145,6 @@ function initCytoscape(data) {
                                 jQuery("#pipelineModal").modal({show: true});
                             });
                         }
-                        if (ele.isEdge()) {
-                            var old_name = "";
-                            if (ele.data()["old_name"] !== "undefined") {
-                                old_name = ele.data()["old_name"];
-                            }
-                            var new_name = "";
-                            if (ele.data()["new_name"] !== "undefined") {
-                                new_name = ele.data()["new_name"];
-                            }
-                            jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/edge/" + cy.filter('[id = "' + ele.data()["source"] + '"]').data()["name"]
-                                + "/" + cy.filter('[id = "' + ele.data()["target"] + '"]').data()["name"] + "/" + ele.id() + "/" + old_name + "/" + new_name, function (result) {
-                                jQuery("#pipelineModal").modal({show: true});
-
-                            });
-                        }
-
                     }
                 },
                 {
@@ -180,8 +162,43 @@ function initCytoscape(data) {
                 }
             ]
         }
-    )
-    ;
+    );
+
+        cy.cxtmenu({
+            selector: 'edge',
+            commands: [
+                {
+                    content: '<span class="fa fa-remove fa-2x" style="color: #c53a3a;"></span>',
+                    select: function (ele) {
+                        supp = cy.remove(ele);
+                        createArray(cy);
+                    },
+                    activeFillColor: 'rgba(255,0,0,0.2)',
+                },
+                {
+                    content: '<span class="fa fa-edit fa-2x" ></span>',
+                    select: function (ele) {
+                        if (ele.isEdge()) {
+                            var old_name = "";
+                            if (ele.data()["old_name"] !== "undefined") {
+                                old_name = ele.data()["old_name"];
+                            }
+                            var new_name = "";
+                            if (ele.data()["new_name"] !== "undefined") {
+                                new_name = ele.data()["new_name"];
+                            }
+                            jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/edge/" + cy.filter('[id = "' + ele.data()["source"] + '"]').data()["name"]
+                                + "/" + cy.filter('[id = "' + ele.data()["target"] + '"]').data()["name"] + "/" + ele.id() + "/" + old_name + "/" + new_name, function (result) {
+                                jQuery("#pipelineModal").modal({show: true});
+
+                            });
+                        }
+
+                    }
+                }
+            ]
+        }
+    );
 
     cy.cxtmenu({
         selector: 'core',
