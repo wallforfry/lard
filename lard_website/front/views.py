@@ -16,7 +16,7 @@ from django.urls import reverse, reverse_lazy
 import requests
 from django.utils.datastructures import MultiValueDictKeyError
 
-from front.utils import load_json
+from front.utils import create_full_json
 from lard_library.pipeline import Pipeline as LibPipeline
 from front import utils
 from front.backend import EmailOrUsernameModelBackend
@@ -116,7 +116,8 @@ def pipeline_edit(request, name):
         p.json_value = json.dumps(j)
         p.save()
         l_p = LibPipeline(name)
-        load_json(l_p, p.json_value)
+        j = json.loads(create_full_json(p.json_value))
+        l_p.load_json(j)
         return HttpResponse(str(l_p.get_json()))
     return HttpResponse("ERROR")
     # return render(request, 'pipeline.html', context=context)
@@ -140,7 +141,8 @@ def pipeline_empty_inputs(request, name):
     p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
     l_p = LibPipeline(name)
-    load_json(l_p, j)
+    j = json.loads(create_full_json(j))
+    l_p.load_json(j)
     context["blocks"] = l_p.get_empty_inputs()
     return render(request, "pipeline_inputs_modal.html", context=context)
 
@@ -179,7 +181,8 @@ def pipeline_execute(request, name):
     p.save()
 
     p = LibPipeline(name)
-    load_json(p, j)
+    j = json.loads(create_full_json(j))
+    p.load_json(j)
 
     f = p.launch()
     results = p.get_outputs()
@@ -375,7 +378,8 @@ def get_cytoscape(request, name):
     p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
     p = LibPipeline(name)
-    load_json(p, j)
+    j = json.loads(create_full_json(j))
+    p.load_json(j)
     return JsonResponse(p.get_cytoscape(), safe=False)
 
 

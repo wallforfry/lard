@@ -69,25 +69,10 @@ def from_cytoscape_to_python_json(cytoscape_format):
 
     return {"blocks": blocks, "liaisons": liaisons}
 
-def load_json(pipeline, j):
-    for block_name in j["blocks"]:
-        block = j["blocks"][block_name]
-        lard_block = Block.objects.get(name=block.get("type"))
-        inputs = {}
-        for i in lard_block.inputs.all():
-            inputs[i.name] = str(i.value)
-        outputs = {}
-        for i in lard_block.outputs.all():
-            outputs[i.name] = str(i.value)
-        data = {}
-        data.update(block.get("data"))
-        b = pipeline.create_block(code=lard_block.code, name=block.get("name"), data=data, inputs=inputs,
-                              outputs=outputs, on_launch=block.get("on_launch"), block_type=block.get("type"))
-    for l in j["liaisons"]:
-        try:
-            b_from = pipeline.blocks[l.get("from")]
-            b_to = pipeline.blocks[l.get("to")]
-            pipeline.connect(b_from, b_to, l.get("old_name", None), l.get("new_name", None))
-        except Exception as e:
-            print("Can't create liaison")
-            pass
+
+def create_full_json(j: dict) -> str:
+    for b in j.get("blocks").items():
+        block = Block.objects.get(name=b[1].get("type"))
+        b[1]["code"] = block.code
+
+    return json.dumps(j)

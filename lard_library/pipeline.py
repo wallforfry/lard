@@ -153,3 +153,25 @@ class Pipeline:
         self.is_running = True
         result = Block.launch_all([self.blocks[name] for name in self.blocks])
         return result
+    
+    def load_json(self, j):
+        for block_name in j["blocks"]:
+            block = j["blocks"][block_name]
+            inputs = {}
+            for i in block["inputs"]:
+                inputs[i] = str(block["inputs"][i])
+            outputs = {}
+            for i in block["outputs"]:
+                outputs[i] = str(block["outputs"][i])
+            data = {}
+            data.update(block.get("data"))
+            b = self.create_block(code=block.get("code"), name=block.get("name"), data=data, inputs=inputs,
+                                  outputs=outputs, on_launch=block.get("on_launch"), block_type=block.get("type"))
+        for l in j["liaisons"]:
+            try:
+                b_from = self.blocks[l.get("from")]
+                b_to = self.blocks[l.get("to")]
+                self.connect(b_from, b_to, l.get("old_name", None), l.get("new_name", None))
+            except Exception as e:
+                print("Can't create liaison")
+                pass
