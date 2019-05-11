@@ -50,6 +50,7 @@ def update_result(request, worker_id):
         r.save()
 
         time.sleep(1)
+        get_docker_client().containers.get(context["worker_id"]).stop()
         get_docker_client().containers.get(context["worker_id"]).remove(force=True)
         return HttpResponse(status=200)
 
