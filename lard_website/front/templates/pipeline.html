@@ -43,6 +43,16 @@
                             <input type="text" class="form-control" id="name"
                                    placeholder="Name">
                         </div>
+                        <div class="col-md-3">
+                            <div class="row">
+                                <h3>On launch</h3>
+                                <div class="col-md-2">
+                                    <input type="checkbox" class="form-control" id="onLaunchCreate"
+                                           style="height: 100%">
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-md-1">
                             <button id="create" class="btn btn-success">Create</button>
                         </div>
@@ -114,7 +124,12 @@
                                 jQuery('#pipelineResultModal').modal({show: true});
                             }
                         });
-                        /*jQuery.post("{% url 'pipeline_execute' name=name %}", jQuery("#loadResultForm").serialize(), function (data) {
+                        /*jQuery.post("
+
+
+
+
+                        {% url 'pipeline_execute' name=name %}", jQuery("#loadResultForm").serialize(), function (data) {
                                 jQuery('#resultModalDiv').html(data);
                                 jQuery("#pipelineModal").modal('hide');
                                 jQuery('#pipelineResultModal').modal({show: true});

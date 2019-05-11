@@ -198,6 +198,7 @@ function initCytoscape(data) {
         //Récupération du nom
         var nom = document.getElementById("name").value;
         var type = document.getElementById("type").value;
+        var launch = document.getElementById("onLaunchCreate").checked;
         cy.add({
             group: "nodes",
             data: {
@@ -205,7 +206,7 @@ function initCytoscape(data) {
                 "id": nom,
                 "type": type,
                 "data": {},
-                "on_launch": false
+                "on_launch": launch
             },
             position: {
                 x: Math.floor(Math.random() * (cy.width() - 500)) + 300,
