@@ -1,0 +1,5 @@
+flask
+opencv-python==4.0.0.21
+requests==2.21.0
+matplotlib==3.0.2
+networkx==2.2

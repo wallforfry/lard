@@ -180,8 +180,12 @@ def pipeline_execute(request, name):
     p.json_value = json.dumps(j)
     p.save()
 
-    p = LibPipeline(name)
     j = json.loads(create_full_json(j))
+    j["name"] = name
+
+    """
+    #####
+    p = LibPipeline(name)
     p.load_json(j)
 
     f = p.launch()
@@ -195,6 +199,10 @@ def pipeline_execute(request, name):
             frames_b64.append({"name": r["name"], "image": frame_b64})
         except Exception as e:
             p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
+    
+    #####
+    """
+    context = requests.post("http://172.17.0.1:12300/run", json=j).json()
 
     p_model = Pipeline.objects.get(name=name)
     pipeline_raw = json.loads(p_model.json_value)
@@ -206,8 +214,8 @@ def pipeline_execute(request, name):
 
     p_model.json_value = json.dumps(pipeline_raw)
     p_model.save()
-    PipelineResult.objects.create(user=request.user, pipeline=p_model, images=frames_b64, logs=p.logs)
-    return render(request, 'pipeline_result_modal.html', context={"name": name, "images": frames_b64, "logs": p.logs})
+    PipelineResult.objects.create(user=request.user, pipeline=p_model, images=context["images"], logs=context["logs"])
+    return render(request, 'pipeline_result_modal.html', context=context)
 
 
 @login_required
