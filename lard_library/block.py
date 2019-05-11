@@ -16,7 +16,9 @@ import networkx as nx
 # Ignore warning matplotlib
 import warnings
 
-from lard_website import settings
+# Outputs Settings
+OUTPUT_BLOCK_TYPE = ["OUTPUT", "Output"]
+OUTPUT_BLOCK_OUTPUT_NAME = ["output"]
 
 warnings.filterwarnings(
     action='ignore', module='matplotlib.figure', category=UserWarning,
@@ -166,11 +168,11 @@ class Block(Subject, Observer):
             result = self.treatment(self.data_ready)
             self._data_ready = result
 
-            for o in settings.OUTPUT_BLOCK_OUTPUT_NAME:
+            for o in OUTPUT_BLOCK_OUTPUT_NAME:
                 if o in result:
                     if result[o] is not None:
                         self.pipeline.outputs.append({"name": self.name, "value": result[o]})
-                        if self.type in settings.OUTPUT_BLOCK_TYPE:
+                        if self.type in OUTPUT_BLOCK_TYPE:
                             self._data_ready = set_dict_to_value(self.inputs_dict, None)
             self.subject_outputs = result
 

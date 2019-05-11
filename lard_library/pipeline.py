@@ -13,7 +13,6 @@ import cv2
 import string
 import random
 
-from front.models import Block as WebBlock
 from lard_library.block import Block
 
 
