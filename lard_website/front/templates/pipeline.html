@@ -34,38 +34,22 @@
     <div class="collapse" id="collapseExample">
         <div class="card" style="width: 100%; z-index: 999">
             <div class="card-body">
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <select class="form-control" id="type" onchange="selectValue()">
-                                {% for b in blocks %}
-                                    <option>{{ b }}</option>
-                                {% endfor %}
+                <div class="form-inline align-items-center">
+                    <select class="form-control mb-2 mr-sm-2" id="type" onchange="selectValue()">
+                        {% for b in blocks %}
+                            <option>{{ b }}</option>
+                        {% endfor %}
+                    </select>
 
-                            </select>
-                        </div>
-
-                        <div class="col-md-2">
-                            <input type="text" class="form-control" id="name"
-                                   placeholder="Name">
-                        </div>
-                        <div class="col-md-3">
-                            <div class="row">
-                                <h3>On launch</h3>
-                                <div class="col-md-2">
-                                    <input type="checkbox" class="form-control" id="onLaunchCreate"
-                                           style="height: 100%">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-1">
-                            <button id="create" class="btn btn-success">Create</button>
-                        </div>
-                        <div class="col-md-1">
-                            <button id="close" class="btn btn-danger">Close</button>
-                        </div>
+                    <input type="text" class="form-control mb-2 mr-sm-2" id="name"
+                           placeholder="Name">
+                    <div class="form-check mb-2 mr-sm-2">
+                        <input type="checkbox" class="form-check-input" id="onLaunchCreate"/>
+                        <label for="onLaunchCreate" class="form-check-label">On launch</label>
                     </div>
+
+                    <button id="create" class="btn btn-success mb-2">Create</button>
+                    <button id="close" class="btn btn-danger mb-2">Close</button>
                 </div>
             </div>
         </div>
