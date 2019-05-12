@@ -99,12 +99,17 @@ class Pipeline:
                 source_outputs = blocks.get(liaison.get("from")).get("outputs")
                 target_inputs = blocks.get(liaison.get("to")).get("inputs")
 
-                for output_name in source_outputs:
-                    if output_name in target_inputs and source_outputs.get(output_name) == target_inputs.get(output_name):
-                        data_dict = {"source": liaison.get("from"), "target": liaison.get("to"),
-                                     "old_name": output_name, "new_name": output_name}
-                        edge_dict = {"data": data_dict}
-                        all_edges.append(edge_dict)
+                if source_outputs == {}:
+                    data_dict = {"source": liaison.get("from"), "target": liaison.get("to")}
+                    edge_dict = {"data": data_dict}
+                    all_edges.append(edge_dict)
+                else:
+                    for output_name in source_outputs:
+                        if output_name in target_inputs and source_outputs.get(output_name) == target_inputs.get(output_name):
+                            data_dict = {"source": liaison.get("from"), "target": liaison.get("to"),
+                                         "old_name": output_name, "new_name": output_name}
+                            edge_dict = {"data": data_dict}
+                            all_edges.append(edge_dict)
 
         cytoJSON = {"nodes": all_nodes, "edges": all_edges}
 

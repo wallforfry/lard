@@ -32,7 +32,6 @@ def update_pipeline(request):
     pipeline_raw = request.POST.get("pipeline")
 
     pipeline_dict = from_cytoscape_to_python_json(json.loads(pipeline_raw))
-
     try:
         pipeline = Pipeline.objects.get(name=pipeline_name)
         pipeline.json_value = json.dumps(pipeline_dict)
