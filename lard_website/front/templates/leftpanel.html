@@ -17,9 +17,11 @@
                 <li class="{% if request.resolver_match.view_name == "dashboard" %}active{% endif %}">
                     <a href="{% url 'dashboard' %}"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
                 </li>
+                {% comment %}
                 <li class="{% if request.resolver_match.view_name == "editor" %}active{% endif %}">
                     <a href="{% url 'editor' %}"> <i class="menu-icon fa fa-edit"></i>Editeur </a>
                 </li>
+                {% endcomment %}
                 <h3 class="menu-title">Mes Projets</h3><!-- /.menu-title -->
                 <li class="{% if request.resolver_match.view_name == "pipelines" %}active{% endif %}">
                     <a href="{% url 'list_pipelines' %}"> <i class="menu-icon fa fa-edit"></i>Traitements</a>
@@ -39,7 +41,8 @@
 
                 <h3 class="menu-title">Store</h3><!-- /.menu-title -->
 
-                <!--<li class="menu-item-has-children dropdown">
+                {% comment %}
+                <li class="menu-item-has-children dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                        aria-expanded="false"> <i class="menu-icon fa fa-puzzle-piece"></i>Blocks</a>
                     <ul class="sub-menu children dropdown-menu">
@@ -47,7 +50,9 @@
                         <li><i class="menu-icon fa fa-puzzle-piece"></i><a href="#">Output</a></li>
                     </ul>
 
-                </li>-->
+                </li>
+                {% endcomment %}
+
                 <li class="{% if request.resolver_match.view_name == "list_blocks" %}active{% endif %}">
                     <a href="{% url 'list_blocks' %}"> <i class="menu-icon fa fa-puzzle-piece"></i>Blocks</a>
                 </li>
