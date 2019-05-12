@@ -1,9 +1,9 @@
+import ast
 import base64
 import json
 import socket
 import time
 
-import docker
 import numpy as np
 
 import cv2
@@ -22,6 +22,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from api.views import update_result
 from front.utils import create_full_json, spawn_container, get_docker_client
+from lard_library.mercure import Mercure
 from lard_library.pipeline import Pipeline as LibPipeline
 from front import utils
 from front.backend import EmailOrUsernameModelBackend
@@ -203,52 +204,61 @@ def pipeline_execute(request, name):
     inputs_types = request.POST.getlist("inputs_types")
     files = request.FILES.getlist("inputs_values")
 
-    file_cptr = 0
-    inputs_cptr = 0
-    for i in inputs_types:
-        if i == "image":
-            # img = None
-            if file_cptr < len(files):
-                img = cv2.imdecode(np.fromstring(files[file_cptr].read(), dtype=np.uint8), 1).tolist()
-                inputs_values.insert(inputs_cptr, img)
-            file_cptr += 1
-        inputs_cptr += 1
-
-    p = Pipeline.objects.get(name=name)
-    j = json.loads(p.json_value)
-    for b, n, v, t in zip(blocks_names, inputs_names, inputs_values, inputs_types):
-        d = v
-        if t == "float":
-            d = float(v)
-        elif t == "int":
-            d = int(v)
-
-        j.get("blocks").get(b).get("data")[n] = d
-    p.json_value = json.dumps(j)
-    p.save()
-
-    j = json.loads(create_full_json(j))
-    j["name"] = name
-
-    container = spawn_container()
-    for l in container.logs(follow=True, stream=True):
-        s = str(l, "utf-8")
-        if "Running" in s:
-            break
-    ip = str(container.exec_run("awk 'END{print $1}' /etc/hosts")[1], "utf-8").replace("\n", "")
-
-    worker_id = container.short_id
-    PipelineResult.objects.create(user=request.user, pipeline=p, worker_id=worker_id, images="[]", logs="[]")
-
-    local_ip = str(socket.gethostbyname(socket.gethostname()))
-    j["worker_id"] = worker_id
-    j["username"] = str(request.user)
-    j["update_url"] = "http://"+ local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
+    m = Mercure(request.user.username)
+    m.hub_url = 'http://mercure:80/hub'
 
     try:
-        context = requests.post("http://" + ip + ":12300/run", json=j)
+        file_cptr = 0
+        inputs_cptr = 0
+        for i in inputs_types:
+            if i == "image":
+                # img = None
+                if file_cptr < len(files):
+                    img = cv2.imdecode(np.fromstring(files[file_cptr].read(), dtype=np.uint8), 1)
+                    inputs_values.insert(inputs_cptr, str(img.tolist()))
+                file_cptr += 1
+            inputs_cptr += 1
+
+        p = Pipeline.objects.get(name=name)
+        j = json.loads(p.json_value)
+        for b, n, v, t in zip(blocks_names, inputs_names, inputs_values, inputs_types):
+            d = ast.literal_eval(v)
+
+            j.get("blocks").get(b).get("data")[n] = d
+        p.json_value = json.dumps(j)
+        p.save()
+
+
+        j = json.loads(create_full_json(j))
+        j["name"] = name
+
+        container = spawn_container()
+        for l in container.logs(follow=True, stream=True):
+            s = str(l, "utf-8")
+            if "Running" in s:
+                break
+        ip = str(container.exec_run("awk 'END{print $1}' /etc/hosts")[1], "utf-8").replace("\n", "")
+
+        worker_id = container.short_id
+        PipelineResult.objects.create(user=request.user, pipeline=p, worker_id=worker_id, images="[]", logs="[]")
+
+        local_ip = str(socket.gethostbyname(socket.gethostname()))
+        j["worker_id"] = worker_id
+        j["username"] = str(request.user)
+        j["update_url"] = "http://"+ local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
+
+        try:
+            context = requests.post("http://" + ip + ":12300/run", json=j)
+        except Exception:
+            m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
+                               "message": "Le pipeline a échoué."}))
+            pass
+    except AttributeError or ValueError:
+        m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
+                           "message": "Le pipeline a échoué pendant le chargement des inputs."}))
     except Exception:
-        pass
+        m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
+                           "message": "Le pipeline a échoué."}))
 
     return HttpResponse(status=200)
 

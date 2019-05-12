@@ -59,18 +59,18 @@ def update_result(request, worker_id):
         if r.images == "[]":
             m.send(json.dumps({"type": "warning", "title": "Pipeline terminé  : ",
                                "message": "Le pipeline " + r.pipeline.name + " s'est terminé mais n'a pas renvoyé d'image. Cliquez ici pour consulter les logs.",
-                               "url": str(reverse("pipeline_results", kwargs={"id": r.id})), "worker_id": worker_id}))
+                               "url": str(reverse("pipeline_results", kwargs={"id": r.id}))}))
         else:
             m.send(json.dumps({"type": "success", "title": "Pipeline terminé : ",
                                "message": "Le pipeline <b>" + r.pipeline.name + "</b> s'est correctement terminé. Cliquez ici pour voir le résultat",
-                               "url": str(reverse("pipeline_results", kwargs={"id": r.id})), "worker_id": worker_id}))
+                               "url": str(reverse("pipeline_results", kwargs={"id": r.id}))}))
 
         get_docker_client().containers.get(worker_id).remove(force=True)
         return HttpResponse(status=200)
 
     except PipelineResult.DoesNotExist:
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
-                           "message": "Le pipeline a échoué.", "worker_id": worker_id}))
+                           "message": "Le pipeline a échoué."}))
 
         get_docker_client().containers.get(worker_id).remove(force=True)
         return django.http.HttpResponseBadRequest()
