@@ -259,7 +259,8 @@ def pipeline_execute(request, name):
     except AttributeError or ValueError:
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
                            "message": "Le pipeline a échoué pendant le chargement des inputs."}))
-    except Exception:
+    except Exception as e:
+        print(e)
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
                            "message": "Le pipeline a échoué."}))
 
