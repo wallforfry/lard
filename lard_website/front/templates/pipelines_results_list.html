@@ -27,14 +27,18 @@
                                 <thead>
                                 <tr>
                                     <th>Pipeline</th>
-                                    <th>Date</th>
+                                    <th>Durée</th>
+                                    <th>Début</th>
+                                    <th>Fin</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% for b in results %}
                                     <tr>
                                         <td><a href="{% url 'pipeline_results' id=b.id %}">{{ b.pipeline }}</a></td>
+                                        <td>{{ b.created_at|timesince:b.updated_at}}</td>
                                         <td>{{ b.created_at }}</td>
+                                        <td>{{ b.updated_at}}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

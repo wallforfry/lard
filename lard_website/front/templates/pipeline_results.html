@@ -18,17 +18,24 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <strong class="card-title">Pipelines Results</strong>
-                            : {{ result.pipeline }} ( Worker status : {{ worker_status }} )
-                            <div class="btn-group float-right">
-                                <span>{{ result.created_at }}&ensp;</span>
-                                <button type="button" class="btn btn-danger" data-toggle="modal"
-                                        data-target="#deletePipelineResultModal">Supprimer
-                                </button>
+                            <div class="col-sm-6 col-12 mt-2">
+                                <strong class="card-title">Pipelines Results :</strong> {{ result.pipeline }}
+                                ( Worker status : {{ worker_status }} )
+                            </div>
+                            <div class="col-sm-2 col-12 text-right mt-2">
+                                Durée : {{ result.created_at|timesince:result.updated_at}}
+                            </div>
+                            <div class="col-sm-4 col-12 text-right">
+                                <div class="btn-group">
+                                    <span class="mt-2 text-left">{{ result.created_at }}&ensp;</span>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal"
+                                            data-target="#deletePipelineResultModal">Supprimer
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="col col-8">
+                            <div class="col col-sm-8 col-12">
                                 <h6>Images :</h6>
                                 {% for i in images %}
                                     <b>{{ i.name }} :</b>
@@ -40,7 +47,7 @@
                                     </div>
                                 {% endfor %}
                             </div>
-                            <div class="col col-4">
+                            <div class="col col-sm-4 col-12">
                                 <h6>Logs :</h6>
                                 <div class="col-12" style="background-color: #0d152a">
                                     <code>

@@ -232,6 +232,8 @@ def pipeline_execute(request, name):
         j = json.loads(create_full_json(j))
         j["name"] = name
 
+        pr = PipelineResult.objects.create(user=request.user, pipeline=p, images="[]", logs="[]")
+
         container = spawn_container()
         for l in container.logs(follow=True, stream=True):
             s = str(l, "utf-8")
@@ -240,7 +242,8 @@ def pipeline_execute(request, name):
         ip = str(container.exec_run("awk 'END{print $1}' /etc/hosts")[1], "utf-8").replace("\n", "")
 
         worker_id = container.short_id
-        PipelineResult.objects.create(user=request.user, pipeline=p, worker_id=worker_id, images="[]", logs="[]")
+        pr.worker_id = worker_id
+        pr.save()
 
         local_ip = str(socket.gethostbyname(socket.gethostname()))
         j["worker_id"] = worker_id
@@ -248,11 +251,11 @@ def pipeline_execute(request, name):
         j["update_url"] = "http://"+ local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
 
         try:
-            context = requests.post("http://" + ip + ":12300/run", json=j)
+            context = requests.post("http://" + ip + ":12300/run", json=j, timeout=10)
         except Exception:
-            m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
-                               "message": "Le pipeline a échoué."}))
-            pass
+            m.send(json.dumps({"type": "info", "title": "Pipeline en cours : ",
+                               "message": "Ce pipeline semble être un traitement long. Vous serez notifié dès la fin "
+                                          "de l'execution."}))
     except AttributeError or ValueError:
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
                            "message": "Le pipeline a échoué pendant le chargement des inputs."}))
@@ -266,7 +269,7 @@ def pipeline_execute(request, name):
 @login_required
 def pipeline_results_list(request):
     return render(request, "pipelines_results_list.html",
-                  context={"results": PipelineResult.objects.filter(user=request.user).order_by("-updated_at")})
+                  context={"results": PipelineResult.objects.filter(user=request.user).order_by("-created_at")})
 
 
 @login_required

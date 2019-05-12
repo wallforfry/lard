@@ -5,6 +5,7 @@ import django
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
+from django.utils.timesince import timesince
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
@@ -61,8 +62,9 @@ def update_result(request, worker_id):
                                "message": "Le pipeline " + r.pipeline.name + " s'est terminé mais n'a pas renvoyé d'image. Cliquez ici pour consulter les logs.",
                                "url": str(reverse("pipeline_results", kwargs={"id": r.id}))}))
         else:
+            duration = timesince(r.created_at, r.updated_at)
             m.send(json.dumps({"type": "success", "title": "Pipeline terminé : ",
-                               "message": "Le pipeline <b>" + r.pipeline.name + "</b> s'est correctement terminé. Cliquez ici pour voir le résultat",
+                               "message": "Le pipeline <b>" + r.pipeline.name + "</b> s'est correctement terminé avec une durée de <b>"+duration+"</b>. Cliquez ici pour voir le résultat",
                                "url": str(reverse("pipeline_results", kwargs={"id": r.id}))}))
 
         get_docker_client().containers.get(worker_id).remove(force=True)
