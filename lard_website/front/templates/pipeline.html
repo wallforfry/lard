@@ -68,8 +68,10 @@
         </div>
     </div>
 
-    <div id="cy"></div>
-
+    <div class="cy-wrapper">
+        <div id="loader" class="loader"></div>
+        <div id="cy"></div>
+    </div>
 
     <div id="modalDiv"></div>
     <div id="resultModalDiv"></div>
@@ -113,9 +115,10 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-
+            jQuery("#loader").fadeIn(0);
             jQuery.getJSON("{% url 'pipeline_get_cytoscape' name=name %}", function (data) {
                 initCytoscape(data);
+                jQuery("#loader").fadeOut();
             });
         });
 
@@ -165,6 +168,8 @@
                         });
                         jQuery("#pipelineModal").modal('hide');
                         /*jQuery.post("
+
+
 
 
 

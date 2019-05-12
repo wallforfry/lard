@@ -1,29 +1,49 @@
+.cy-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 84vh;
+}
+
 .loader {
-    display: none;
     position: absolute;
-    top: 20%;
-    left: calc(50% - 60px);
-    border-top: 16px solid blue;
-    border-right: 16px solid red;
-    border-bottom: 16px solid green;
-    border-left: 16px solid black;
+    display: flex;
+    width: 7em;
+    height: 7em;
+    border: 6px solid transparent;
+    border-top-color: #3cefff;
+    border-bottom-color: #3cefff;
     border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 3s linear infinite;
-    z-index: 10000;
+    animation: spin 1.5s linear infinite;
+}
+
+.loader:before {
+    content: '';
+    display: block;
+    margin: auto;
+    width: 1.5em;
+    height: 1.5em;
+    border: 6px solid #3cefff;
+    border-radius: 50%;
+    animation: pulse 1s alternate ease-in-out infinite;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
+    to {
         transform: rotate(360deg);
     }
 }
 
- [data-notify="title"] {
-     font-weight: bold;
+@keyframes pulse {
+    from {
+        transform: scale(0.5);
+    }
+    to {
+        transform: scale(1);
+    }
+}
 
- }
+[data-notify="title"] {
+    font-weight: bold;
+
+}

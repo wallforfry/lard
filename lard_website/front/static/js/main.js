@@ -34,16 +34,16 @@ jQuery(document).ready(function ($) {
     // 	$('.user-menu').parent().toggleClass('open');
     // });
 
-    jQuery("#cy").height(jQuery("#right-panel").height() - 186);
+    /*jQuery("#cy").height(jQuery("#right-panel").height() - 186);
 
     $(window).on('resize', function () {
         var win = $(this); //this = window
-        if (win.height() >= 820) { /* ... */
+        if (win.height() >= 820) {
         }
-        if (win.width() >= 1280) { /* ... */
+        if (win.width() >= 1280) {
         }
         jQuery("#cy").height(jQuery("#right-panel").height() - 186);
     });
-
+*/
 
 });
