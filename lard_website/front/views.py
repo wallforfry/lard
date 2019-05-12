@@ -225,8 +225,8 @@ def pipeline_execute(request, name):
             d = ast.literal_eval(v)
 
             j.get("blocks").get(b).get("data")[n] = d
-        p.json_value = json.dumps(j)
-        p.save()
+        #p.json_value = json.dumps(j)
+        #p.save()
 
 
         j = json.loads(create_full_json(j))
