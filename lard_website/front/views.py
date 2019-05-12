@@ -266,6 +266,21 @@ def pipeline_execute(request, name):
     return HttpResponse(status=200)
 
 
+@csrf_exempt
+def pipeline_cancel(request, id):
+    if request.method == "POST":
+        pr = PipelineResult.objects.get(id=id)
+        m = Mercure(request.user.username)
+        m.hub_url = 'http://mercure:80/hub'
+        m.send(json.dumps({"type": "info", "title": "Execution annulée : ",
+                           "message": "L'execution du pipeline <b>" + pr.pipeline.name + "</b> a été annulée. La page va être rechargée."}))
+
+        get_docker_client().containers.get(pr.worker_id).remove(force=True)
+        time.sleep(5)
+        return HttpResponse(status=200)
+    return HttpResponseBadRequest()
+
+
 @login_required
 def pipeline_results_list(request):
     return render(request, "pipelines_results_list.html",
@@ -281,14 +296,14 @@ def pipeline_results(request, id):
     try:
         worker_status = get_docker_client().containers.get(r.worker_id).status
     except Exception:
-        worker_status = "Removed"
+        worker_status = "removed"
 
     return render(request, "pipeline_results.html",
                   context={"result": r, "images": images, "logs": logs, "worker_status": worker_status})
 
 @login_required
 def pipeline_result_delete(request, id):
-    if request.POST:
+    if request.method == "POST":
         try:
             result = PipelineResult.objects.get(id=id, user=request.user)
             result.delete()

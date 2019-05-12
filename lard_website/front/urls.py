@@ -21,6 +21,7 @@ urlpatterns = [
     path('pipelines/', views.list_piplines, name="list_pipelines"),
     path('results/', views.pipeline_results_list, name="pipelines_results_list"),
     path('results/<str:id>', views.pipeline_results, name="pipeline_results"),
+    path('results/<str:id>/cancel', views.pipeline_cancel, name="pipeline_cancel"),
     url(r'^results/(?P<id>[\w]+)/delete$', views.pipeline_result_delete, name='pipeline_result_delete'),
     path('pipelines/add', views.pipeline_add, name="pipeline_add"),
     path('pipelines/<str:name>', views.pipeline, name="pipeline"),

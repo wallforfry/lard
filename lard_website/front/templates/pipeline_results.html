@@ -21,9 +21,15 @@
                             <div class="col-sm-6 col-12 mt-2">
                                 <strong class="card-title">Pipelines Results :</strong> {{ result.pipeline }}
                                 ( Worker status : {{ worker_status }} )
+                                {% if worker_status != "removed" %}
+                                <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="tooltip"
+                                        data-placement="right" title="Annuler l'execution"
+                                        onclick="jQuery.post('{% url 'pipeline_cancel' id=result.id %}', function(){location.reload();})"><span
+                                        class="fa fa-close"/></button>
+                                {% endif %}
                             </div>
                             <div class="col-sm-2 col-12 text-right mt-2">
-                                Durée : {{ result.created_at|timesince:result.updated_at}}
+                                Durée : {{ result.created_at|timesince:result.updated_at }}
                             </div>
                             <div class="col-sm-4 col-12 text-right">
                                 <div class="btn-group">
