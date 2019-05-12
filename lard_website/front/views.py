@@ -222,7 +222,10 @@ def pipeline_execute(request, name):
         p = Pipeline.objects.get(name=name)
         j = json.loads(p.json_value)
         for b, n, v, t in zip(blocks_names, inputs_names, inputs_values, inputs_types):
-            d = ast.literal_eval(v)
+            try:
+                d = ast.literal_eval(v)
+            except ValueError:
+                d = str(v)
 
             j.get("blocks").get(b).get("data")[n] = d
         #p.json_value = json.dumps(j)
@@ -260,7 +263,6 @@ def pipeline_execute(request, name):
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
                            "message": "Le pipeline a échoué pendant le chargement des inputs."}))
     except Exception as e:
-        print(e)
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
                            "message": "Le pipeline a échoué."}))
 
