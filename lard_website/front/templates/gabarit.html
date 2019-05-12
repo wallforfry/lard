@@ -118,7 +118,7 @@
                     target: '_blank'
                 }, {
                     type: type,
-                    delay: 5000 ? type === "success" : 10000
+                    delay: type === "success" ? 10000 : 5000
                 });
             } else if (type && title && message) {
                 jQuery.notify({
