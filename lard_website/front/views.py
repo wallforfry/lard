@@ -35,7 +35,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def index(request):
-    return render(request, "index.html")
+    return redirect(reverse(dashboard))#render(request, "index.html")
 
 
 @login_required
