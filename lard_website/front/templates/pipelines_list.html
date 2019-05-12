@@ -60,49 +60,6 @@
     </div><!-- .content -->
 
     {% if perms.front.add_pipeline %}
-        <!-- Modal -->
-        <div class="modal fade" id="addPiplineModal" tabindex="-1" role="dialog" aria-labelledby="addPipelineModal"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addPiplineModal">Ajouter un pipeline</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form id="addPipelineForm" method="post" action="{% url 'pipeline_add' %}">
-                        <div class="modal-body">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="nameInput">Nom du pipeline</label>
-                                <input type="text" class="form-control" required id="nameInput" name="name"
-                                       placeholder="Nom du pipeline"/>
-                            </div>
-                            <div class="form-group">
-                                <label for="descriptionTextarea">Description</label>
-                                <textarea class="form-control" required id="descriptionTextarea" rows="3"
-                                          name="description"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <label for="isPublic">Public :</label>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input type="checkbox" class="form-control" id="isPublic" name="public" checked
-                                               style="height: 20px">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-primary">Ajouter</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        {% include 'pipeline_edit_info_modal.html' %}
     {% endif %}
 {% endblock %}

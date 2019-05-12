@@ -18,6 +18,8 @@
                 </a>
                 <button id="runButton" type="button" class="btn btn-success btn-lg"><i class="fa fa-play"></i> Run
                 </button>
+                <button type="button" class="btn btn-warning btn-lg" id="editButton">Editer
+                </button>
                 <button type="button" class="btn btn-danger btn-lg" data-toggle="modal"
                         data-target="#deletePipelineModal">Supprimer
                 </button>
@@ -179,8 +181,8 @@
             });
 
             jQuery("#editButton").click(function () {
-                jQuery('#modalDiv').load("edit/test", function (result) {
-                    jQuery("#pipelineModal").modal({show: true});
+                jQuery('#modalDiv').load("/pipelines/{{ name }}/info/edit", function (result) {
+                    jQuery("#addPiplineModal").modal({show: true});
 
                 });
             });

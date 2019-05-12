@@ -81,7 +81,7 @@ def pipeline_edit_inputs(request, name, block_name, block_id):
         "block": block,
     }
 
-    return render(request, "pipeline_edit_modal.html", context=context)
+    return render(request, "pipeline_edit_blocks_modal.html", context=context)
 
 
 @login_required
@@ -96,7 +96,7 @@ def pipeline_info_block(request, name, block_name, block_id):
         'block_base': Block.objects.get(name=block.get("type"))
     }
 
-    return render(request, "pipeline_info_modal.html", context=context)
+    return render(request, "pipeline_block_info_modal.html", context=context)
 
 @login_required
 def pipeline_edit_edge_inputs(request, name, edge_source, edge_target, edge_id, old_name, new_name):
@@ -142,6 +142,18 @@ def pipeline_add(request):
     else:
         return HttpResponseBadRequest()
 
+@login_required
+def pipeline_info_edit(request, name):
+    p = Pipeline.objects.get(name=name)
+    if request.POST:
+        p.name = request.POST.get("name", p.name)
+        p.description = request.POST.get("description", p.description)
+        p.is_public = True if "public" in request.POST else False
+        p.save()
+
+        return redirect('pipeline', name=p.name)
+    else:
+        return render(request, 'pipeline_edit_info_modal.html', context={"pipeline": p})
 
 @login_required
 def pipeline_edit(request, name):

@@ -1,0 +1,56 @@
+<!-- Modal -->
+<div class="modal fade" id="addPiplineModal" tabindex="-1" role="dialog" aria-labelledby="addPipelineModal"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                {% if edit %}
+                    <h5 class="modal-title" id="addPiplineModal">Modifier le pipeline {{ name }}</h5>
+                {% else %}
+                    <h5 class="modal-title" id="addPiplineModal">Ajouter un pipeline</h5>
+                {% endif %}
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% if pipeline %}
+                <form id="addPipelineForm" method="post" action="{% url 'pipeline_info_edit' name=pipeline.name%}">
+            {% else %}
+                <form id="addPipelineForm" method="post" action="{% url 'pipeline_add' %}">
+            {% endif %}
+            <div class="modal-body">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="nameInput">Nom du pipeline</label>
+                    <input type="text" class="form-control" required id="nameInput" name="name"
+                           {% if pipeline %}value="{{ pipeline.name }}"{% else %}placeholder="Nom du pipeline"{% endif %}/>
+                </div>
+                <div class="form-group">
+                    <label for="descriptionTextarea">Description</label>
+                    <textarea class="form-control" required id="descriptionTextarea" rows="3"
+                              name="description">{{ pipeline.description }}</textarea>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="isPublic">Public :</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="checkbox" class="form-control" id="isPublic" name="public" {% if pipeline and not pipeline.is_public %}{% else %}checked{% endif %}
+                                   style="height: 20px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                {% if pipeline %}
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                {% else %}
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                {% endif %}
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
