@@ -61,7 +61,7 @@ def list_piplines(request):
 def pipeline(request, name):
     context = {
         "name": name,
-        "blocks": Block.objects.all()
+        "blocks": Block.objects.all().order_by('name')
     }
     """p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
