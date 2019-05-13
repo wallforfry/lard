@@ -43,6 +43,7 @@ class Pipeline:
                 exec("def log(m): logs.append({'name': \"" + name + "\", 'message': str(m)})", globals())
 
                 try:
+                    globals().update({"pipeline": self.pipeline})
                     exec(code, globals())
                     if self.pipeline.is_running:
                         exec("result = main(data)", globals(), result)
