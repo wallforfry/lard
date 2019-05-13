@@ -37,7 +37,7 @@
                 <div class="form-inline align-items-center">
                     <select class="form-control mb-2 mr-sm-2" id="type" onchange="selectValue()">
                         {% for b in blocks %}
-                            <option>{{ b }}</option>
+                            <option value="{{ b }}">{{ b|title }}</option>
                         {% endfor %}
                     </select>
 
