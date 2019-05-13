@@ -10,6 +10,13 @@ function initCytoscape(data) {
         },
 
         style: [
+
+            {
+                selector: "node[?on_launch]",
+                style: {
+                    'background-color': '#28a745',
+                }
+            },
             {
                 selector: "node",
                 style: {
@@ -353,6 +360,7 @@ function createArray(cy) {
     });
     jsonCytoscape["edges"] = array_edges;
     jsonCytoscape["nodes"] = array_nodes;
+    cy.style().update();
     updatePipeline(jsonCytoscape);
 }
 

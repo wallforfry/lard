@@ -37,7 +37,7 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-2">
-                            <select class="form-control" id="type" onchange="selectValue()">
+                            <select class="form-control selectpicker" id="type" onchange="selectValue()" data-show-subtext="true" data-live-search="true">
                                 {% for b in blocks %}
                                     <option>{{ b }}</option>
                                 {% endfor %}
