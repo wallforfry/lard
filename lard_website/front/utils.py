@@ -77,6 +77,12 @@ def create_full_json(j: dict) -> str:
 
     return json.dumps(j)
 
+def merge_pipeline_json(p_p1: dict, p_p2: dict) -> dict:
+    result = p_p1.copy()
+    result["blocks"].update(p_p2["blocks"])
+    result["liaisons"] += p_p2["liaisons"]
+    return result
+
 def get_docker_client():
     return docker.DockerClient(base_url='unix://var/run/docker.sock')
 
