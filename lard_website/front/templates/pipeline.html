@@ -3,7 +3,7 @@
 {% block content %}
 
     <div class="breadcrumbs">
-        <div class="col-sm-10">
+        <div class="{% if user == pipeline.owner %}col-sm-10{% else %}col-sm-12{% endif %}">
             <div class="page-header float-left">
                 <div class="page-title">
                     <h1>{{ name }}</h1>
@@ -14,20 +14,22 @@
                 </button>
             </div>
         </div>
-        <div class="btn-toolbar col-12 col-sm-2 mt-2" role="toolbar"
-             aria-label="Toolbar with button groups">
-            <div class="btn-group">
-                <a class="btn btn-info text-white" data-toggle="collapse" href="#collapseExample" role="button"
-                   aria-expanded="false" aria-controls="collapseExample">
-                    <i class="fa fa-caret-down"></i> Add
-                </a>
-                <button type="button" class="btn btn-warning text-white" id="editButton">Editer
-                </button>
-                <button type="button" class="btn btn-danger" data-toggle="modal"
-                        data-target="#deletePipelineModal">Supprimer
-                </button>
+        {% if user == pipeline.owner %}
+            <div class="btn-toolbar col-12 col-sm-2 mt-2" role="toolbar"
+                 aria-label="Toolbar with button groups">
+                <div class="btn-group">
+                    <a class="btn btn-info text-white" data-toggle="collapse" href="#collapseExample" role="button"
+                       aria-expanded="false" aria-controls="collapseExample">
+                        <i class="fa fa-caret-down"></i> Add
+                    </a>
+                    <button type="button" class="btn btn-warning text-white" id="editButton">Editer
+                    </button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal"
+                            data-target="#deletePipelineModal">Supprimer
+                    </button>
+                </div>
             </div>
-        </div>
+        {% endif %}
     </div>
 
 
@@ -51,7 +53,7 @@
                     <button id="create" class="btn btn-success mb-2">Create</button>
                     <button id="close" class="btn btn-danger mb-2 mr-sm-2">Close</button>
 
-                     <select class="form-control mb-2 mr-sm-2" id="pipeline">
+                    <select class="form-control mb-2 mr-sm-2" id="pipeline">
                         {% for p in pipelines %}
                             <option value="{{ p }}">{{ p|title }}</option>
                         {% endfor %}
@@ -182,7 +184,7 @@
             jQuery('#collapseExample').collapse('hide');
         });
 
-
+        let userIsOwner = {% if user == pipeline.owner %}true{% else %}false{% endif %}
         let pipelineName = "{{ name }}";
     </script>
 {% endblock %}

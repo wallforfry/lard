@@ -389,17 +389,19 @@ function createArray(cy) {
 }
 
 function updatePipeline(data) {
-    jQuery.ajax({
-        type: "POST",
-        url: "/api/piplines/update",
-        dataType: "json",
-        traditional: true,
-        data: {'name': pipelineName, 'pipeline': JSON.stringify(data)},
-        success: function (code, statut) {
-            console.log(pipelineName + " updated");
-        },
-        error: function (code, statut) {
-            console.log("Error during " + pipelineName + " update");
-        }
-    });
+    if(userIsOwner) {
+        jQuery.ajax({
+            type: "POST",
+            url: "/api/piplines/update",
+            dataType: "json",
+            traditional: true,
+            data: {'name': pipelineName, 'pipeline': JSON.stringify(data)},
+            success: function (code, statut) {
+                console.log(pipelineName + " updated");
+            },
+            error: function (code, statut) {
+                console.log("Error during " + pipelineName + " update");
+            }
+        });
+    }
 }
