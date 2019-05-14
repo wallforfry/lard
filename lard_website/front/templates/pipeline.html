@@ -10,15 +10,17 @@
                 </div>
             </div>
             <div class="mt-0 mt-sm-2 text-right">
-                <button id="runButton" type="button" class="btn btn-success"><i class="fa fa-play"></i> Run
-                </button>
+                <button id="runButton" type="button" class="btn btn-success"><i class="fa fa-play"></i> Run</button>
+                  <a href="{% url 'pipeline_export' name=name %}"><button type="button" class="btn btn-primary"
+                            {% if not perms.front.view_pipeline %}disabled{% endif %}>Exporter
+                    </button></a>
             </div>
         </div>
         {% if user == pipeline.owner %}
             <div class="btn-toolbar col-12 col-sm-2 mt-2" role="toolbar"
                  aria-label="Toolbar with button groups">
                 <div class="btn-group">
-                    <a class="btn btn-info text-white" data-toggle="collapse" href="#collapseExample" role="button"
+                    <a class="btn btn-info text-white mr-1" data-toggle="collapse" href="#collapseExample" role="button"
                        aria-expanded="false" aria-controls="collapseExample">
                         <i class="fa fa-caret-down"></i> Add
                     </a>

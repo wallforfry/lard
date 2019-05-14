@@ -177,6 +177,40 @@ def pipeline_add(request):
         return HttpResponseBadRequest()
 
 @login_required
+def pipeline_import(request):
+    if request.POST:
+        if "data" not in request.FILES:
+            print("NoData")
+            print(request.FILES)
+            print(request.POST)
+            return HttpResponseBadRequest()
+        if request.FILES['data']:
+            data = json.dumps(json.loads(request.FILES['data'].read()))
+            name = request.POST.get("name")
+            description = request.POST.get("description")
+            public = True if "public" in request.POST else False
+            owner = request.user
+
+            Pipeline.objects.create(name=name, description=description, owner=owner, is_public=public, json_value=data)
+            return redirect('pipeline', name=name)
+        else:
+            print("NoFile")
+            return HttpResponseBadRequest()
+    else:
+        return render(request, 'pipeline_import_modal.html')
+
+@login_required
+def pipeline_export(request, name):
+    try:
+        p = Pipeline.objects.get(name=name)
+    except Pipeline.DoesNotExist as e:
+        return django.http.HttpResponseNotFound()
+
+    response = JsonResponse(json.loads(p.as_json()), content_type="application/json")
+    response['Content-Disposition'] = 'attachment; filename=' + name.lower() + '.json'
+    return response
+
+@login_required
 def pipeline_info_edit(request, name):
     p = Pipeline.objects.get(name=name)
     if request.POST:

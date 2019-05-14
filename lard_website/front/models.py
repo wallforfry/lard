@@ -13,7 +13,7 @@ class Pipeline(models.Model):
         return self.name
 
     def as_json(self):
-        return dict(name=self.name, json_value=self.json_value, owner=self.owner, is_public=self.is_public)
+        return dict(name=self.name, json_value=self.json_value, owner=self.owner, is_public=self.is_public, description=self.description)
 
 class InputOutputType(models.Model):
     value = models.CharField(max_length=255, blank=False, null=False)

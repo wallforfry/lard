@@ -20,8 +20,13 @@
                         <div class="card-header">
                             <strong class="card-title">Pipelines</strong>
                             <div class="btn-group float-right">
-                                {% if perms.front.add_pipline %}
+                                {% if perms.front.add_pipeline and perms.front.change_pipeline %}
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#importPipelineModal">Importer
+                                    </button>
+                                {% endif %}
+                                {% if perms.front.add_pipline %}
+                                    <button type="button" class="btn btn-primary ml-1" data-toggle="modal"
                                             data-target="#addPiplineModal">Créer un pipeline
                                     </button>
                                 {% endif %}
@@ -61,5 +66,8 @@
 
     {% if perms.front.add_pipeline %}
         {% include 'pipeline_edit_info_modal.html' %}
+    {% endif %}
+    {% if perms.front.add_pipeline and perms.front.change_pipeline %}
+        {% include 'pipeline_import_modal.html' %}
     {% endif %}
 {% endblock %}
