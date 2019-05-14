@@ -21,7 +21,7 @@ import requests
 from django.utils.datastructures import MultiValueDictKeyError
 
 from api.views import update_result
-from front.utils import create_full_json, spawn_container, get_docker_client
+from front.utils import create_full_json, spawn_container, get_docker_client, merge_pipeline_json
 from lard_library.mercure import Mercure
 from lard_library.pipeline import Pipeline as LibPipeline
 from front import utils
@@ -61,7 +61,8 @@ def list_piplines(request):
 def pipeline(request, name):
     context = {
         "name": name,
-        "blocks": Block.objects.all().order_by('name')
+        "blocks": Block.objects.all().order_by('name'),
+        "pipelines": Pipeline.objects.filter(is_public=True)
     }
     """p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
@@ -70,6 +71,37 @@ def pipeline(request, name):
 
     return render(request, 'pipeline.html', context=context)
 
+@login_required
+@csrf_exempt
+def pipeline_merge(request, name):
+    pipeline_name = name
+
+    m = Mercure(request.user.username)
+    m.hub_url = 'http://mercure:80/hub'
+
+    try:
+        to_merge_name = request.POST.get("to_merge")
+        p = Pipeline.objects.get(name=pipeline_name, owner=request.user)
+        to_merge = Pipeline.objects.get(name=to_merge_name)
+
+        merged = merge_pipeline_json(json.loads(p.json_value), json.loads(to_merge.json_value))
+
+        p.json_value = json.dumps(merged)
+        p.save()
+
+        m.send(json.dumps({"type": "info", "title": "Pipeline merged : ",
+                           "message": "Les deux pipelines ont bien été fusionnés"}))
+
+        p = Pipeline.objects.get(name=name)
+        j = json.loads(p.json_value)
+        p = LibPipeline(name)
+        # j = json.loads(create_full_json(j))
+        p.load_json(j)
+        return JsonResponse(p.get_cytoscape(), safe=False)
+    except Exception:
+        m.send(json.dumps({"type": "danger", "title": "Pipeline merged : ",
+                           "message": "Echec de la fusion"}))
+        return HttpResponseBadRequest()
 
 @login_required
 def pipeline_edit_inputs(request, name, block_name, block_id):

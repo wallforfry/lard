@@ -255,6 +255,30 @@ function initCytoscape(data) {
         createArray(cy);
     });
 
+    document.querySelector("#import").addEventListener("click", function () {
+
+        //Récupération du nom
+        let toMerge = document.getElementById("pipeline").value;
+        jQuery("#loader").fadeIn(0);
+        jQuery.ajax({
+            type: "POST",
+            url: "/pipelines/" + pipelineName + "/merge",
+            dataType: "json",
+            traditional: true,
+            data: {'to_merge': toMerge},
+            success: function (data, statut) {
+                console.log(data);
+                console.log(statut);
+                    initCytoscape(data);
+                    console.log("Merge " + pipelineName + " and " + toMerge);
+            },
+            error: function (code, statut) {
+                console.log("Error during " + pipelineName + " merge");
+            }
+        });
+
+        jQuery("#loader").fadeOut();
+    });
 
 //Permet de delete nodes et edges avec "Suppr"
     document.addEventListener("keydown", function (e) {
