@@ -48,3 +48,9 @@
     font-weight: bold;
 
 }
+
+
+.fab {
+    width: 48px !important;
+    height: 48px !important;
+}

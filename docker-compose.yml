@@ -8,6 +8,8 @@ services:
       POSTGRES_USER: "lard"
       POSTGRES_PASSWORD: "dral"
       POSTGRES_DB: "lard"
+    ports:
+      - "5432:5432"
   web:
     build: ./lard_website
     command: python manage.py runserver 0.0.0.0:8000

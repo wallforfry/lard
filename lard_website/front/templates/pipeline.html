@@ -3,35 +3,40 @@
 {% block content %}
 
     <div class="breadcrumbs">
-        <div class="{% if user == pipeline.owner %}col-sm-10{% else %}col-sm-12{% endif %}">
-            <div class="page-header float-left">
+        <div class="row justify-content-between">
+            <div class="page-header col-auto">
                 <div class="page-title">
                     <h1>{{ name }}</h1>
                 </div>
             </div>
-            <div class="mt-0 mt-sm-2 text-right">
-                <button id="runButton" type="button" class="btn btn-success"><i class="fa fa-play"></i> Run</button>
-                  <a href="{% url 'pipeline_export' name=name %}"><button type="button" class="btn btn-primary"
-                            {% if not perms.front.view_pipeline %}disabled{% endif %}>Exporter
-                    </button></a>
+            <div class="mt-auto mb-sm-auto">
+                <div class="col-auto">
+                    <button id="runButton" type="button" class="btn btn-success"><i class="fa fa-play"></i> Run</button>
+                    <a href="{% url 'pipeline_export' name=name %}">
+                        <button type="button" class="btn btn-primary"
+                                {% if not perms.front.view_pipeline %}disabled{% endif %}>Exporter
+                        </button>
+                    </a>
+                </div>
+                {% if user == pipeline.owner %}
+                    <div class="col-auto mt-1 mt-sm-0" role="toolbar"
+                         aria-label="Toolbar with button groups">
+                        <div class="btn-group">
+                            <a class="btn btn-info text-white mr-1" data-toggle="collapse" href="#collapseExample"
+                               role="button"
+                               aria-expanded="false" aria-controls="collapseExample">
+                                <i class="fa fa-caret-down"></i> Add
+                            </a>
+                            <button type="button" class="btn btn-warning text-white" id="editButton">Editer
+                            </button>
+                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                    data-target="#deletePipelineModal">Supprimer
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
-        {% if user == pipeline.owner %}
-            <div class="btn-toolbar col-12 col-sm-2 mt-2" role="toolbar"
-                 aria-label="Toolbar with button groups">
-                <div class="btn-group">
-                    <a class="btn btn-info text-white mr-1" data-toggle="collapse" href="#collapseExample" role="button"
-                       aria-expanded="false" aria-controls="collapseExample">
-                        <i class="fa fa-caret-down"></i> Add
-                    </a>
-                    <button type="button" class="btn btn-warning text-white" id="editButton">Editer
-                    </button>
-                    <button type="button" class="btn btn-danger" data-toggle="modal"
-                            data-target="#deletePipelineModal">Supprimer
-                    </button>
-                </div>
-            </div>
-        {% endif %}
     </div>
 
 
@@ -71,7 +76,11 @@
         <div id="loader" class="loader"></div>
         <div id="cy"></div>
     </div>
-
+    <div class="fixed-bottom justify-content-end row mr-1 mb-3">
+        <div class="col-auto align-self-end">
+            <button type="button" class="btn btn-primary btn-lg text-white fab rounded-circle float-right">?</button>
+        </div>
+    </div>
     <div id="modalDiv"></div>
     <div id="resultModalDiv"></div>
 
