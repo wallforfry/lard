@@ -4,10 +4,27 @@ function initCytoscape(data) {
         container: document.getElementById("cy"),
 
         layout: {
-            name: 'circle',
+            name: 'cose',
+            idealEdgeLength: 10,
+            nodeOverlap: 20,
+            refresh: 20,
+            fit: true,
+            padding: 30,
+            randomize: false,
+            componentSpacing: 100,
+            nodeRepulsion: 10000000,
+            edgeElasticity: 100,
+            nestingFactor: 5,
+            gravity: 800,
+            numIter: 1000,
+            initialTemp: 200,
+            coolingFactor: 0.95,
+            minTemp: 1.0
+
 
         },
         style: [
+
 
             {
                 selector: "node[?on_launch]",
@@ -25,14 +42,17 @@ function initCytoscape(data) {
                 selector: "node",
                 style: {
                     "content": "data(name)",
-                    "shape": "square",
-                    'color': 'black'
+                    "shape": "round-rectangle",
+                    'color': 'black',
+                    'text-background-color': '#f1f2f7',
+                    'text-background-opacity': 1
+
                 }
             },
             {
                 selector: 'node:selected',
                 style: {
-                    'background-color': '#2E86C1',
+                    'background-color': '#266fc1',
                 }
             },
             {
@@ -44,13 +64,6 @@ function initCytoscape(data) {
                     'line-color': '#009688',
                     'target-arrow-color': '#009688',
                     'arrow-scale': 2,
-                    'line-style': 'solid',
-
-                }
-            },
-            {
-                selector: "edge[?old_name]",
-                style: {
                     'line-style': 'dashed',
                     'line-dash-pattern': [7, 4]
 
@@ -59,7 +72,8 @@ function initCytoscape(data) {
             {
                 selector: 'edge:selected',
                 style: {
-                    'line-color': '#2E86C1'
+                    'line-color': '#266fc1',
+                    'target-arrow-color': '#266fc1'
                 }
             },
 
@@ -116,7 +130,7 @@ function initCytoscape(data) {
                 style: {
                     "opacity": 0
                 }
-            },
+            }
         ],
 
         elements: data
@@ -140,7 +154,6 @@ function initCytoscape(data) {
     };
 
     var eh = cy.edgehandles(defaults);
-    let menu = cy.cxtmenu(defaults);
     var supp;
 
     cy.cxtmenu({
@@ -238,11 +251,6 @@ function initCytoscape(data) {
         ]
     });
 
-    cy.on('create', 'node', function (evt) {
-        var node = evt.target;
-        console.log('tapped ' + node.id());
-    });
-
 
 //Permet de faire la création du node
     document.querySelector("#create").addEventListener("click", function () {
@@ -286,8 +294,8 @@ function initCytoscape(data) {
             success: function (data, statut) {
                 console.log(data);
                 console.log(statut);
-                    initCytoscape(data);
-                    console.log("Merge " + pipelineName + " and " + toMerge);
+                initCytoscape(data);
+                console.log("Merge " + pipelineName + " and " + toMerge);
             },
             error: function (code, statut) {
                 console.log("Error during " + pipelineName + " merge");
@@ -348,9 +356,6 @@ function initCytoscape(data) {
 
     });
 
-    cy.elements().forEach(function (elem) {
-        console.log(elem.data());
-    });
 }
 
 function edit(cy, param) {
@@ -406,7 +411,7 @@ function createArray(cy) {
 }
 
 function updatePipeline(data) {
-    if(userIsOwner) {
+    if (userIsOwner) {
         jQuery.ajax({
             type: "POST",
             url: "/api/piplines/update",
