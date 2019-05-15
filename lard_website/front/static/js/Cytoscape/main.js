@@ -12,7 +12,7 @@ function initCytoscape(data) {
             padding: 30,
             randomize: false,
             componentSpacing: 100,
-            nodeRepulsion: 10000000,
+            nodeRepulsion: 20000000,
             edgeElasticity: 100,
             nestingFactor: 5,
             gravity: 800,
@@ -44,8 +44,9 @@ function initCytoscape(data) {
                     "content": "data(name)",
                     "shape": "round-rectangle",
                     'color': 'black',
-                    'text-background-color': '#f1f2f7',
-                    'text-background-opacity': 1
+                    'text-outline-width': 1,
+                    'text-outline-color': '#f1f2f7',
+
 
                 }
             },
