@@ -35,7 +35,7 @@ function initCytoscape(data) {
             {
                 selector: 'node[type = "Output"]',
                 style: {
-                    'background-color': '#bd2130',
+                    'background-color': '#dc3545',
                 }
             },
             {
