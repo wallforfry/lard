@@ -342,6 +342,9 @@ function initCytoscape(data) {
             e.preventDefault();
             createArray(cy);
             jQuery('#runButton').trigger('click');
+        }
+        if (e.keyCode === 13) {
+            jQuery('#collapseExample').collapse('toggle');
 
         }
 
