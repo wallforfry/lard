@@ -454,3 +454,21 @@ function updatePipeline(data) {
         });
     }
 }
+
+var script = document.createElement("script"),
+body = document.getElementsByTagName("body")[0],
+toggle = false;
+script.type = "text/javascript";
+script.addEventListener("load", function () {
+    new KonamiCode(function () {
+        if (toggle)   {
+            toggle = false;
+            body.style = "overflow-x: hidden;transition: transform 2s ease;transform: rotate(0deg)";
+        } else {
+            toggle = true;
+            body.style = "overflow-x: hidden;transition: transform 2s ease;transform: rotate(180deg)";
+        }
+    });
+});
+script.src = "https://cdn.rawgit.com/Haeresis/konami-code-js/master/src/konami-code.js";
+body.appendChild(script);
