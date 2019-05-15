@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from front.models import Pipeline, Block, InputOutputType, InputOutput, PipelineResult
+from front.models import Pipeline, Block, InputOutputType, InputOutput, PipelineResult, Vote
+
 
 class PipelineResultAdmin(admin.ModelAdmin):
     search_fields = ('pipeline', 'user', 'created_at', 'updated_at')
@@ -10,6 +11,7 @@ class PipelineResultAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Pipeline)
+admin.site.register(Vote)
 admin.site.register(PipelineResult, PipelineResultAdmin)
 admin.site.register(Block)
 admin.site.register(InputOutput)
