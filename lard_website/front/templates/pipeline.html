@@ -78,7 +78,17 @@
     </div>
     <div class="fixed-bottom justify-content-end row mr-1 mb-3">
         <div class="col-auto align-self-end">
-            <button type="button" class="btn btn-primary btn-lg text-white fab rounded-circle float-right">?</button>
+
+<div class="menu pmd-floating-action"  role="navigation">
+    <button type="button" class="btn btn-danger btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
+        <span class="fa fa-thumbs-down"></span></button>
+    <button type="button" class="btn btn-success btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
+        <span class="fa fa-thumbs-up"></span></button>
+
+    <button type="button" class="btn btn-primary btn-lg fab rounded-circle pmd-floating-action-btn">
+        <span class="fa fa-plus" ></span></button>
+</div>
+
         </div>
     </div>
     <div id="modalDiv"></div>
@@ -189,6 +199,10 @@
             });
 
         });
+
+        $("#main").click(function () {
+            $("#mini-fab").toggleClass('hidden');
+        });
     </script>
 
 
@@ -200,4 +214,25 @@
         let userIsOwner = {% if user == pipeline.owner %}true{% else %}false{% endif %}
         let pipelineName = "{{ name }}";
     </script>
+
+    <style>
+    .pmd-floating-action { bottom: 0; position: fixed;  margin:1em;  right: 0; }
+.pmd-floating-action-btn { display:block; position: relative; transition: all .2s ease-out;}
+
+.pmd-floating-action-btn:last-child:before { font-size: 14px; bottom: 25%;}
+.pmd-floating-action-btn:active, .pmd-floating-action-btn:focus, .pmd-floating-action-btn:hover {box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.18), 0px 4px 12px -7px rgba(0, 0, 0, 0.15);}
+.pmd-floating-action-btn:not(:last-child){ opacity: 0; -ms-transform: translateY(20px) scale(0.3); transform: translateY(20px) scale(0.3); margin-bottom:15px; margin-left:8px; position:absolute; bottom:0;}
+.pmd-floating-action-btn:not(:last-child):nth-last-child(1) { transition-delay: 50ms;}
+.pmd-floating-action-btn:not(:last-child):nth-last-child(2) { transition-delay: 100ms;}
+.pmd-floating-action-btn:not(:last-child):nth-last-child(3) { transition-delay: 150ms;}
+.pmd-floating-action-btn:not(:last-child):nth-last-child(4) { transition-delay: 200ms;}
+.pmd-floating-action-btn:not(:last-child):nth-last-child(5) { transition-delay: 250ms;}
+.pmd-floating-action-btn:not(:last-child):nth-last-child(6) { transition-delay: 300ms;}
+.pmd-floating-action:hover .pmd-floating-action-btn, .menu--floating--open .pmd-floating-action-btn { opacity: 1; -ms-transform: none; transform: none; position:relative; bottom:auto;}
+.pmd-floating-action:hover .pmd-floating-action-btn:before, .menu--floating--open .pmd-floating-action-btn:before { opacity: 1;}
+.pmd-floating-action-btn.btn:hover{ overflow:visible;}
+
+
+    </style>
+
 {% endblock %}
