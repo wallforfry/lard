@@ -131,6 +131,16 @@ function initCytoscape(data) {
                 style: {
                     "opacity": 0
                 }
+            },
+            {
+                selector: ".highlighted",
+                style: {
+                    'background-color': '#61bffc',
+                    'line-color': '#61bffc',
+                    'target-arrow-color': '#61bffc',
+                    'transition-property': 'background-color, line-color, target-arrow-color',
+                    'transition-duration': '0.5s'
+                }
             }
         ],
 
@@ -356,6 +366,13 @@ function initCytoscape(data) {
          */
 
     });
+
+    /*
+    cy.elements().forEach(function (elem) {
+        console.log(elem.data());
+    });
+    */
+
 
 }
 
