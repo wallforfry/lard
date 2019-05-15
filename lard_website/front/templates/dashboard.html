@@ -69,6 +69,7 @@
 
 {% block script %}
     {{ block.super }}
+    {% comment %}
     <script src="{% static 'js/dashboard.js' %}"></script>
     <script src="{% static 'js/widgets.js' %}"></script>
     <script src="{% static 'vendors/jqvmap/dist/jquery.vmap.min.js' %}"></script>
@@ -92,4 +93,5 @@
             });
         })(jQuery);
     </script>
+    {% endcomment %}
 {% endblock %}

@@ -206,7 +206,7 @@ def pipeline_export(request, name):
     except Pipeline.DoesNotExist as e:
         return django.http.HttpResponseNotFound()
 
-    response = JsonResponse(json.loads(p.as_json()), content_type="application/json")
+    response = JsonResponse(json.loads(p.json_value), content_type="application/json")
     response['Content-Disposition'] = 'attachment; filename=' + name.lower() + '.json'
     return response
 
