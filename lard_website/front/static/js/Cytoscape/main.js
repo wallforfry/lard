@@ -141,9 +141,9 @@ function initCytoscape(data) {
             {
                 selector: ".highlighted",
                 style: {
-                    'background-color': '#61bffc',
-                    'line-color': '#61bffc',
-                    'target-arrow-color': '#61bffc',
+                    'background-color': '#007bff',
+                    'line-color': '#007bff',
+                    'target-arrow-color': '#007bff',
                     'transition-property': 'background-color, line-color, target-arrow-color',
                     'transition-duration': '0.5s'
                 }
