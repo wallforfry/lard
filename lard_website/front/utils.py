@@ -65,9 +65,12 @@ def from_cytoscape_to_python_json(cytoscape_format):
         blocks[node.get("data").get("id")] = block
 
     for edge in edges:
-        liaison = {"from": edge.get("data").get("source"), "to": edge.get("data").get("target")}
+        if "old_name" in edge.get("data") and "new_name" in edge.get("data"):
+            liaison = {"from": edge.get("data").get("source"), "to": edge.get("data").get("target"), "old_name": edge.get("data").get("old_name"), "new_name": edge.get("data").get("new_name")}
+        else:
+            liaison = {"from": edge.get("data").get("source"), "to": edge.get("data").get("target")}
         liaisons.append(liaison)
-
+    print(liaisons)
     return {"blocks": blocks, "liaisons": liaisons}
 
 

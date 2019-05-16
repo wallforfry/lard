@@ -226,6 +226,7 @@ def pipeline_info_edit(request, name):
     else:
         return render(request, 'pipeline_edit_info_modal.html', context={"pipeline": p})
 
+# TODO : Cette fonction sert encore ?
 @login_required
 def pipeline_edit(request, name):
     if request.method == 'POST':
