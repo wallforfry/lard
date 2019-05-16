@@ -376,13 +376,17 @@ function initCytoscape(data) {
 
     });
 
-    /*
     cy.elements().forEach(function (elem) {
         console.log(elem.data());
     });
-    */
 
+    highlight("Upload", "Output",'image', "image");
 
+}
+
+function highlight(source, target, old_name = null, new_name = null) {
+    var edge = cy.filter('edge[source = "'+ source+'"][target = "'+ target+'"][old_name = "'+ old_name+'"][new_name = "'+ new_name+'"]');
+    edge.addClass('highlighted');
 }
 
 function edit(cy, param) {
@@ -436,6 +440,7 @@ function createArray(cy) {
     cy.style().update();
     updatePipeline(jsonCytoscape);
 }
+
 
 function updatePipeline(data) {
     if (userIsOwner) {
