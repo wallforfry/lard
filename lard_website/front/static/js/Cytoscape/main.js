@@ -333,7 +333,6 @@ function initCytoscape(data) {
 
         if (e.keyCode === 27) {
             jQuery('#collapseExample').collapse('hide');
-            createArray(cy);
         }
         if (e.ctrlKey && e.keyCode === 90) {
             supp.restore();
