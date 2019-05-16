@@ -24,8 +24,6 @@ function initCytoscape(data) {
 
         },
         style: [
-
-
             {
                 selector: "node[?on_launch]",
                 style: {
@@ -35,13 +33,7 @@ function initCytoscape(data) {
             {
                 selector: 'node[type = "Output"]',
                 style: {
-                    'background-color': '#bd2130',
-                }
-            },
-            {
-                selector: 'node[type = "Output"]',
-                style: {
-                    'background-color': '#dc3545',
+                    'background-color': '#17a2b8',
                 }
             },
             {
@@ -144,6 +136,16 @@ function initCytoscape(data) {
                     'background-color': '#007bff',
                     'line-color': '#007bff',
                     'target-arrow-color': '#007bff',
+                    'transition-property': 'background-color, line-color, target-arrow-color',
+                    'transition-duration': '0.5s'
+                }
+            },
+            {
+                selector: ".error",
+                style: {
+                    'background-color': '#bd2130',
+                    'line-color': '#bd2130',
+                    'target-arrow-color': '#bd2130',
                     'transition-property': 'background-color, line-color, target-arrow-color',
                     'transition-duration': '0.5s'
                 }
@@ -286,14 +288,14 @@ function initCytoscape(data) {
                 "on_launch": launch
             },
             position: {
-                x: Math.floor(Math.random() * (cy.width() - 500)) + 300,
-                y: Math.floor(Math.random() * (cy.height() - 500)) + 100
+                x: 600,
+                y: 800
             }
         });
 
 
-        cy.pan();
-        cy.center();
+
+        cy.fit();
         createArray(cy);
     });
 
@@ -392,13 +394,24 @@ function initCytoscape(data) {
 
 function highlight(source, target, old_name, new_name) {
     let edge;
-    if(old_name && new_name) {
+    if (old_name && new_name) {
         edge = cy.filter('edge[source = "' + source + '"][target = "' + target + '"][old_name = "' + old_name + '"][new_name = "' + new_name + '"]');
-    }
-    else {
+    } else {
         edge = cy.filter('edge[source = "' + source + '"][target = "' + target + '"]');
     }
     edge.addClass('highlighted');
+}
+
+function highlightNode(name) {
+    let node;
+    node = cy.filter('node[name = "' + name + '"]');
+    node.addClass('highlighted');
+}
+
+function highlightError(name) {
+    let node;
+    node = cy.filter('node[name = "' + name + '"]');
+    node.addClass('error');
 }
 
 function edit(cy, param) {
@@ -407,6 +420,14 @@ function edit(cy, param) {
     dataNode["on_launch"] = param[2];
     dataNode["data_ready"] = {};
     createArray(cy);
+}
+
+function clearStyle(cy) {
+    cy.elements().forEach(function (elem) {
+        elem.removeClass('highlighted');
+        elem.removeClass('error');
+    });
+
 }
 
 function editEdge(cy, param) {
@@ -473,12 +494,12 @@ function updatePipeline(data) {
 }
 
 var script = document.createElement("script"),
-body = document.getElementsByTagName("body")[0],
-toggle = false;
+    body = document.getElementsByTagName("body")[0],
+    toggle = false;
 script.type = "text/javascript";
 script.addEventListener("load", function () {
     new KonamiCode(function () {
-        if (toggle)   {
+        if (toggle) {
             toggle = false;
             body.style = "overflow-x: hidden;transition: transform 2s ease;transform: rotate(0deg)";
         } else {

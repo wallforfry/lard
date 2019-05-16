@@ -148,6 +148,7 @@
         document.addEventListener("DOMContentLoaded", function () {
 
             jQuery("#runButton").click(function () {
+                clearStyle(cy);
                 jQuery('#modalDiv').load(pipeline_inputs_url, function (result) {
                     jQuery("#pipelineModal").modal({show: true});
 
@@ -219,11 +220,11 @@
             }
             else if (name){
                 // call for node
-                console.log("name " + name);
+                highlightNode(name);
             }
             else if (failed_nodes) {
                 // call for failed nodes
-                console.log("Failed " + failed_nodes);
+                highlightError(failed_nodes);
             }
         }
     </script>
