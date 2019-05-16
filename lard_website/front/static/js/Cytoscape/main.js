@@ -380,7 +380,7 @@ function initCytoscape(data) {
         console.log(elem.data());
     });
 
-    highlight("Upload", "Output",'image', "image");
+    //highlight("Upload", "Output",'image', "image");
 
 }
 
