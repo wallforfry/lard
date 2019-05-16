@@ -12,37 +12,40 @@
             </div>
             <div class="modal-body">
                 <div class="col">
-                        {% for name, type in block.inputs.items %}
-                            <div class="form-group row">
-                                <label for="input{{ name|title }}" class="col-6">{{ name }}[{{ type }}]
-                                    : </label>
-                                {% if type == "string" %}
-                                    <input type="text" class="form-control col-6" id="input{{ name|title }}"
-                                           value="{{ block.data|get_item:name }}" name="{{ block.name }}" input-name="{{ name }}"/>
-                                {% elif type == "int" or type == "float" %}
-                                    <input type="number" class="form-control col-6" id="input{{ name|title }}"
-                                           value="{{ block.data|get_item:name }}" name="{{ block.name }}" input-name="{{ name }}"/>
-                                {% elif i.type == "image" %}
-                                    <div class="custom-file col-6">
-                                        <input type="file" class="custom-file-input"
-                                               id="input{{ name|title }}" name="{{ block.name }}" input-name="{{ name }}"/>
-                                        <label class="custom-file-label" for="customFile">Choose file</label>
-                                    </div>
-                                {% else %}
-                                    <input type="text" class="form-control col-6" id="input{{ name|title }}"
-                                           value="{{ block.data|get_item:name }}" name="{{ block.name }}" input-name="{{ name }}"/>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
+                    {% for name, type in block.inputs.items %}
+                        <div class="form-group row">
+                            <label for="input{{ name|title }}" class="col-6">{{ name }}[{{ type }}]
+                                : </label>
+                            {% if type == "string" %}
+                                <input type="text" class="form-control col-6" id="input{{ name|title }}"
+                                       value="{{ block.data|get_item:name }}" name="{{ block.name }}"
+                                       input-name="{{ name }}"/>
+                            {% elif type == "int" or type == "float" %}
+                                <input type="number" class="form-control col-6" id="input{{ name|title }}"
+                                       value="{{ block.data|get_item:name }}" name="{{ block.name }}"
+                                       input-name="{{ name }}"/>
+                            {% elif i.type == "image" %}
+                                <div class="custom-file col-6">
+                                    <input type="file" class="custom-file-input"
+                                           id="input{{ name|title }}" name="{{ block.name }}" input-name="{{ name }}"/>
+                                    <label class="custom-file-label" for="customFile">Choose file</label>
+                                </div>
+                            {% else %}
+                                <input type="text" class="form-control col-6" id="input{{ name|title }}"
+                                       value="{{ block.data|get_item:name }}" name="{{ block.name }}"
+                                       input-name="{{ name }}"/>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
                     <hr>
 
                     <div class="row">
                         <label class="col-6">On launch : </label>
-                        {% if block.on_launch %}
-                            <input type="checkbox" class="form-control col-6" id="launch" checked style="height: 20px">
-                        {% else %}
-                            <input type="checkbox" class="form-control col-6" id="launch" style="height: 20px">
-                        {% endif %}
+                        <label class="switch switch-3d switch-primary mr-3">
+                            <input type="checkbox" class="form-control switch-input col-6" id="launch"
+                                    {% if block.on_launch %}
+                                   checked{% endif %} style="height: 20px">
+                            <span class="switch-label"></span> <span class="switch-handle"></span></label>
                     </div>
 
 

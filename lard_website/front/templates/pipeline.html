@@ -53,8 +53,10 @@
                     <input type="text" class="form-control mb-2 mr-sm-2" id="name"
                            placeholder="Name">
                     <div class="form-check mb-2 mr-sm-2">
-                        <input type="checkbox" class="form-check-input" id="onLaunchCreate"/>
-                        <label for="onLaunchCreate" class="form-check-label">On launch</label>
+                        <label for="onLaunchCreate" class="form-check-label">On launch : &nbsp;</label>
+                        <label class="switch switch-3d switch-primary mr-3">
+                            <input type="checkbox" class="form-check-input switch-input" id="onLaunchCreate"/>
+                            <span class="switch-label"></span> <span class="switch-handle"></span></label>
                     </div>
 
                     <button id="create" class="btn btn-success mb-2">Create</button>
@@ -79,15 +81,17 @@
     <div class="fixed-bottom justify-content-end row mr-1 mb-3">
         <div class="col-auto align-self-end">
 
-<div class="menu pmd-floating-action"  role="navigation">
-    <button id="thumbs-down" type="button" class="btn btn-danger btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
-        <span class="fa fa-thumbs-down"></span></button>
-    <button id="thumbs-up" type="button" class="btn btn-success btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
-        <span class="fa fa-thumbs-up"></span></button>
+            <div class="menu pmd-floating-action" role="navigation">
+                <button id="thumbs-down" type="button"
+                        class="btn btn-danger btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
+                    <span class="fa fa-thumbs-down"></span></button>
+                <button id="thumbs-up" type="button"
+                        class="btn btn-success btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
+                    <span class="fa fa-thumbs-up"></span></button>
 
-    <button type="button" class="btn btn-primary btn-lg fab rounded-circle pmd-floating-action-btn">
-        <span class="fa fa-plus" ></span></button>
-</div>
+                <button type="button" class="btn btn-primary btn-lg fab rounded-circle pmd-floating-action-btn">
+                    <span class="fa fa-plus"></span></button>
+            </div>
 
         </div>
     </div>
@@ -192,7 +196,7 @@
 
             jQuery("#editButton").click(function () {
                 jQuery('#modalDiv').load("/pipelines/{{ name }}/info/edit", function (result) {
-                    jQuery("#addPiplineModal").modal({show: true});
+                    jQuery("#addPipelineModal").modal({show: true});
 
                 });
             });
@@ -205,7 +209,7 @@
         {{ pipeline_mercure_config|safe }}
     </script>
 
-     <script type="text/javascript">
+    <script type="text/javascript">
         const {hubURLPipeline, topicPipeline} = JSON.parse(document.getElementById('pipelineMercureConfig').textContent.replace(/'/g, '"'));
         const subscribeURLPipeline = new URL(hubURLPipeline);
         subscribeURLPipeline.searchParams.append('topic', topicPipeline);
@@ -217,12 +221,10 @@
             if (source && target) {
                 // call draw arrow function here
                 highlight(source, target, old_name, new_name);
-            }
-            else if (name){
+            } else if (name) {
                 // call for node
                 highlightNode(name);
-            }
-            else if (failed_nodes) {
+            } else if (failed_nodes) {
                 // call for failed nodes
                 highlightError(failed_nodes);
             }
@@ -232,11 +234,15 @@
     <script>
 
         jQuery("#thumbs-up").click(function () {
-            jQuery.post('{% url 'pipeline_score' name=name %}', {"value": 1}, function(){console.log("ok")})
+            jQuery.post('{% url 'pipeline_score' name=name %}', {"value": 1}, function () {
+                console.log("ok")
+            })
         });
 
         jQuery("#thumbs-down").click(function () {
-            jQuery.post('{% url 'pipeline_score' name=name %}', {"value": -1}, function(){console.log("ok")})
+            jQuery.post('{% url 'pipeline_score' name=name %}', {"value": -1}, function () {
+                console.log("ok")
+            })
         });
 
         jQuery("#close").click(function () {
@@ -248,15 +254,57 @@
     </script>
 
     <style>
-        .pmd-floating-action { bottom: 0; position: fixed;  margin:1em;  right: 0; }
-        .pmd-floating-action-btn { display:block; position: relative; transition: all .2s ease-out;}
-        .pmd-floating-action-btn:last-child:before { font-size: 14px; bottom: 25%;}
-        .pmd-floating-action-btn:not(:last-child){ opacity: 0; -ms-transform: translateY(20px) scale(0.3); transform: translateY(20px) scale(0.3); margin-bottom:15px; margin-left:8px; position:absolute; bottom:0;}
-        .pmd-floating-action-btn:not(:last-child):nth-last-child(1) { transition-delay: 50ms;}
-        .pmd-floating-action-btn:not(:last-child):nth-last-child(2) { transition-delay: 100ms;}
-        .pmd-floating-action:hover .pmd-floating-action-btn, .menu--floating--open .pmd-floating-action-btn { opacity: 1; -ms-transform: none; transform: none; position:relative; bottom:auto;}
-        .pmd-floating-action:hover .pmd-floating-action-btn:before, .menu--floating--open .pmd-floating-action-btn:before { opacity: 1;}
-        .pmd-floating-action-btn.btn:hover{ overflow:visible;}
+        .pmd-floating-action {
+            bottom: 0;
+            position: fixed;
+            margin: 1em;
+            right: 0;
+        }
+
+        .pmd-floating-action-btn {
+            display: block;
+            position: relative;
+            transition: all .2s ease-out;
+        }
+
+        .pmd-floating-action-btn:last-child:before {
+            font-size: 14px;
+            bottom: 25%;
+        }
+
+        .pmd-floating-action-btn:not(:last-child) {
+            opacity: 0;
+            -ms-transform: translateY(20px) scale(0.3);
+            transform: translateY(20px) scale(0.3);
+            margin-bottom: 15px;
+            margin-left: 8px;
+            position: absolute;
+            bottom: 0;
+        }
+
+        .pmd-floating-action-btn:not(:last-child):nth-last-child(1) {
+            transition-delay: 50ms;
+        }
+
+        .pmd-floating-action-btn:not(:last-child):nth-last-child(2) {
+            transition-delay: 100ms;
+        }
+
+        .pmd-floating-action:hover .pmd-floating-action-btn, .menu--floating--open .pmd-floating-action-btn {
+            opacity: 1;
+            -ms-transform: none;
+            transform: none;
+            position: relative;
+            bottom: auto;
+        }
+
+        .pmd-floating-action:hover .pmd-floating-action-btn:before, .menu--floating--open .pmd-floating-action-btn:before {
+            opacity: 1;
+        }
+
+        .pmd-floating-action-btn.btn:hover {
+            overflow: visible;
+        }
 
     </style>
 
