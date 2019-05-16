@@ -26,11 +26,6 @@ class Pipeline(models.Model):
         return dict(name=self.name, json_value=self.json_value, owner=self.owner, is_public=self.is_public,
                     description=self.description)
 
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.vote = Vote.objects.create()
-        return super(Pipeline, self).save(*args, **kwargs)
-
     def score(self):
         votes = Vote.objects.filter(pipeline=self)
         value = 0
