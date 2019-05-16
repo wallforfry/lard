@@ -29,7 +29,7 @@
                                 {% endif %}
                             </div>
                             <div class="col-sm-2 col-12 text-right mt-2">
-                                Durée : {{ result.created_at|timesince:result.updated_at }}
+                                Durée : {{ result.created_at|timesince_seconds:result.updated_at }}
                             </div>
                             <div class="col-sm-4 col-12 text-right">
                                 <div class="btn-group">

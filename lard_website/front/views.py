@@ -226,6 +226,7 @@ def pipeline_info_edit(request, name):
     else:
         return render(request, 'pipeline_edit_info_modal.html', context={"pipeline": p})
 
+# TODO : Cette fonction sert encore ?
 @login_required
 def pipeline_edit(request, name):
     if request.method == 'POST':
@@ -497,7 +498,7 @@ def import_block(request):
                 i.delete()
 
             for i in data["inputs"]:
-                new_value = InputOutputType.objects.get(value=i["value"])
+                new_value = InputOutputType.objects.get_or_create(value=i["value"])[0]
                 new_input = InputOutput.objects.create(name=i["name"], value=new_value)
                 block.inputs.add(new_input)
 
@@ -505,7 +506,7 @@ def import_block(request):
                 i.delete()
 
             for i in data["outputs"]:
-                new_value = InputOutputType.objects.get(value=i["value"])
+                new_value = InputOutputType.objects.get_or_create(value=i["value"])[0]
                 new_output = InputOutput.objects.create(name=i["name"], value=new_value)
                 block.outputs.add(new_output)
 
