@@ -80,9 +80,9 @@
         <div class="col-auto align-self-end">
 
 <div class="menu pmd-floating-action"  role="navigation">
-    <button type="button" class="btn btn-danger btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
+    <button id="thumbs-down" type="button" class="btn btn-danger btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
         <span class="fa fa-thumbs-down"></span></button>
-    <button type="button" class="btn btn-success btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
+    <button id="thumbs-up" type="button" class="btn btn-success btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
         <span class="fa fa-thumbs-up"></span></button>
 
     <button type="button" class="btn btn-primary btn-lg fab rounded-circle pmd-floating-action-btn">
@@ -229,6 +229,15 @@
     </script>
 
     <script>
+
+        jQuery("#thumbs-up").click(function () {
+            jQuery.post('{% url 'pipeline_score' name=name %}', {"value": 1}, function(){console.log("ok")})
+        });
+
+        jQuery("#thumbs-down").click(function () {
+            jQuery.post('{% url 'pipeline_score' name=name %}', {"value": -1}, function(){console.log("ok")})
+        });
+
         jQuery("#close").click(function () {
             jQuery('#collapseExample').collapse('hide');
         });
