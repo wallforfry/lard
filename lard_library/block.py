@@ -405,6 +405,9 @@ def find_block_by_type(type, blocks):
 class Liaison(Block):
     def treatment(self, data={}):
         data = self._observer_inputs
+        m = self.pipeline.mercure
+        if m:
+            m.send(json.dumps({"source": self._data.get("from"), "target": self._data.get("to"), "old_name": self._data.get("old_name", None), "new_name": self._data.get("new_name", None)}))
         old_name = data.get("old_name")
         new_name = data.get("new_name")
         data = copy.deepcopy(data)

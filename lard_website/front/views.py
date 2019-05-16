@@ -59,11 +59,14 @@ def list_piplines(request):
 
 @login_required
 def pipeline(request, name):
+    m = Mercure(str(request.user))
+    config = {"hubURLPipeline": m.hub_url, "topicPipeline": name+"/"+request.user.username}
     context = {
         "name": name,
         "blocks": Block.objects.all().order_by('name'),
         "pipelines": Pipeline.objects.filter(is_public=True),
-        "pipeline": Pipeline.objects.get(name=name)
+        "pipeline": Pipeline.objects.get(name=name),
+        "pipeline_mercure_config": config
     }
     """p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)

@@ -39,7 +39,11 @@ def run():
 
     try:
         update_url = j.get("update_url")
+
+        m = Mercure(name+"/"+j["username"])
+
         p = Pipeline(name)
+        p.mercure = m
         p.load_json(j)
 
         f = p.launch()
@@ -61,7 +65,6 @@ def run():
                   "username": j.get("username")}
         requests.post(update_url, json=result)
         m = Mercure(j["username"])
-        m.hub_url = 'http://mercure:80/hub'
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ", "message": "Le pipeline " + name + " a échoué."}))
 
     return Response(status=200)
