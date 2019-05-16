@@ -154,7 +154,6 @@ def from_cytoscape_to_python_json(cytoscape_format):
         else:
             liaison = {"from": edge.get("data").get("source"), "to": edge.get("data").get("target")}
         liaisons.append(liaison)
-    print(liaisons)
     return {"blocks": blocks, "liaisons": liaisons}
 
 

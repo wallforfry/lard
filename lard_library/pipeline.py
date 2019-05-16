@@ -128,35 +128,27 @@ class Pipeline:
 
     def get_empty_inputs(self):
         empty_inputs = []
-        data = Block.launch_all([self.blocks[name] for name in self.blocks])
-        blocks = [data.get("blocks").get(name) for name in data.get("blocks")]
-        liaisons = data.get("liaisons")
+        blocks = [self.blocks[name].to_dict() for name in self.blocks]
+        liaisons = [l.get("data") for l in self.get_liaisons()]
+
         for b in blocks:
-            n_b = []
-            exist = False
-            result = set()
-            inputs_set = set([(o_name, b.get("inputs").get(o_name)) for o_name in b.get("inputs")])
+            inputs_set = set([(o_name, b.get("inputs").get(o_name)) for o_name in b.get("inputs")]) # set([(name, type)])
+            outputs_set = set()
             for l in liaisons:
                 if l.get("to") == b.get("name"):
-                    from_block = data.get("blocks").get(l.get("from"))
-                    outputs_set = set(
-                        [(o_name, from_block.get("outputs").get(o_name)) for o_name in from_block.get("outputs")])
-                    result.update(outputs_set ^ inputs_set)
-                    exist = True
-
-            if not exist:
-                for n in b.get("inputs"):
-                    if n in b.get("data") or n not in b.get("data_ready") or (n in b.get("data_ready") and b.get("data_ready").get(n) is None):
-                        s = (n, b.get("inputs").get(n))
-                        result.add(s)
-
-            for r in result:
+                    from_block = self.blocks[l.get("from")].to_dict()
+                    outputs_set.update(
+                        [(l.get("new_name", o_name), from_block.get("outputs").get(o_name)) for o_name in
+                         from_block.get("outputs")])
+            n_b = []
+            for r in list(inputs_set ^ outputs_set):
                 v = b.get("data").get(r[0])
                 if v is None:
                     v = ""
                 n_b.append({"name": r[0], "type": r[1], "value": v})
 
             empty_inputs.append({"name": b.get("name"), "empty_inputs": n_b})
+
         return empty_inputs
 
     def get_liaisons(self):

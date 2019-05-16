@@ -260,7 +260,7 @@ def pipeline_empty_inputs(request, name):
     p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
     l_p = LibPipeline(name)
-    j = json.loads(create_full_json(j))
+    #j = json.loads(create_full_json(j))
     l_p.load_json(j)
     context["blocks"] = l_p.get_empty_inputs()
     return render(request, "pipeline_inputs_modal.html", context=context)
