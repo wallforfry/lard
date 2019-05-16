@@ -1,24 +1,16 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+
 # Create your models here.
+
 class Vote(models.Model):
-    positive = models.IntegerField(default=0)
-    negative = models.IntegerField(default=0)
+    value = models.IntegerField(default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    pipeline = models.ForeignKey('Pipeline', on_delete=models.CASCADE)
 
     def __str__(self):
-        p = Pipeline.objects.get(vote=self)
-        return p.name+ " : " + self.score_over_votes()
-
-    def score_over_votes(self) -> str:
-        return str(self.score()) + "/" + str(self.total())
-
-    def score(self) -> int:
-        return self.positive - self.negative
-
-    def total(self) -> int:
-        return self.positive + self.negative
-
+        return self.pipeline.name + " : " + self.user.username + " : " + str(self.value)
 
 class Pipeline(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
@@ -26,7 +18,6 @@ class Pipeline(models.Model):
     json_value = models.TextField(default="", blank=True)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=False, null=True)
     is_public = models.BooleanField(default=False)
-    vote = models.OneToOneField(Vote, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name
@@ -39,6 +30,13 @@ class Pipeline(models.Model):
         if not self.id:
             self.vote = Vote.objects.create()
         return super(Pipeline, self).save(*args, **kwargs)
+
+    def score(self):
+        votes = Vote.objects.filter(pipeline=self)
+        value = 0
+        for v in votes:
+            value += v.value
+        return str(value) + "/" + str(votes.count())
 
 class InputOutputType(models.Model):
     value = models.CharField(max_length=255, blank=False, null=False)

@@ -34,6 +34,7 @@ urlpatterns = [
     path('pipelines/<str:name>/cytoscape', views.get_cytoscape, name="pipeline_get_cytoscape"),
     path('pipelines/<str:name>/edit', views.pipeline_edit, name="pipeline_edit"),
     path('pipelines/<str:name>/merge', views.pipeline_merge, name="pipeline_merge"),
+    path('pipelines/<str:name>/score', views.pipeline_score, name="pipeline_score"),
     path('pipelines/<str:name>/info/edit', views.pipeline_info_edit, name="pipeline_info_edit"),
     path('pipelines/<str:name>/delete', views.pipeline_delete, name="pipeline_delete"),
     path('pipelines/<str:name>/export', views.pipeline_export, name="pipeline_export"),

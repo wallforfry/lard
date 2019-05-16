@@ -29,7 +29,7 @@ from front.backend import EmailOrUsernameModelBackend
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from front.models import Pipeline, Block, InputOutputType, InputOutput, PipelineResult
+from front.models import Pipeline, Block, InputOutputType, InputOutput, PipelineResult, Vote
 from lard_website import settings
 from django.views.decorators.csrf import csrf_exempt
 
@@ -338,7 +338,7 @@ def pipeline_execute(request, name):
 
     return HttpResponse(status=200)
 
-
+@login_required
 @csrf_exempt
 def pipeline_cancel(request, id):
     if request.method == "POST":
@@ -353,6 +353,17 @@ def pipeline_cancel(request, id):
         return HttpResponse(status=200)
     return HttpResponseBadRequest()
 
+@login_required
+@csrf_exempt
+def pipeline_score(request, name):
+    if request.method == "POST":
+        print(request.POST)
+        p = Pipeline.objects.get(name=name)
+        vote = Vote.objects.get_or_create(pipeline=p, user=request.user)
+        vote[0].value = int(request.POST.get("value", 0))
+        vote[0].save()
+        return HttpResponse(status=200)
+    return HttpResponseBadRequest()
 
 @login_required
 def pipeline_results_list(request):
