@@ -198,9 +198,6 @@
 
         });
 
-        $("#main").click(function () {
-            $("#mini-fab").toggleClass('hidden');
-        });
     </script>
 
     <script type="application/json" id="pipelineMercureConfig">
@@ -215,9 +212,18 @@
         const esPipeline = new EventSource(subscribeURLPipeline, {withCredentials: false})
 
         esPipeline.onmessage = ({data}) => {
-            const {source, target, old_name, new_name} = JSON.parse(data);
-            if (source && target && old_name && new_name) {
+            const {source, target, old_name, new_name, name, failed_nodes} = JSON.parse(data);
+            if (source && target) {
                 // call draw arrow function here
+                highlight(source, target, old_name, new_name);
+            }
+            else if (name){
+                // call for node
+                console.log("name " + name);
+            }
+            else if (failed_nodes) {
+                // call for failed nodes
+                console.log("Failed " + failed_nodes);
             }
         }
     </script>

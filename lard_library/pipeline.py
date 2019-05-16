@@ -48,10 +48,16 @@ class Pipeline:
                     exec(code, globals())
                     if self.pipeline.is_running:
                         exec("result = main(data)", globals(), result)
+                    m = self.pipeline.mercure
+                    if m:
+                        m.send(json.dumps({"name": self.name}))
                 except Exception as e:
                     exc_type, exc_value, exc_traceback = sys.exc_info()
                     tb = traceback.format_exception(exc_type, exc_value, exc_traceback)
                     log("".join(tb[3:]))
+                    m = self.pipeline.mercure
+                    if m:
+                        m.send(json.dumps({"failed_nodes": (self.pipeline.logs[::-1][0]).get("name")}))
 
                 return result.get("result", {})
 

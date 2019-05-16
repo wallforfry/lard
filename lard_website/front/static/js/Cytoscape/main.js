@@ -390,8 +390,14 @@ function initCytoscape(data) {
 
 }
 
-function highlight(source, target, old_name = null, new_name = null) {
-    var edge = cy.filter('edge[source = "'+ source+'"][target = "'+ target+'"][old_name = "'+ old_name+'"][new_name = "'+ new_name+'"]');
+function highlight(source, target, old_name, new_name) {
+    let edge;
+    if(old_name && new_name) {
+        edge = cy.filter('edge[source = "' + source + '"][target = "' + target + '"][old_name = "' + old_name + '"][new_name = "' + new_name + '"]');
+    }
+    else {
+        edge = cy.filter('edge[source = "' + source + '"][target = "' + target + '"]');
+    }
     edge.addClass('highlighted');
 }
 
