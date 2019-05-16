@@ -36,7 +36,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @login_required
 def index(request):
-    return redirect(reverse(dashboard))#render(request, "index.html")
+    return redirect(reverse(dashboard))  # render(request, "index.html")
 
 
 @login_required
@@ -60,7 +60,7 @@ def list_piplines(request):
 @login_required
 def pipeline(request, name):
     m = Mercure(str(request.user))
-    config = {"hubURLPipeline": m.hub_url, "topicPipeline": name+"/"+request.user.username}
+    config = {"hubURLPipeline": m.hub_url, "topicPipeline": name + "/" + request.user.username}
     context = {
         "name": name,
         "blocks": Block.objects.all().order_by('name'),
@@ -74,6 +74,7 @@ def pipeline(request, name):
     p.load_json(j)"""
 
     return render(request, 'pipeline.html', context=context)
+
 
 @login_required
 @csrf_exempt
@@ -107,6 +108,7 @@ def pipeline_merge(request, name):
                            "message": "Echec de la fusion"}))
         return HttpResponseBadRequest()
 
+
 @login_required
 def pipeline_edit_inputs(request, name, block_name, block_id):
     p = Pipeline.objects.get(name=name)
@@ -135,13 +137,14 @@ def pipeline_info_block(request, name, block_name, block_id):
 
     return render(request, "pipeline_block_info_modal.html", context=context)
 
+
 @login_required
 def pipeline_edit_edge_inputs(request, name, edge_source, edge_target, edge_id, old_name, new_name):
     p = Pipeline.objects.get(name=name)
     data = json.loads(p.json_value)
 
     edge_from = ""
-    edge_to =""
+    edge_to = ""
     for i in data.get("liaisons"):
         if i.get("from") == edge_source:
             edge_from = i.get("from")
@@ -164,6 +167,7 @@ def pipeline_edit_edge_inputs(request, name, edge_source, edge_target, edge_id, 
 
     return render(request, "pipeline_edit_edge_modal.html", context=context)
 
+
 @login_required
 def pipeline_add(request):
     if request.POST:
@@ -173,11 +177,13 @@ def pipeline_add(request):
         value = {"blocks": {}, "liaisons": []}
         owner = request.user
 
-        Pipeline.objects.create(name=name, description=description, owner=owner, is_public=public, json_value=json.dumps(value))
+        Pipeline.objects.create(name=name, description=description, owner=owner, is_public=public,
+                                json_value=json.dumps(value))
         return redirect('pipeline', name=name)
 
     else:
         return HttpResponseBadRequest()
+
 
 @login_required
 def pipeline_import(request):
@@ -202,6 +208,7 @@ def pipeline_import(request):
     else:
         return render(request, 'pipeline_import_modal.html')
 
+
 @login_required
 def pipeline_export(request, name):
     try:
@@ -212,6 +219,7 @@ def pipeline_export(request, name):
     response = JsonResponse(json.loads(p.json_value), content_type="application/json")
     response['Content-Disposition'] = 'attachment; filename=' + name.lower() + '.json'
     return response
+
 
 @login_required
 def pipeline_info_edit(request, name):
@@ -225,6 +233,7 @@ def pipeline_info_edit(request, name):
         return redirect('pipeline', name=p.name)
     else:
         return render(request, 'pipeline_edit_info_modal.html', context={"pipeline": p})
+
 
 # TODO : Cette fonction sert encore ?
 @login_required
@@ -241,6 +250,7 @@ def pipeline_edit(request, name):
     return HttpResponse("ERROR")
     # return render(request, 'pipeline.html', context=context)
 
+
 @login_required
 def pipeline_delete(request, name):
     if request.method == 'POST':
@@ -251,6 +261,7 @@ def pipeline_delete(request, name):
             return HttpResponseBadRequest()
     return redirect(reverse(list_piplines))
 
+
 @login_required
 def pipeline_empty_inputs(request, name):
     context = {
@@ -260,7 +271,7 @@ def pipeline_empty_inputs(request, name):
     p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
     l_p = LibPipeline(name)
-    #j = json.loads(create_full_json(j))
+    # j = json.loads(create_full_json(j))
     l_p.load_json(j)
     context["blocks"] = l_p.get_empty_inputs()
     return render(request, "pipeline_inputs_modal.html", context=context)
@@ -283,25 +294,28 @@ def pipeline_execute(request, name):
         inputs_cptr = 0
         for i in inputs_types:
             if i == "image":
-                # img = None
                 if file_cptr < len(files):
-                    img = cv2.imdecode(np.fromstring(files[file_cptr].read(), dtype=np.uint8), 1)
-                    inputs_values.insert(inputs_cptr, str(img.tolist()))
+                    img = cv2.imdecode(np.frombuffer(files[file_cptr].read(), dtype=np.uint8), -1).tolist()
+                    inputs_values.insert(inputs_cptr, img)
                 file_cptr += 1
             inputs_cptr += 1
 
         p = Pipeline.objects.get(name=name)
         j = json.loads(p.json_value)
+
+        np_array = []
+
         for b, n, v, t in zip(blocks_names, inputs_names, inputs_values, inputs_types):
+
             try:
                 d = ast.literal_eval(v)
             except ValueError:
-                d = str(v)
+                if t == "string":
+                    d = str(v)
+                else:
+                    d = v
 
             j.get("blocks").get(b).get("data")[n] = d
-        #p.json_value = json.dumps(j)
-        #p.save()
-
 
         j = json.loads(create_full_json(j))
         j["name"] = name
@@ -322,22 +336,26 @@ def pipeline_execute(request, name):
         local_ip = str(socket.gethostbyname(socket.gethostname()))
         j["worker_id"] = worker_id
         j["username"] = str(request.user)
-        j["update_url"] = "http://"+ local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
+        j["update_url"] = "http://" + local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
 
+        print("7")
         try:
             context = requests.post("http://" + ip + ":12300/run", json=j, timeout=10)
         except Exception:
             m.send(json.dumps({"type": "info", "title": "Pipeline en cours : ",
                                "message": "Ce pipeline semble être un traitement long. Vous serez notifié dès la fin "
                                           "de l'execution."}))
-    except AttributeError or ValueError:
+    except AttributeError or ValueError as e:
+        print(e)
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
                            "message": "Le pipeline a échoué pendant le chargement des inputs."}))
     except Exception as e:
+        print(e)
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
                            "message": "Le pipeline a échoué."}))
 
     return HttpResponse(status=200)
+
 
 @login_required
 @csrf_exempt
@@ -354,6 +372,7 @@ def pipeline_cancel(request, id):
         return HttpResponse(status=200)
     return HttpResponseBadRequest()
 
+
 @login_required
 @csrf_exempt
 def pipeline_score(request, name):
@@ -365,6 +384,7 @@ def pipeline_score(request, name):
         vote[0].save()
         return HttpResponse(status=200)
     return HttpResponseBadRequest()
+
 
 @login_required
 def pipeline_results_list(request):
@@ -386,6 +406,7 @@ def pipeline_results(request, id):
     return render(request, "pipeline_results.html",
                   context={"result": r, "images": images, "logs": logs, "worker_status": worker_status})
 
+
 @login_required
 def pipeline_result_delete(request, id):
     if request.method == "POST":
@@ -403,7 +424,8 @@ def pipeline_result_delete(request, id):
 def dashboard(request):
     return render(request, "dashboard.html", context={"page": "Dashboard", "total_users": User.objects.count(),
                                                       "total_pipelines": Pipeline.objects.count(),
-                                                      "total_blocks": Block.objects.count(), "total_results": PipelineResult.objects.count()})
+                                                      "total_blocks": Block.objects.count(),
+                                                      "total_results": PipelineResult.objects.count()})
 
 
 @login_required
@@ -539,7 +561,7 @@ def get_cytoscape(request, name):
     p = Pipeline.objects.get(name=name)
     j = json.loads(p.json_value)
     p = LibPipeline(name)
-    #j = json.loads(create_full_json(j))
+    # j = json.loads(create_full_json(j))
     p.load_json(j)
     return JsonResponse(p.get_cytoscape(), safe=False)
 
