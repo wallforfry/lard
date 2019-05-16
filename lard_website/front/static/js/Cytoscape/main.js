@@ -288,14 +288,14 @@ function initCytoscape(data) {
                 "on_launch": launch
             },
             position: {
-                x: Math.floor(Math.random() * (cy.width() - 500)) + 300,
-                y: Math.floor(Math.random() * (cy.height() - 500)) + 100
+                x: 600,
+                y: 800
             }
         });
 
 
-        cy.pan();
-        cy.center();
+
+        cy.fit();
         createArray(cy);
     });
 
