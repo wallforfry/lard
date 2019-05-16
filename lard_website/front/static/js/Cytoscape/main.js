@@ -382,6 +382,12 @@ function initCytoscape(data) {
 
     //highlight("Upload", "Output",'image', "image");
 
+    /*
+    if(cy.filter('node[name = "Han Solo"]').data()){
+        document.getElementById('han').style.display = 'block';
+    }
+     */
+
 }
 
 function highlight(source, target, old_name = null, new_name = null) {
