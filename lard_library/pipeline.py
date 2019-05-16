@@ -29,6 +29,7 @@ class Pipeline:
         self.logs = []
         self.outputs = []
         self.is_running = False
+        self.mercure = None
 
     def create_block(self, code, block_type=None, name=random_string(128), data={}, inputs={}, outputs={},
                      on_launch=False):

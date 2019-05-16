@@ -205,6 +205,24 @@
         });
     </script>
 
+    <script type="application/json" id="pipelineMercureConfig">
+        {{ pipeline_mercure_config|safe }}
+    </script>
+
+     <script type="text/javascript">
+        const {hubURLPipeline, topicPipeline} = JSON.parse(document.getElementById('pipelineMercureConfig').textContent.replace(/'/g, '"'));
+        const subscribeURLPipeline = new URL(hubURLPipeline);
+        subscribeURLPipeline.searchParams.append('topic', topicPipeline);
+
+        const esPipeline = new EventSource(subscribeURLPipeline, {withCredentials: false})
+
+        esPipeline.onmessage = ({data}) => {
+            const {source, target, old_name, new_name} = JSON.parse(data);
+            if (source && target && old_name && new_name) {
+                // call draw arrow function here
+            }
+        }
+    </script>
 
     <script>
         jQuery("#close").click(function () {

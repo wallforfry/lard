@@ -5,6 +5,7 @@ Author : DELEVACQ Wallerand
 Date : 17/02/19
 """
 import json
+import os
 import urllib.parse
 
 import docker
@@ -88,5 +89,5 @@ def get_docker_client():
 
 def spawn_container():
     client = get_docker_client()
-    container = client.containers.run('wallforfry/lard-worker', detach=True, auto_remove=True, network="lard_default")
+    container = client.containers.run('wallforfry/lard-worker', detach=True, auto_remove=True, network="lard_default", environment={"JWT_KEY": os.environ.get("JWT_KEY"), "HUB_URL": 'http://mercure:80/hub'})
     return container
