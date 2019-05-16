@@ -338,7 +338,7 @@ def pipeline_execute(request, name):
 
     return HttpResponse(status=200)
 
-
+@login_required
 @csrf_exempt
 def pipeline_cancel(request, id):
     if request.method == "POST":
