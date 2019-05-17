@@ -1,8 +1,12 @@
+import datetime
+import math
+
 from django.contrib.auth.models import User
 from django.db import models
 
-
 # Create your models here.
+from django.utils.timesince import timesince
+
 
 class Vote(models.Model):
     value = models.IntegerField(default=0)
@@ -13,6 +17,7 @@ class Vote(models.Model):
 
     def __str__(self):
         return self.pipeline.name + " : " + self.user.username + " : " + str(self.value)
+
 
 class Pipeline(models.Model):
     name = models.CharField(max_length=255, blank=False, null=False)
@@ -36,6 +41,21 @@ class Pipeline(models.Model):
         for v in votes:
             value += v.value
         return str(value) + "/" + str(votes.count())
+
+    def score_int(self):
+        votes = Vote.objects.filter(pipeline=self)
+        value = 0
+        for v in votes:
+            value += v.value
+        return {"value": value, "count": votes.count()}
+
+    def total_duration(self):
+        prs = PipelineResult.objects.filter(pipeline=self)
+        total = datetime.timedelta()
+        for pr in prs:
+            total += pr.updated_at - pr.created_at
+        return datetime.timedelta(seconds=math.ceil(total.total_seconds()))
+
 
 class InputOutputType(models.Model):
     value = models.CharField(max_length=255, blank=False, null=False)

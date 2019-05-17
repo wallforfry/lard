@@ -422,10 +422,25 @@ def pipeline_result_delete(request, id):
 
 @login_required
 def dashboard(request):
-    return render(request, "dashboard.html", context={"page": "Dashboard", "total_users": User.objects.count(),
-                                                      "total_pipelines": Pipeline.objects.count(),
-                                                      "total_blocks": Block.objects.count(),
-                                                      "total_results": PipelineResult.objects.count()})
+    scores = []
+    for p in Pipeline.objects.all():
+        s = p.score_int()
+        if s["count"] > 0:
+            scores.append({"pipeline": p, "score": s})
+
+    scores = sorted(scores, key=lambda kv: kv["score"]["value"])
+    scores = scores[::-1]
+
+    context = {
+        "page": "Dashboard",
+        "total_users": User.objects.count(),
+        "total_pipelines": Pipeline.objects.count(),
+        "total_blocks": Block.objects.count(),
+        "total_results": PipelineResult.objects.count(),
+        "top_5_pipelines": scores[:8]
+    }
+
+    return render(request, "dashboard.html", context=context)
 
 
 @login_required

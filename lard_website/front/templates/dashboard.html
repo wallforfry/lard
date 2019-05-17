@@ -65,6 +65,40 @@
             </div>
         </a>
     </div>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <strong class="card-title"><i class="fa fa-edit"></i>&nbsp;Top Pipelines</strong>
+            </div>
+            <div class="card-body">
+                {% for p in top_5_pipelines %}
+                    <div class="col-xl-3 col-lg-6">
+                        <a href="{% url 'pipeline' name=p.pipeline.name %}">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="stat-widget-four">
+                                        <div class="stat-icon dib">
+                                            <i class="text-success">#{{ forloop.counter }}</i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="text-left dib">
+                                                <div class="stat-heading">{{ p.pipeline.name }}</div>
+                                                <div class="stat-text">Total duration
+                                                    : {{ p.pipeline.total_duration }}</div>
+                                                <div class="stat-text"><i class="fa-thumbs-up fa text-success"
+                                                                          style="font-size: 1.33em">: {{ p.score.value }}/{{ p.score.count }}</i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block script %}
