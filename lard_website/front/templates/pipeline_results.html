@@ -47,8 +47,10 @@
                                     <b>{{ i.name }} :</b>
                                     <div class="row">
                                         <div class="col-12 text-center">
+                                            <a href="data:image/png;base64, {{ i.image }}" data-toggle="lightbox">
                                             <img src="data:image/png;base64, {{ i.image }}"
                                                  style="width:100%;max-width:500px"/>
+                                            </a>
                                         </div>
                                     </div>
                                 {% endfor %}

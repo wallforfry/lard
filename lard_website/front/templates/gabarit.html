@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{% static 'vendors/selectFX/css/cs-skin-elastic.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/jqvmap/dist/jqvmap.min.css' %}">
 
+    <link rel="stylesheet" href="{% static 'css/lightbox/ekko-lightbox.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/lard.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -94,7 +95,15 @@
     <script src="{% static 'vendors/popper.js/dist/umd/popper.min.js' %}"></script>
     <script src="{% static 'vendors/bootstrap/dist/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/bootstrap-notify.min.js' %}"></script>
+    <script src="{% static 'js/lightbox/ekko-lightbox.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
+
+    <script type="text/javascript">
+    jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
+                event.preventDefault();
+                jQuery(this).ekkoLightbox();
+            });
+    </script>
 
     <script type="application/json" id="config">
         {{ config|safe }}
