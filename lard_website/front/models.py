@@ -8,6 +8,8 @@ class Vote(models.Model):
     value = models.IntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pipeline = models.ForeignKey('Pipeline', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.pipeline.name + " : " + self.user.username + " : " + str(self.value)
@@ -18,6 +20,8 @@ class Pipeline(models.Model):
     json_value = models.TextField(default="", blank=True)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=False, null=True)
     is_public = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -60,6 +64,8 @@ class Block(models.Model):
     code = models.TextField(default="", blank=False, null=False)
     inputs = models.ManyToManyField(InputOutput, related_name="inputs")
     outputs = models.ManyToManyField(InputOutput, related_name="outputs")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
