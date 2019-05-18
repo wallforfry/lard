@@ -10,12 +10,12 @@ RUN pip install tensorflow-1.13.1-cp36-cp36m-linux_x86_64.whl
 
 ADD requirements.txt /lard_library/
 RUN pip install -r requirements.txt
-ADD . /lard_library/
-
-ADD ./run.sh /
-ADD ./worker.py /
-WORKDIR /
 
 EXPOSE 12300
+WORKDIR /
+ADD ./run.sh /
 ENV FLASK_APP="./worker.py"
+ADD ./worker.py /
+
+ADD . /lard_library/
 CMD ["bash", "run.sh"]
