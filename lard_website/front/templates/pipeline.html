@@ -1,7 +1,6 @@
 {% extends 'gabarit.html' %}
 {% load static %}
 {% block content %}
-
     <div class="breadcrumbs">
         <div class="row justify-content-between">
             <div class="page-header col-auto">
@@ -24,7 +23,7 @@
                         <div class="btn-group">
                             <a class="btn btn-info text-white mr-1" data-toggle="collapse" href="#collapseExample"
                                role="button"
-                               aria-expanded="false" aria-controls="collapseExample">
+                               aria-expanded="false" aria-controls="collapseExample" id="addButton">
                                 <i class="fa fa-caret-down"></i> Add
                             </a>
                             <button type="button" class="btn btn-warning text-white" id="editButton">Editer
@@ -52,7 +51,7 @@
 
                     <input type="text" class="form-control mb-2 mr-sm-2" id="name"
                            placeholder="Name">
-                    <div class="form-check mb-2 mr-sm-2">
+                    <div class="form-check mb-2 mr-sm-2" id="onLaunch">
                         <label for="onLaunchCreate" class="form-check-label">On launch : &nbsp;</label>
                         <label class="switch switch-3d switch-primary mr-3">
                             <input type="checkbox" class="form-check-input switch-input" id="onLaunchCreate"/>
@@ -122,7 +121,9 @@
                 </div>
             </div>
         </div>
+
     </div>
+
 {% endblock %}
 
 {% block script %}
@@ -134,6 +135,7 @@
     <script src="{% static 'js/Cytoscape/main.js' %}"></script>
     <script src="{% static 'js/Cytoscape/Communication.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/Cytoscape/style_cytoscape.css' %}">
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -306,7 +308,7 @@
             overflow: visible;
         }
 
-    </style>
 
+    </style>
 
 {% endblock %}

@@ -21,18 +21,18 @@
                             <strong class="card-title">Blocks</strong>
                             <div class="btn-group float-right">
                                 {% if perms.front.add_block and perms.front.change_block%}
-                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" id="import_block"
                                             data-target="#importBlockModal">Importer
                                     </button>
                                 {% endif %}
                                 {% if perms.front.add_block %}
-                                    <button type="button" class="btn btn-success" data-toggle="modal"
+                                    <button type="button" class="btn btn-success" data-toggle="modal" id="create_block"
                                             data-target="#addBlockModal">Créer un block
                                     </button>
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" id="card_block_list">
                             <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
                                 <thead>
                                 <tr>

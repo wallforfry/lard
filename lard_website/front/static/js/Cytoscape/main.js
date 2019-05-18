@@ -484,6 +484,7 @@ function updatePipeline(data) {
             data: {'name': pipelineName, 'pipeline': JSON.stringify(data)},
             success: function (code, statut) {
                 console.log(pipelineName + " updated");
+
             },
             error: function (code, statut) {
                 console.log("Error during " + pipelineName + " update");
