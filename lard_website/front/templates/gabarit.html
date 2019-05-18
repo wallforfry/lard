@@ -142,6 +142,18 @@
             }
         }
     </script>
+        <script>
+        jQuery(document).ready(function ($) {
+            jQuery(".table-row").click(function () {
+                window.document.location = jQuery(this).data("href");
+            });
+        });
+    </script>
+    <style>
+        .table-row {
+            cursor: pointer;
+        }
+    </style>
     {% comment %}
         <script src="{% static 'vendors/chart.js/dist/Chart.bundle.min.js' %}"></script>{% endcomment %}
     <script src="{% static 'js/bootstrap-tour/bootstrap-tour-standalone.js' %}"></script>

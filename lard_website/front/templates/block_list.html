@@ -44,8 +44,8 @@
                                 </thead>
                                 <tbody>
                                 {% for b in blocks %}
-                                    <tr>
-                                        <td><a href="{% url 'edit_block' name=b.name %}">{{ b.name }}</a></td>
+                                    <tr class="table-row"data-href="{% url 'edit_block' name=b.name %}">
+                                        <td style="font-weight: bold;">{{ b.name }}</td>
                                         <td>{{ b.description |truncatechars:80 }}</td>
                                         <td>{% for i in b.inputs.all %}{{ i.value }}, {% endfor %}</td>
                                         <td>{% for i in b.outputs.all %}{{ i.value }}, {% endfor %}</td>

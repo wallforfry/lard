@@ -46,8 +46,8 @@
                                 <tbody>
 
                                 {% for b in pipelines_list %}
-                                    <tr>
-                                        <td><a href="{% url 'pipeline' name=b.name %}" style="font-weight: bold;">{{ b.name }} {% if b.owner == user %}<span class="fa fa-edit"></span> {% endif %}</a></td>
+                                    <tr class="table-row"data-href="{% url 'pipeline' name=b.name %}">
+                                        <td style="font-weight: bold;">{{ b.name }} {% if b.owner == user %}<span class="fa fa-user"></span> {% endif %}</td>
                                         <td>{{ b.description }}</td>
                                         <td>{{ b.owner }}</td>
                                         <td class="text-center">{% if b.is_public %}
@@ -66,6 +66,7 @@
             </div>
         </div><!-- .animated -->
     </div><!-- .content -->
+
 
     {% if perms.front.add_pipeline %}
         {% include 'pipeline_edit_info_modal.html' %}
