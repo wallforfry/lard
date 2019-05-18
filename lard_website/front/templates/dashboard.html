@@ -78,15 +78,14 @@
                                 <div class="card-body">
                                     <div class="stat-widget-four">
                                         <div class="stat-icon dib">
-                                            <i class="text-success">#{{ forloop.counter }}</i>
+                                            <i class="text-success">#{{ forloop.counter }}{% if forloop.first %} <span class="fa fa-trophy text-warning"></span>{% endif %}</i>
                                         </div>
                                         <div class="stat-content">
                                             <div class="text-left dib">
                                                 <div class="stat-heading">{{ p.pipeline.name }}</div>
                                                 <div class="stat-text">Total duration
                                                     : {{ p.pipeline.total_duration }}</div>
-                                                <div class="stat-text"><i class="fa-thumbs-up fa text-success"
-                                                                          style="font-size: 1.33em">: {{ p.score.value }}/{{ p.score.count }}</i>
+                                                <div class="stat-text text-success"><span class="fa-thumbs-up fa" style="font-size: 1.33em;"></span>&nbsp: {{ p.score.value }}/{{ p.score.count }}
                                                 </div>
                                             </div>
                                         </div>
