@@ -3,7 +3,7 @@ var tour = new Tour({
     backdrop: true,
     template: "<div class='popover tour' style='max-width:40vw;'>" +
         "<div class='arrow'></div>" +
-        "<h3 class='popover-title bg-primary  text-white'></h3>" +
+        "<h3 class='popover-title text-white' style='background: #4e4e52'></h3>" +
         "<div class='popover-content'></div>" +
         "<div class='popover-navigation'>" +
         "<button class='btn btn-default' data-role='prev'>« Retour</button>" +
