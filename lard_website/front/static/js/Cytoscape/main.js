@@ -23,20 +23,18 @@ function initCytoscape(data) {
             initialTemp: 200,
             coolingFactor: 0.95,
             minTemp: 1.0
-
-
         },
         style: [
             {
                 selector: "node[?on_launch]",
                 style: {
-                    'background-color': '#28a745',
+                    "background-color": "#28a745"
                 }
             },
             {
                 selector: 'node[type = "Output"]',
                 style: {
-                    'background-color': '#17a2b8',
+                    "background-color": "#17a2b8"
                 }
             },
             {
@@ -46,9 +44,7 @@ function initCytoscape(data) {
                     "shape": "round-rectangle",
                     'color': 'black',
                     'text-outline-width': 1,
-                    'text-outline-color': '#f1f2f7',
-
-
+                    'text-outline-color': '#f1f2f7'
                 }
             },
             {
@@ -68,7 +64,6 @@ function initCytoscape(data) {
                     'arrow-scale': 2,
                     'line-style': 'dashed',
                     'line-dash-pattern': [7, 4]
-
                 }
             },
             {
@@ -78,9 +73,6 @@ function initCytoscape(data) {
                     'target-arrow-color': '#266fc1'
                 }
             },
-
-            // some style for the extension
-
             {
                 selector: ".eh-handle",
                 style: {
@@ -89,11 +81,10 @@ function initCytoscape(data) {
                     "height": 12,
                     "shape": "ellipse",
                     "overlay-opacity": 0,
-                    "border-width": 12, // makes the handle easier to hit
+                    "border-width": 12,
                     "border-opacity": 0
                 }
             },
-
             {
                 selector: ".eh-hover",
                 style: {
@@ -108,7 +99,6 @@ function initCytoscape(data) {
                     "border-color": "red"
                 }
             },
-
             {
                 selector: ".eh-target",
                 style: {
@@ -116,7 +106,6 @@ function initCytoscape(data) {
                     "border-color": "red"
                 }
             },
-
             {
                 selector: ".eh-preview, .eh-ghost-edge",
                 style: {
@@ -126,7 +115,6 @@ function initCytoscape(data) {
                     "source-arrow-color": "red"
                 }
             },
-
             {
                 selector: ".eh-ghost-edge.eh-preview-active",
                 style: {
@@ -154,7 +142,6 @@ function initCytoscape(data) {
                 }
             }
         ],
-
         elements: data
     });
 
@@ -169,10 +156,8 @@ function initCytoscape(data) {
         disableBrowserGestures: true,
 
         ghostEdgeParams: function () {
-
             return {};
         },
-
     };
 
     var eh = cy.edgehandles(defaults);
@@ -208,7 +193,6 @@ function initCytoscape(data) {
                                 jQuery("#pipelineModal").modal({show: true});
                             });
                         }
-
                     },
                     activeFillColor:
                         'rgba(255,0,0,0.2)',
@@ -246,16 +230,15 @@ function initCytoscape(data) {
 
                             });
                         }
-
                     }
                 }
             ]
         }
     );
 
+
     cy.cxtmenu({
         selector: 'core',
-
         commands: [
             {
                 content: '<span class="fa fa-plus fa-2x" ></span>',
@@ -278,10 +261,8 @@ function initCytoscape(data) {
         cy.pan();
         cy.fit();
     });
-//Permet de faire la création du node
-    document.querySelector("#create").addEventListener("click", function () {
 
-        //Récupération du nom
+    document.querySelector("#create").addEventListener("click", function () {
         var nom = document.getElementById("name").value;
         var type = document.getElementById("type").value;
         var launch = document.getElementById("onLaunchCreate").checked;
@@ -305,8 +286,6 @@ function initCytoscape(data) {
     });
 
     document.querySelector("#import").addEventListener("click", function () {
-
-        //Récupération du nom
         let toMerge = document.getElementById("pipeline").value;
         jQuery("#loader").fadeIn(0);
         jQuery.ajax({
@@ -329,7 +308,6 @@ function initCytoscape(data) {
         jQuery("#loader").fadeOut();
     });
 
-//Permet de delete nodes et edges avec "Suppr"
     document.addEventListener("keydown", function (e) {
         if (e.keyCode === 46) {
             supp = cy.remove(":selected");
@@ -339,25 +317,25 @@ function initCytoscape(data) {
         if (e.keyCode === 27) {
             jQuery('#collapseExample').collapse('hide');
         }
+
         if (e.ctrlKey && e.keyCode === 90) {
             supp.restore();
             createArray(cy);
 
         }
+
         if (e.ctrlKey && (e.which === 83)) {
             e.preventDefault();
             createArray(cy);
             jQuery('#runButton').trigger('click');
         }
+
         if (e.keyCode === 13) {
             jQuery('#collapseExample').collapse('toggle');
         }
-
     }, false);
 
-//Event lors de la fin de la création d"un edge
     cy.on("ehcomplete", (event, sourceNode, targetNode) => {
-
         createArray(cy);
         edge_wait = true;
         event_wait = event;
@@ -368,15 +346,11 @@ function initCytoscape(data) {
     cy.elements().forEach(function (elem) {
         console.log(elem.data());
     });
-
-    //highlight("Upload", "Output",'image', "image");
-
     /*
     if(cy.filter('node[name = "Han Solo"]').data()){
         document.getElementById('han').style.display = 'block';
     }
      */
-
 }
 
 function highlight(source, target, old_name, new_name) {
@@ -434,18 +408,14 @@ function createArray(cy) {
         var dict_data_edge = {};
 
         if (elem.isNode()) {
-
             if (elem.data().id.length <= 20) {
-
                 dict_data["data"] = elem.data();
-
                 dict_data["block_data"] = {
                     "data": elem.data()["data"],
                     "data_ready": {},
                     "on_launch": elem.data()["on_launch"]
                 };
                 array_nodes.push(dict_data);
-
             }
         }
         if (elem.isEdge()) {

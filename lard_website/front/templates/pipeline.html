@@ -41,7 +41,6 @@
         </div>
     </div>
 
-
     <div class="collapse" id="collapseExample">
         <div class="card" style="width: 100%; z-index: 999">
             <div class="card-body">
@@ -94,7 +93,6 @@
                 <button type="button" class="btn btn-primary btn-lg fab rounded-circle pmd-floating-action-btn">
                     <span class="fa fa-plus"></span></button>
             </div>
-
         </div>
     </div>
     <div id="modalDiv"></div>
@@ -124,9 +122,7 @@
                 </div>
             </div>
         </div>
-
     </div>
-
 {% endblock %}
 
 {% block script %}
@@ -139,7 +135,6 @@
     <script src="{% static 'js/Cytoscape/Communication.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/Cytoscape/style_cytoscape.css' %}">
 
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             jQuery("#loader").fadeIn(0);
@@ -148,8 +143,6 @@
                 jQuery("#loader").fadeOut();
             });
         });
-
-
     </script>
 
     <script>
@@ -213,9 +206,6 @@
     <script type="application/json" id="pipelineMercureConfig">
         {{ pipeline_mercure_config|safe }}
 
-
-
-
     </script>
 
     <script type="text/javascript">
@@ -238,9 +228,6 @@
                 highlightError(failed_nodes);
             }
         }
-    </script>
-
-    <script>
         jQuery("#thumbs-up").click(function () {
             jQuery.post('{% url 'pipeline_score' name=name %}', {"value": 1}, function () {
                 console.log("ok")
@@ -313,8 +300,5 @@
         .pmd-floating-action-btn.btn:hover {
             overflow: visible;
         }
-
-
     </style>
-
 {% endblock %}
