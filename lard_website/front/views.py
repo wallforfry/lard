@@ -400,7 +400,7 @@ def pipeline_score(request, name):
 @login_required
 def pipeline_results_list(request):
     return render(request, "pipelines_results_list.html",
-                  context={"results": PipelineResult.objects.filter(user=request.user).order_by("-created_at")})
+                  context={"results": PipelineResult.objects.filter(user=request.user).order_by("updated_at")})
 
 
 @login_required
