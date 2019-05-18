@@ -44,9 +44,10 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+
                                 {% for b in pipelines_list %}
                                     <tr>
-                                        <td><a href="{% url 'pipeline' name=b.name %}">{{ b.name }}</a></td>
+                                        <td><a href="{% url 'pipeline' name=b.name %}" style="font-weight: bold;">{{ b.name }} {% if b.owner == user %}<span class="fa fa-edit"></span> {% endif %}</a></td>
                                         <td>{{ b.description }}</td>
                                         <td>{{ b.owner }}</td>
                                         <td class="text-center">{% if b.is_public %}
