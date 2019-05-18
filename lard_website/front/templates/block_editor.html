@@ -7,7 +7,7 @@
     <div class="col-sm-4">
         <div class="row">
             <div class="col-sm-12">
-                <div class="card">
+                <div class="card" id="cart_description">
                     <div class="card-header">
                         Description
                     </div>
@@ -19,22 +19,22 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <div class="card">
+                <div class="card" id="card_inputs">
                     <div class="card-header">
                         Inputs
                     </div>
                     <div class="card-body">
                         <form id="inputs_form" method="post" action="{{ save_url }}">
                             {% csrf_token %}
-                            <input type="hidden" name="name" value="{{ file_name }}"/>
-                            <input type="hidden" name="type" value="inputs"/>
+                            <input type="hidden" name="name" value="{{ file_name }}" />
+                            <input type="hidden" name="type" value="inputs" />
                             {% for i in inputs %}
                                 {% include 'input_output_line.html' with o=i in_out_type="inputs" %}
                             {% endfor %}
                             {% if perms.front.change_block %}
                                 <div class="btn-group float-right" role="group" aria-label="Inputs Toolbar">
                                     <button id="button-add-input" type="button" class="btn btn-primary">Add</button>
-                                    <button type="submit" class="btn btn-success">Save</button>
+                                    <button type="submit" class="btn btn-success" id="save_inputs">Save</button>
                                 </div>
                             {% endif %}
                         </form>

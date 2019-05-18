@@ -8,22 +8,22 @@
                     aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fa fa-bars"></i>
             </button>
-            <a class="navbar-brand" href="{% url 'index' %}"><h5>Lard</h5></a>
+            <a class="navbar-brand" href="{% url 'index' %}"><h4>Lard</h4></a>
             <a class="navbar-brand hidden" href="{% url 'index' %}"><h5>L</h5></a>
         </div>
 
         <div id="main-menu" class="main-menu collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="{% if request.resolver_match.view_name == "dashboard" %}active{% endif %}">
-                    <a href="{% url 'dashboard' %}"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
+                <li class="{% if request.resolver_match.view_name == "dashboard" %}active{% endif %}" id="dashboard">
+                    <a href="{% url 'dashboard' %}"> <i class="menu-icon fa fa-dashboard"></i>Dashboard</a>
                 </li>
                 {% comment %}
-                <li class="{% if request.resolver_match.view_name == "editor" %}active{% endif %}">
-                    <a href="{% url 'editor' %}"> <i class="menu-icon fa fa-edit"></i>Editeur </a>
-                </li>
+                    <li class="{% if request.resolver_match.view_name == "editor" %}active{% endif %}">
+                        <a href="{% url 'editor' %}"> <i class="menu-icon fa fa-edit"></i>Editeur</a>
+                    </li>
                 {% endcomment %}
                 <h3 class="menu-title">Mes Projets</h3><!-- /.menu-title -->
-                <li class="{% if request.resolver_match.view_name == "pipeline" or request.resolver_match.view_name == "list_pipelines"%}active{% endif %}">
+                <li class="{% if request.resolver_match.view_name == "pipeline" or request.resolver_match.view_name == "list_pipelines" %}active{% endif %}"  id="pipelines">
                     <a href="{% url 'list_pipelines' %}"> <i class="menu-icon fa fa-edit"></i>Traitements</a>
                 </li>
                 <li class="menu-item-has-children dropdown">
@@ -31,29 +31,30 @@
                        aria-expanded="false"> <i class="menu-icon fa fa-laptop"></i>Récents</a>
                     <ul class="sub-menu children dropdown-menu">
                         {% for p in pipelines %}
-                            <li><i class="fa fa-puzzle-piece"></i><a href="{% url 'pipeline' name=p.name %}">{{ p.name }}</a></li>
+                            <li><i class="fa fa-puzzle-piece"></i><a
+                                    href="{% url 'pipeline' name=p.name %}">{{ p.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </li>
-                <li class="{% if request.resolver_match.view_name == "pipelines_results_list" %}active{% endif %}">
+                <li class="{% if request.resolver_match.view_name == "pipelines_results_list" %}active{% endif %}" id="results">
                     <a href="{% url 'pipelines_results_list' %}"> <i class="menu-icon fa fa-edit"></i>Resultats</a>
                 </li>
 
                 <h3 class="menu-title">Store</h3><!-- /.menu-title -->
 
                 {% comment %}
-                <li class="menu-item-has-children dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
-                       aria-expanded="false"> <i class="menu-icon fa fa-puzzle-piece"></i>Blocks</a>
-                    <ul class="sub-menu children dropdown-menu">
-                        <li><i class="menu-icon fa fa-puzzle-piece"></i><a href="#">Input</a></li>
-                        <li><i class="menu-icon fa fa-puzzle-piece"></i><a href="#">Output</a></li>
-                    </ul>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                           aria-expanded="false"> <i class="menu-icon fa fa-puzzle-piece"></i>Blocks</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="menu-icon fa fa-puzzle-piece"></i><a href="#">Input</a></li>
+                            <li><i class="menu-icon fa fa-puzzle-piece"></i><a href="#">Output</a></li>
+                        </ul>
 
-                </li>
+                    </li>
                 {% endcomment %}
 
-                <li class="{% if request.resolver_match.view_name == "list_blocks" %}active{% endif %}">
+                <li class="{% if request.resolver_match.view_name == "list_blocks" %}active{% endif %}" id="blocks">
                     <a href="{% url 'list_blocks' %}"> <i class="menu-icon fa fa-puzzle-piece"></i>Blocks</a>
                 </li>
 
@@ -65,6 +66,10 @@
                         <li><i class="menu-icon fa fa-facebook"></i><a href="#">Facebook</a></li>
                     </ul>
                 </li>
+                <li class="">
+                    <a id="startTour" href="#"> <i class="menu-icon fa fa-map"></i>Visite Guidée</a>
+                </li>
+
 
                 {% if user.is_superuser %}
                     <h3 class="menu-title">Administration</h3><!-- /.menu-title -->
@@ -72,7 +77,8 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                            aria-expanded="false"> <i class="menu-icon fa fa-list"></i>Gestion des Utilisateurs</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-address-book"></i><a href="{% url 'admin_users' %}">Utilisateurs</a></li>
+                            <li><i class="menu-icon fa fa-address-book"></i><a href="{% url 'admin_users' %}">Utilisateurs</a>
+                            </li>
                         </ul>
                     </li>
                     <li>

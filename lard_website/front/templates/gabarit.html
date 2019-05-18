@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="{% static 'vendors/flag-icon-css/css/flag-icon.min.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/selectFX/css/cs-skin-elastic.css' %}">
     <link rel="stylesheet" href="{% static 'vendors/jqvmap/dist/jqvmap.min.css' %}">
-
+    <link href="{% static 'css/bootstrap-tour/bootstrap-tour-standalone.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/lightbox/ekko-lightbox.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/lard.css' %}">
@@ -72,9 +72,9 @@
         <!-- Header-->
 
         {% comment %}
-        <div class="breadcrumbs">
-            {% include 'breadcrumbs.html' %}
-        </div>
+            <div class="breadcrumbs">
+                {% include 'breadcrumbs.html' %}
+            </div>
         {% endcomment %}
 
         <div id="content" class="content mt-3">
@@ -99,14 +99,15 @@
     <script src="{% static 'js/main.js' %}"></script>
 
     <script type="text/javascript">
-    jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
-                event.preventDefault();
-                jQuery(this).ekkoLightbox();
-            });
+        jQuery(document).on('click', '[data-toggle="lightbox"]', function (event) {
+            event.preventDefault();
+            jQuery(this).ekkoLightbox();
+        });
     </script>
 
     <script type="application/json" id="config">
         {{ config|safe }}
+
     </script>
     <script type="text/javascript">
         const {hubURL, topic} = JSON.parse(document.getElementById('config').textContent.replace(/'/g, '"'))
@@ -141,7 +142,22 @@
             }
         }
     </script>
-    {% comment %} <script src="{% static 'vendors/chart.js/dist/Chart.bundle.min.js' %}"></script>{% endcomment %}
+        <script>
+        jQuery(document).ready(function ($) {
+            jQuery(".table-row").click(function () {
+                window.document.location = jQuery(this).data("href");
+            });
+        });
+    </script>
+    <style>
+        .table-row {
+            cursor: pointer;
+        }
+    </style>
+    {% comment %}
+        <script src="{% static 'vendors/chart.js/dist/Chart.bundle.min.js' %}"></script>{% endcomment %}
+    <script src="{% static 'js/bootstrap-tour/bootstrap-tour-standalone.js' %}"></script>
+    <script src="{% static 'js/tour.js' %}"></script>
 {% endblock %}
 
 </html>

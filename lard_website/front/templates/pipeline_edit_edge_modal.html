@@ -24,12 +24,12 @@
                                     {% for r in input_block_from.outputs.all %}
                                         <div class="row">
                                             {% if old_name == r.name %}
-                                                <input type="checkbox" class="form-control col-3"
-                                                       name="{{ r.name }}" id="id{{ r.name }}" input-name="in"
+                                                <input type="radio" class="form-control col-3"
+                                                       name="input" id="id{{ r.name }}" input-name="in" value="{{ r.name }}"
                                                        style="height: 20px" checked>
                                             {% else %}
-                                                <input type="checkbox" class="form-control col-3"
-                                                       name="{{ r.name }}" id="in{{ r.name }}" input-name="in"
+                                                <input type="radio" class="form-control col-3"
+                                                       name="input" id="in{{ r.name }}" input-name="in"  value="{{ r.name }}"
                                                        style="height: 20px">
                                             {% endif %}
                                             <h1>{{ r }}</h1>
@@ -48,12 +48,12 @@
                                     {% for r in input_block_to.inputs.all %}
                                         <div class="row">
                                             {% if new_name == r.name %}
-                                                <input type="checkbox" class="form-control col-3"
-                                                       name="{{ r.name }}" id="id{{ r.name }}" input-name="out"
+                                                <input type="radio" class="form-control col-3"
+                                                       name="output" id="id{{ r.name }}" input-name="out"  value="{{ r.name }}"
                                                        style="height: 20px" checked>
                                             {% else %}
-                                                <input type="checkbox" class="form-control col-3"
-                                                       name="{{ r.name }}" id="id{{ r.name }}" input-name="out"
+                                                <input type="radio" class="form-control col-3"
+                                                       name="output" id="id{{ r.name }}" input-name="out"  value="{{ r.name }}"
                                                        style="height: 20px">
                                             {% endif %}
 
@@ -84,19 +84,15 @@
         var inputs = "";
         var outputs = "";
         jQuery("input[input-name='in']").each(function () {
-            console.log(jQuery(this).attr('name'));
             if (document.getElementById(jQuery(this).attr('id')).checked) {
-
-                inputs = jQuery(this).attr('name');
+                inputs = jQuery(this).attr('value');
             }
 
 
         });
         jQuery("input[input-name='out']").each(function () {
-            console.log(jQuery(this).attr('name'));
             if (document.getElementById(jQuery(this).attr('id')).checked) {
-
-                outputs = jQuery(this).attr('name');
+                outputs = jQuery(this).attr('value');
             }
 
 

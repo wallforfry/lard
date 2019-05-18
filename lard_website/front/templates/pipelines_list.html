@@ -22,17 +22,17 @@
                             <div class="btn-group float-right">
                                 {% if perms.front.add_pipeline and perms.front.change_pipeline %}
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-target="#importPipelineModal">Importer
+                                            data-target="#importPipelineModal" id="button_import_pipe">Importer
                                     </button>
                                 {% endif %}
                                 {% if perms.front.add_pipline %}
                                     <button type="button" class="btn btn-primary ml-1" data-toggle="modal"
-                                            data-target="#addPipelineModal">Créer un pipeline
+                                            data-target="#addPipelineModal" id="button_create_pipe">Créer un pipeline
                                     </button>
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" id="card_pipe_list">
                             <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
                                 <thead>
                                 <tr>
@@ -44,9 +44,10 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+
                                 {% for b in pipelines_list %}
-                                    <tr>
-                                        <td><a href="{% url 'pipeline' name=b.name %}">{{ b.name }}</a></td>
+                                    <tr class="table-row"data-href="{% url 'pipeline' name=b.name %}">
+                                        <td style="font-weight: bold;">{{ b.name }} {% if b.owner == user %}<span class="fa fa-user"></span> {% endif %}</td>
                                         <td>{{ b.description }}</td>
                                         <td>{{ b.owner }}</td>
                                         <td class="text-center">{% if b.is_public %}
@@ -65,6 +66,7 @@
             </div>
         </div><!-- .animated -->
     </div><!-- .content -->
+
 
     {% if perms.front.add_pipeline %}
         {% include 'pipeline_edit_info_modal.html' %}

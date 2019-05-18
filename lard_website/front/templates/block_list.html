@@ -21,18 +21,18 @@
                             <strong class="card-title">Blocks</strong>
                             <div class="btn-group float-right">
                                 {% if perms.front.add_block and perms.front.change_block%}
-                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" id="import_block"
                                             data-target="#importBlockModal">Importer
                                     </button>
                                 {% endif %}
                                 {% if perms.front.add_block %}
-                                    <button type="button" class="btn btn-success" data-toggle="modal"
+                                    <button type="button" class="btn btn-success" data-toggle="modal" id="create_block"
                                             data-target="#addBlockModal">Créer un block
                                     </button>
                                 {% endif %}
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" id="card_block_list">
                             <table id="bootstrap-data-table-export" class="table table-striped table-bordered">
                                 <thead>
                                 <tr>
@@ -44,8 +44,8 @@
                                 </thead>
                                 <tbody>
                                 {% for b in blocks %}
-                                    <tr>
-                                        <td><a href="{% url 'edit_block' name=b.name %}">{{ b.name }}</a></td>
+                                    <tr class="table-row"data-href="{% url 'edit_block' name=b.name %}">
+                                        <td style="font-weight: bold;">{{ b.name }}</td>
                                         <td>{{ b.description |truncatechars:80 }}</td>
                                         <td>{% for i in b.inputs.all %}{{ i.value }}, {% endfor %}</td>
                                         <td>{% for i in b.outputs.all %}{{ i.value }}, {% endfor %}</td>

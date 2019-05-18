@@ -453,7 +453,8 @@ def dashboard(request):
         "total_pipelines": Pipeline.objects.count(),
         "total_blocks": Block.objects.count(),
         "total_results": PipelineResult.objects.count(),
-        "top_5_pipelines": scores[:8]
+        "top_5_pipelines": scores[:8],
+        "pipelines": Pipeline.objects.filter(owner=request.user)[:4]
     }
 
     return render(request, "dashboard.html", context=context)

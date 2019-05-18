@@ -1,7 +1,6 @@
 {% extends 'gabarit.html' %}
 {% load static %}
 {% block content %}
-
     <div class="breadcrumbs">
         <div class="row justify-content-between">
             <div class="page-header col-auto">
@@ -11,6 +10,8 @@
             </div>
             <div class="mt-auto mb-sm-auto">
                 <div class="col-auto">
+                    <button type="button" class="btn btn-default" id="reload"><span class="fa fa-refresh"></span>
+                    </button>
                     <button id="runButton" type="button" class="btn btn-success"><i class="fa fa-play"></i> Run</button>
                     <a href="{% url 'pipeline_export' name=name %}">
                         <button type="button" class="btn btn-primary"
@@ -24,7 +25,7 @@
                         <div class="btn-group">
                             <a class="btn btn-info text-white mr-1" data-toggle="collapse" href="#collapseExample"
                                role="button"
-                               aria-expanded="false" aria-controls="collapseExample">
+                               aria-expanded="false" aria-controls="collapseExample" id="addButton">
                                 <i class="fa fa-caret-down"></i> Add
                             </a>
                             <button type="button" class="btn btn-warning text-white" id="editButton">Editer
@@ -32,13 +33,13 @@
                             <button type="button" class="btn btn-danger" data-toggle="modal"
                                     data-target="#deletePipelineModal">Supprimer
                             </button>
+
                         </div>
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
-
 
     <div class="collapse" id="collapseExample">
         <div class="card" style="width: 100%; z-index: 999">
@@ -52,7 +53,7 @@
 
                     <input type="text" class="form-control mb-2 mr-sm-2" id="name"
                            placeholder="Name">
-                    <div class="form-check mb-2 mr-sm-2">
+                    <div class="form-check mb-2 mr-sm-2" id="onLaunch">
                         <label for="onLaunchCreate" class="form-check-label">On launch : &nbsp;</label>
                         <label class="switch switch-3d switch-primary mr-3">
                             <input type="checkbox" class="form-check-input switch-input" id="onLaunchCreate"/>
@@ -92,7 +93,6 @@
                 <button type="button" class="btn btn-primary btn-lg fab rounded-circle pmd-floating-action-btn">
                     <span class="fa fa-plus"></span></button>
             </div>
-
         </div>
     </div>
     <div id="modalDiv"></div>
@@ -143,8 +143,6 @@
                 jQuery("#loader").fadeOut();
             });
         });
-
-
     </script>
 
     <script>
@@ -207,6 +205,7 @@
 
     <script type="application/json" id="pipelineMercureConfig">
         {{ pipeline_mercure_config|safe }}
+
     </script>
 
     <script type="text/javascript">
@@ -229,10 +228,6 @@
                 highlightError(failed_nodes);
             }
         }
-    </script>
-
-    <script>
-
         jQuery("#thumbs-up").click(function () {
             jQuery.post('{% url 'pipeline_score' name=name %}', {"value": 1}, function () {
                 console.log("ok")
@@ -305,8 +300,5 @@
         .pmd-floating-action-btn.btn:hover {
             overflow: visible;
         }
-
     </style>
-
-
 {% endblock %}

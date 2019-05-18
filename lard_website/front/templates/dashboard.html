@@ -4,7 +4,7 @@
 {% block content %}
     <a href="{% url 'list_pipelines' %}">
         <div class="col-xl-3 col-lg-6">
-            <div class="card">
+            <div class="card" id="card_pipelines">
                 <div class="card-body">
                     <div class="stat-widget-one">
                         <div class="stat-icon dib"><i class="ti-rocket text-success border-success"></i></div>
@@ -20,7 +20,7 @@
 
     <div class="col-xl-3 col-lg-6">
         <a href="{% url 'list_blocks' %}">
-            <div class="card">
+            <div class="card" id="card_blocks">
                 <div class="card-body">
                     <div class="stat-widget-one">
                         <div class="stat-icon dib"><i class="fa fa-puzzle-piece text-primary border-primary"></i></div>
@@ -36,7 +36,7 @@
 
     <div class="col-xl-3 col-lg-6">
         <a href="{% url 'admin_users' %}">
-            <div class="card">
+            <div class="card" id="card_users">
                 <div class="card-body">
                     <div class="stat-widget-one">
                         <div class="stat-icon dib"><i class="ti-user text-warning border-warning"></i></div>
@@ -52,7 +52,7 @@
 
     <div class="col-xl-3 col-lg-6">
         <a href="{% url 'pipelines_results_list' %}">
-            <div class="card">
+            <div class="card" id="card_results">
                 <div class="card-body">
                     <div class="stat-widget-one">
                         <div class="stat-icon dib"><i class="ti-save text-danger border-danger"></i></div>
@@ -66,7 +66,7 @@
         </a>
     </div>
     <div class="col-12">
-        <div class="card">
+        <div class="card" id="card_top">
             <div class="card-header">
                 <strong class="card-title"><i class="fa fa-edit"></i>&nbsp;Top Pipelines</strong>
             </div>
@@ -78,15 +78,14 @@
                                 <div class="card-body">
                                     <div class="stat-widget-four">
                                         <div class="stat-icon dib">
-                                            <i class="text-success">#{{ forloop.counter }}</i>
+                                            <i class="text-success">#{{ forloop.counter }}{% if forloop.first %} <span class="fa fa-trophy text-warning"></span>{% endif %}</i>
                                         </div>
                                         <div class="stat-content">
                                             <div class="text-left dib">
                                                 <div class="stat-heading">{{ p.pipeline.name }}</div>
                                                 <div class="stat-text">Total duration
                                                     : {{ p.pipeline.total_duration }}</div>
-                                                <div class="stat-text"><i class="fa-thumbs-up fa text-success"
-                                                                          style="font-size: 1.33em">: {{ p.score.value }}/{{ p.score.count }}</i>
+                                                <div class="stat-text text-success"><span class="fa-thumbs-up fa" style="font-size: 1.33em;"></span>&nbsp: {{ p.score.value }}/{{ p.score.count }}
                                                 </div>
                                             </div>
                                         </div>
@@ -99,6 +98,38 @@
             </div>
         </div>
     </div>
+        <div class="col-12">
+        <div class="card" id="card_top">
+            <div class="card-header">
+                <strong class="card-title"><i class="fa fa-edit"></i>&nbsp;Pipelines Récents</strong>
+            </div>
+            <div class="card-body">
+                {% for p in pipelines %}
+                    <div class="col-xl-3 col-lg-6">
+                        <a href="{% url 'pipeline' name=p %}">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="stat-widget-four">
+                                        <div class="stat-icon dib">
+                                            <span class="fa fa-edit text-info" style="font-size: 4em"></span>
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="text-left dib">
+                                                <div class="stat-heading">{{ p }}</div>
+                                                <div class="stat-text">Total duration
+                                                    : {{ p.total_duration }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block script %}

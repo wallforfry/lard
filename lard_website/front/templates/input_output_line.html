@@ -2,10 +2,10 @@
     <div class="col-6 mb-3">
         <input name="{{ in_out_type }}_names" type="text" required
                {% if not perms.front.change_block %}disabled{% endif %}
-               value="{{ o.name }}" class="form-control"/>
+               value="{{ o.name }}" class="form-control" id="input_name"/>
     </div>
     <div class="{% if perms.front.change_block %}col-5{% else %}col-6{% endif %}">
-        <select name="{{ in_out_type }}_values" class="custom-select" required
+        <select name="{{ in_out_type }}_values" class="custom-select" required id="input_type"
                 {% if not perms.front.change_block %}disabled{% endif %}>
             <option selected>{{ o.value }}</option>
             {% for var_type in var_types %}
