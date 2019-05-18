@@ -157,12 +157,12 @@ def from_cytoscape_to_python_json(cytoscape_format):
     return {"blocks": blocks, "liaisons": liaisons}
 
 
-def create_full_json(j: dict) -> str:
+def create_full_json(j: dict) -> dict:
     for b in j.get("blocks").items():
         block = Block.objects.get(name=b[1].get("type"))
         b[1]["code"] = block.code
 
-    return json.dumps(j)
+    return j
 
 def merge_pipeline_json(p_p1: dict, p_p2: dict) -> dict:
     result = p_p1.copy()

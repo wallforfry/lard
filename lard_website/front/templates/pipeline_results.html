@@ -44,12 +44,12 @@
                             <div class="col col-sm-8 col-12">
                                 <h6>Images :</h6>
                                 {% for i in images %}
+                                    {% url 'pipeline_result_image' id=result.id image_id=i %}
                                     <b>{{ i.name }} :</b>
                                     <div class="row">
                                         <div class="col-12 text-center">
-                                            <a href="data:image/png;base64, {{ i.image }}" data-toggle="lightbox">
-                                            <img src="data:image/png;base64, {{ i.image }}"
-                                                 style="width:100%;max-width:500px"/>
+                                            <a href="{% url 'pipeline_result_image' id=result.id image_id=i %}" data-toggle="lightbox">
+                                                <img src="{% url 'pipeline_result_image' id=result.id image_id=i %}" style="width:100%;max-width:500px"/>
                                             </a>
                                         </div>
                                     </div>

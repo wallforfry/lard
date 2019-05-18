@@ -22,6 +22,7 @@ urlpatterns = [
     path('results/', views.pipeline_results_list, name="pipelines_results_list"),
     path('results/<str:id>', views.pipeline_results, name="pipeline_results"),
     path('results/<str:id>/cancel', views.pipeline_cancel, name="pipeline_cancel"),
+    path('results/<str:id>/image/<str:image_id>', views.pipeline_result_image, name="pipeline_result_image"),
     url(r'^results/(?P<id>[\w]+)/delete$', views.pipeline_result_delete, name='pipeline_result_delete'),
     path('pipelines/add', views.pipeline_add, name="pipeline_add"),
     path('pipelines/import', views.pipeline_import, name="pipeline_import"),

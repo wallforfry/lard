@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from front.models import Pipeline, Block, InputOutputType, InputOutput, PipelineResult, Vote
+from front.models import Pipeline, Block, InputOutputType, InputOutput, PipelineResult, Vote, PipelineResultImage
 
 
 class PipelineResultAdmin(admin.ModelAdmin):
@@ -13,6 +13,7 @@ class PipelineResultAdmin(admin.ModelAdmin):
 admin.site.register(Pipeline)
 admin.site.register(Vote)
 admin.site.register(PipelineResult, PipelineResultAdmin)
+admin.site.register(PipelineResultImage)
 admin.site.register(Block)
 admin.site.register(InputOutput)
 admin.site.register(InputOutputType)

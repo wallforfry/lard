@@ -5,10 +5,13 @@ Author : DELEVACQ Wallerand
 Date : 11/05/19
 """
 import base64
+import io
 import json
+import sys
 
 import cv2
 import requests
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 from gevent import monkey
 
 from lard_library.mercure import Mercure
@@ -16,7 +19,7 @@ from lard_library.mercure import Mercure
 monkey.patch_all()
 
 import grequests as async_requests
-from flask import Flask, request, Response
+from flask import Flask, request, Response, send_file
 
 from lard_library.pipeline import Pipeline
 
@@ -32,11 +35,20 @@ def main():
 def up():
     return "yes"
 
+@app.route("/download", methods=['POST'])
+def download():
+    j = request.json
+    with open(j["name"], 'rb') as bites:
+        return send_file(
+                     io.BytesIO(bites.read()),
+                     attachment_filename=j["name"],
+                     mimetype='image/png'
+            )
+
 @app.route("/run", methods=['POST'])
 def run():
     j = request.json
     name = j.get("name")
-
     try:
         update_url = j.get("update_url")
 
@@ -49,22 +61,28 @@ def run():
         f = p.launch()
         results = p.get_outputs()
 
-        frames_b64 = []
+        images_names = []
         for r in results:
             try:
-                ret, img = cv2.imencode('.png', r["value"])
-                frame_b64 = base64.b64encode(img).decode("utf-8")
-                frames_b64.append({"name": r["name"], "image": frame_b64})
+                cv2.imwrite(r["name"]+".png", r["value"])
+                images_names.append(r["name"]+".png")
             except Exception as e:
+                print(e)
                 p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
 
-        result = {"name": name, "images": frames_b64, "logs": p.logs, "worker_id": j.get("worker_id"), "username": j.get("username")}
+        result = {"name": name, "images": images_names, "logs": p.logs, "worker_id": j.get("worker_id"), "username": j.get("username"), "worker_ip": j.get("worker_ip")}
+
         requests.post(update_url, json=result)
+        del result
+        del p
     except Exception as e:
+        print(e)
         result = {"name": name, "images": [], "logs": [], "worker_id": j.get("worker_id"),
                   "username": j.get("username")}
         requests.post(update_url, json=result)
+        del result
         m = Mercure(j["username"])
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ", "message": "Le pipeline " + name + " a échoué."}))
-
+        sys.exit(str(e))
+    del j
     return Response(status=200)

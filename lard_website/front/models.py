@@ -104,3 +104,8 @@ class PipelineResult(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     worker_id = models.CharField(max_length=255, blank=True, null=True, default="")
+
+class PipelineResultImage(models.Model):
+    pipeline_result = models.ForeignKey(PipelineResult, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    image = models.BinaryField(blank=True)

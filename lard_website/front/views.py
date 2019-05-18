@@ -29,7 +29,7 @@ from front.backend import EmailOrUsernameModelBackend
 from django.shortcuts import render, redirect
 
 # Create your views here.
-from front.models import Pipeline, Block, InputOutputType, InputOutput, PipelineResult, Vote
+from front.models import Pipeline, Block, InputOutputType, InputOutput, PipelineResult, Vote, PipelineResultImage
 from lard_website import settings
 from django.views.decorators.csrf import csrf_exempt
 
@@ -244,7 +244,7 @@ def pipeline_edit(request, name):
         p.json_value = json.dumps(j)
         p.save()
         l_p = LibPipeline(name)
-        j = json.loads(create_full_json(p.json_value))
+        j = create_full_json(p.json_value)
         l_p.load_json(j)
         return HttpResponse(str(l_p.get_json()))
     return HttpResponse("ERROR")
@@ -288,7 +288,7 @@ def pipeline_execute(request, name):
 
     m = Mercure(request.user.username)
     m.hub_url = 'http://mercure:80/hub'
-
+    j = {}
     try:
         file_cptr = 0
         inputs_cptr = 0
@@ -303,10 +303,8 @@ def pipeline_execute(request, name):
         p = Pipeline.objects.get(name=name)
         j = json.loads(p.json_value)
 
-        np_array = []
 
         for b, n, v, t in zip(blocks_names, inputs_names, inputs_values, inputs_types):
-
             try:
                 d = ast.literal_eval(v)
             except ValueError:
@@ -317,12 +315,18 @@ def pipeline_execute(request, name):
 
             j.get("blocks").get(b).get("data")[n] = d
 
-        j = json.loads(create_full_json(j))
+        j = create_full_json(j)
         j["name"] = name
 
         pr = PipelineResult.objects.create(user=request.user, pipeline=p, images="[]", logs="[]")
 
+        m.send(json.dumps({"type": "info", "title": "Pipeline en cours : ",
+                           "message": "Démarrage du container."}))
+
         container = spawn_container()
+        m.send(json.dumps({"type": "info", "title": "Pipeline en cours : ",
+                           "message": "Le container a été démarré. Début du traitement."}))
+
         for l in container.logs(follow=True, stream=True):
             s = str(l, "utf-8")
             if "Running" in s:
@@ -335,10 +339,10 @@ def pipeline_execute(request, name):
 
         local_ip = str(socket.gethostbyname(socket.gethostname()))
         j["worker_id"] = worker_id
+        j["worker_ip"] = ip
         j["username"] = str(request.user)
         j["update_url"] = "http://" + local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
 
-        print("7")
         try:
             context = requests.post("http://" + ip + ":12300/run", json=j, timeout=10)
         except Exception:
@@ -353,6 +357,13 @@ def pipeline_execute(request, name):
         print(e)
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
                            "message": "Le pipeline a échoué."}))
+
+    del j
+    del blocks_names
+    del inputs_names
+    del inputs_values
+    del inputs_types
+    del files
 
     return HttpResponse(status=200)
 
@@ -395,7 +406,7 @@ def pipeline_results_list(request):
 @login_required
 def pipeline_results(request, id):
     r = PipelineResult.objects.get(id=id)
-    images = json.loads(r.images)
+    images = [pri.id for pri in PipelineResultImage.objects.filter(pipeline_result=r)]
     logs = json.loads(r.logs)
 
     try:
@@ -406,6 +417,11 @@ def pipeline_results(request, id):
     return render(request, "pipeline_results.html",
                   context={"result": r, "images": images, "logs": logs, "worker_status": worker_status})
 
+@login_required
+def pipeline_result_image(request, id, image_id):
+    p = PipelineResult.objects.get(id=id)
+    pri = PipelineResultImage.objects.get(id=image_id, pipeline_result_id=id)
+    return HttpResponse(pri.image.tobytes(), content_type="image/png")
 
 @login_required
 def pipeline_result_delete(request, id):
