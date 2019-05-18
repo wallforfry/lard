@@ -270,7 +270,11 @@ function initCytoscape(data) {
         ]
     });
 
-
+    document.querySelector("#reload").addEventListener("click", function () {
+        cy.center();
+        cy.pan();
+        cy.fit();
+    });
 //Permet de faire la création du node
     document.querySelector("#create").addEventListener("click", function () {
 

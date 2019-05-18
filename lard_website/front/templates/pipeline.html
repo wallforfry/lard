@@ -10,6 +10,8 @@
             </div>
             <div class="mt-auto mb-sm-auto">
                 <div class="col-auto">
+                    <button type="button" class="btn btn-default" id="reload"><span class="fa fa-refresh"></span>
+                    </button>
                     <button id="runButton" type="button" class="btn btn-success"><i class="fa fa-play"></i> Run</button>
                     <a href="{% url 'pipeline_export' name=name %}">
                         <button type="button" class="btn btn-primary"
@@ -31,6 +33,7 @@
                             <button type="button" class="btn btn-danger" data-toggle="modal"
                                     data-target="#deletePipelineModal">Supprimer
                             </button>
+
                         </div>
                     </div>
                 {% endif %}
@@ -209,6 +212,10 @@
 
     <script type="application/json" id="pipelineMercureConfig">
         {{ pipeline_mercure_config|safe }}
+
+
+
+
     </script>
 
     <script type="text/javascript">
@@ -234,7 +241,6 @@
     </script>
 
     <script>
-
         jQuery("#thumbs-up").click(function () {
             jQuery.post('{% url 'pipeline_score' name=name %}', {"value": 1}, function () {
                 console.log("ok")
