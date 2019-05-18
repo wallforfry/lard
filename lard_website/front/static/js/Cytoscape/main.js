@@ -1,3 +1,6 @@
+var edge_wait = false;
+var event_wait, sourceNode_wait, targetNode_wait;
+
 function initCytoscape(data) {
     var cy = window.cy = cytoscape({
 
@@ -348,7 +351,6 @@ function initCytoscape(data) {
         }
         if (e.keyCode === 13) {
             jQuery('#collapseExample').collapse('toggle');
-
         }
 
     }, false);
@@ -357,26 +359,10 @@ function initCytoscape(data) {
     cy.on("ehcomplete", (event, sourceNode, targetNode) => {
 
         createArray(cy);
-
-        /*
-        Pb erreur 500 à cause de la requête Ajax.
-        var edge;
-        cy.elements().forEach(function (elem) {
-            if (elem.isEdge()) {
-                if (elem.data().target === targetNode.data()["name"] && elem.data().source === sourceNode.data()["name"]) {
-                    edge = elem;
-                }
-            }
-        });
-        var old_name = "image";
-        var new_name = "image";
-        jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/edge/" + sourceNode.data()["name"]
-            + "/" + targetNode.data()["name"] + "/" + edge.id() + "/" + old_name + "/" + new_name, function (result) {
-            jQuery("#pipelineModal").modal({show: true});
-
-        });
-         */
-
+        edge_wait = true;
+        event_wait = event;
+        sourceNode_wait = sourceNode;
+        targetNode_wait = targetNode;
     });
 
     cy.elements().forEach(function (elem) {
@@ -486,13 +472,34 @@ function updatePipeline(data) {
             data: {'name': pipelineName, 'pipeline': JSON.stringify(data)},
             success: function (code, statut) {
                 console.log(pipelineName + " updated");
-
+                if (edge_wait) {
+                    openModal()
+                }
             },
             error: function (code, statut) {
                 console.log("Error during " + pipelineName + " update");
             }
         });
     }
+}
+
+function openModal() {
+    var edge;
+    cy.elements().forEach(function (elem) {
+        if (elem.isEdge()) {
+            if (elem.data().target === targetNode_wait.data()["name"] && elem.data().source === sourceNode_wait.data()["name"]) {
+                edge = elem;
+            }
+        }
+    });
+    var old_name = "image";
+    var new_name = "image";
+    jQuery('#modalDiv').load("/pipelines/" + pipelineName + "/edit/edge/" + sourceNode_wait.data()["name"]
+        + "/" + targetNode_wait.data()["name"] + "/" + edge.id() + "/" + old_name + "/" + new_name, function (result) {
+        jQuery("#pipelineModal").modal({show: true});
+
+    });
+    edge_wait = false;
 }
 
 var script = document.createElement("script"),
