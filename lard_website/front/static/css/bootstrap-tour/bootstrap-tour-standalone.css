@@ -166,7 +166,6 @@ input[type="button"].btn-block {
 .btn-group > .btn,
 .btn-group-vertical > .btn {
   position: relative;
-  float: left;
 }
 .btn-group > .btn:hover,
 .btn-group-vertical > .btn:hover,
@@ -209,9 +208,7 @@ input[type="button"].btn-block {
 }
 .btn-group > .btn:last-child:not(:first-child),
 
-.btn-group > .btn-group {
-  float: left;
-}
+
 .btn-group > .btn-group:not(:first-child):not(:last-child) > .btn {
   border-radius: 0;
 }
