@@ -8,18 +8,18 @@
                     aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fa fa-bars"></i>
             </button>
-            <a class="navbar-brand" href="{% url 'index' %}"><h5>Lard</h5></a>
+            <a class="navbar-brand" href="{% url 'index' %}"><h4>Lard</h4></a>
             <a class="navbar-brand hidden" href="{% url 'index' %}"><h5>L</h5></a>
         </div>
 
         <div id="main-menu" class="main-menu collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="{% if request.resolver_match.view_name == "dashboard" %}active{% endif %}" id="dashboard">
-                    <a href="{% url 'dashboard' %}"> <i class="menu-icon fa fa-dashboard"></i>Dashboard </a>
+                    <a href="{% url 'dashboard' %}"> <i class="menu-icon fa fa-dashboard"></i>Dashboard</a>
                 </li>
                 {% comment %}
                     <li class="{% if request.resolver_match.view_name == "editor" %}active{% endif %}">
-                        <a href="{% url 'editor' %}"> <i class="menu-icon fa fa-edit"></i>Editeur </a>
+                        <a href="{% url 'editor' %}"> <i class="menu-icon fa fa-edit"></i>Editeur</a>
                     </li>
                 {% endcomment %}
                 <h3 class="menu-title">Mes Projets</h3><!-- /.menu-title -->
@@ -67,7 +67,7 @@
                     </ul>
                 </li>
                 <li class="">
-                    <a id="startTour"> <i class="menu-icon fa fa-map"></i>Visite Guidée</a>
+                    <a id="startTour" href="#"> <i class="menu-icon fa fa-map"></i>Visite Guidée</a>
                 </li>
 
 
