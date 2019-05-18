@@ -47,7 +47,7 @@
 
                                 {% for b in pipelines_list %}
                                     <tr class="table-row"data-href="{% url 'pipeline' name=b.name %}">
-                                        <td style="font-weight: bold;">{{ b.name }} {% if b.owner == user %}<span class="fa fa-user"></span> {% endif %}</td>
+                                        <td style="font-weight: bold;">{% if b.owner == user %}<span class="fa fa-user"></span> {% endif %} {{ b.name }}</td>
                                         <td>{{ b.description }}</td>
                                         <td>{{ b.owner }}</td>
                                         <td class="text-center">{% if b.is_public %}
