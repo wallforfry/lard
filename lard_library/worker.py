@@ -8,6 +8,7 @@ import base64
 import io
 import json
 import sys
+import uuid
 
 import cv2
 import requests
@@ -61,8 +62,9 @@ def run():
         images_names = []
         for r in results:
             try:
-                cv2.imwrite(r["name"]+".png", r["value"])
-                images_names.append(r["name"]+".png")
+                name = str(uuid.uuid1())+".png"
+                cv2.imwrite(name, r["value"])
+                images_names.append(name)
             except Exception as e:
                 print(e)
                 p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value\n"+str(e)})

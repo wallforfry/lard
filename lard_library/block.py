@@ -167,13 +167,15 @@ class Block(Subject, Observer):
         else:
             result = self.treatment(self.data_ready)
             self._data_ready = result
-
+            print("END "+self.name)
             for o in OUTPUT_BLOCK_OUTPUT_NAME:
                 if o in result:
                     if result[o] is not None:
                         self.pipeline.outputs.append({"name": self.name, "value": result[o]})
                         if self.type in OUTPUT_BLOCK_TYPE:
                             self._data_ready = set_dict_to_value(self.inputs_dict, None)
+                            print("RESET "+self.name)
+
             self.subject_outputs = result
 
     @abc.abstractmethod
@@ -407,8 +409,8 @@ class Liaison(Block):
                                "old_name": self._data.get("old_name", None),
                                "new_name": self._data.get("new_name", None), "name": self.name}))
         data = self._observer_inputs
-        old_name = data.get("old_name")
-        new_name = data.get("new_name")
+        old_name = self._data.get("old_name", "")
+        new_name = self._data.get("new_name", "")
         data = copy.deepcopy(data)
         if old_name and new_name:
             if old_name != new_name:
