@@ -377,6 +377,16 @@ function highlightError(name) {
 
 function edit(cy, param) {
     var dataNode = cy.$('#' + param[0]).data();
+
+    for (var key in param[1]) {
+        if (param[1][key] == "None") {
+            param[1][key] = null;
+        }
+        if (param[1][key] == "") {
+            param[1][key] = null;
+        }
+    }
+
     dataNode["data"] = param[1];
     dataNode["on_launch"] = param[2];
     dataNode["data_ready"] = {};
