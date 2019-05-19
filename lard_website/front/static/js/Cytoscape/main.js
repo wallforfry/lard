@@ -260,6 +260,7 @@ function initCytoscape(data) {
         cy.center();
         cy.pan();
         cy.fit();
+        clearStyle(cy);
     });
 
     document.querySelector("#create").addEventListener("click", function () {
