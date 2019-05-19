@@ -219,9 +219,6 @@ class Block(Subject, Observer):
         Serialize Block
         :return: dict()
         """
-        next = []
-        for o in self._observers:
-            next.append(o._data)
 
         dumped_data = {
             "name": self.name,

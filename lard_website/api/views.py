@@ -33,7 +33,6 @@ def list_blocks(request):
 def update_pipeline(request):
     pipeline_name = request.POST.get("name")
     pipeline_raw = request.POST.get("pipeline")
-
     pipeline_dict = from_cytoscape_to_python_json(json.loads(pipeline_raw))
     try:
         pipeline = Pipeline.objects.get(name=pipeline_name)
@@ -56,7 +55,6 @@ def update_result(request, worker_id):
         for i in context["images"]:
             addr = "http://" + context["worker_ip"] + ":12300/download"
             rq = requests.post(addr, json={"name": i})
-            print(rq.status_code)
             PipelineResultImage.objects.create(name=i, image=rq.content, pipeline_result=r)
 
         r.logs = json.dumps(context["logs"])

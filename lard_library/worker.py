@@ -11,14 +11,12 @@ import sys
 
 import cv2
 import requests
-from requests_toolbelt.multipart.encoder import MultipartEncoder
 from gevent import monkey
 
 from lard_library.mercure import Mercure
 
 monkey.patch_all()
 
-import grequests as async_requests
 from flask import Flask, request, Response, send_file
 
 from lard_library.pipeline import Pipeline
@@ -49,9 +47,8 @@ def download():
 def run():
     j = request.json
     name = j.get("name")
+    update_url = j.get("update_url")
     try:
-        update_url = j.get("update_url")
-
         m = Mercure(name+"/"+j["username"])
 
         p = Pipeline(name)
@@ -68,7 +65,7 @@ def run():
                 images_names.append(r["name"]+".png")
             except Exception as e:
                 print(e)
-                p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value"})
+                p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value\n"+str(e)})
 
         result = {"name": name, "images": images_names, "logs": p.logs, "worker_id": j.get("worker_id"), "username": j.get("username"), "worker_ip": j.get("worker_ip")}
 

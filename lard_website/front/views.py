@@ -303,15 +303,11 @@ def pipeline_execute(request, name):
         p = Pipeline.objects.get(name=name)
         j = json.loads(p.json_value)
 
-
         for b, n, v, t in zip(blocks_names, inputs_names, inputs_values, inputs_types):
             try:
                 d = ast.literal_eval(v)
             except ValueError:
-                if t == "string":
-                    d = str(v)
-                else:
-                    d = v
+                d = v
 
             j.get("blocks").get(b).get("data")[n] = d
 
