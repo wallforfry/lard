@@ -11,7 +11,7 @@ var tour = new Tour({
         "<button class='btn btn-default' data-role='end'>Fin</button>" +
         "</div>" +
         "</div>",
-  backdropPadding: 0,
+    backdropPadding: 0,
     steps: [
         {
             orphan: true,
@@ -190,7 +190,6 @@ var tour = new Tour({
             placement: "left",
 
 
-
             title: "Blocks",
             content: "Ici tu vas pouvoir régler les entrées de ton block."
         },
@@ -219,6 +218,7 @@ var tour = new Tour({
             content: "Enfin, clique sur Save pour sauvgarder."
         },
         {
+            path: "/dashboard/",
             orphan: true,
             title: "C'est fini !",
             content: "Et voilà !<br> Tu viens de voir les bases pour utiliser notre application.<br>Amuses-toi bien !"
