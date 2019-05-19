@@ -2,14 +2,6 @@
 {% load static %}
 {% block script %}
     {{ block.super }}
-
-    <script type="text/javascript">
-        jQuery(document).on('click', '[data-toggle="lightbox"]', function(event) {
-                event.preventDefault();
-                jQuery(this).ekkoLightbox();
-                console.log("init");
-            });
-    </script>
 {% endblock %}
 
 {% block content %}
