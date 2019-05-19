@@ -415,9 +415,8 @@ def pipeline_results(request, id):
 
 @login_required
 def pipeline_result_image(request, id, image_id):
-    p = PipelineResult.objects.get(id=id)
     pri = PipelineResultImage.objects.get(id=image_id, pipeline_result_id=id)
-    return HttpResponse(pri.image.tobytes(), content_type="image/png")
+    return django.http.FileResponse(pri.image, content_type="image/png", filename=pri.name)
 
 @login_required
 def pipeline_result_delete(request, id):
