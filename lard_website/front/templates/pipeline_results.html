@@ -38,8 +38,6 @@
                             <div class="col col-sm-8 col-12">
                                 <h6>Images :</h6>
                                 {% for i in images %}
-                                    {% url 'pipeline_result_image' id=result.id image_id=i %}
-                                    <b>{{ i.name }} :</b>
                                     <div class="row">
                                         <div class="col-12 text-center">
                                             <a href="{% url 'pipeline_result_image' id=result.id image_id=i %}" data-toggle="lightbox">
