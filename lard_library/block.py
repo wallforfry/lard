@@ -156,11 +156,11 @@ class Block(Subject, Observer):
     def _treat(self, data={}):
         for n in self.data:
             for m in self.data_ready:
-                if n == m:
+                if n == m and self.data.get(n) is not None:
                     self.data_ready.update({n: self.data.get(n)})
         for n in data:
             for m in self.data_ready:
-                if n == m:
+                if n == m and data.get(n) is not None:
                     self.data_ready.update({n: data.get(n)})
         if not self.is_ready():
             print(self.name + " Not ready")
