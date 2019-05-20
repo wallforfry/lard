@@ -6,6 +6,8 @@ Date : 18/02/19
 """
 import abc
 import copy
+import time
+
 import cv2
 import json
 import matplotlib.pyplot as plt
@@ -16,9 +18,7 @@ import networkx as nx
 # Ignore warning matplotlib
 import warnings
 
-# Outputs Settings
-OUTPUT_BLOCK_TYPE = ["OUTPUT", "Output"]
-OUTPUT_BLOCK_OUTPUT_NAME = ["output"]
+from lard_library.mercure import Mercure
 
 warnings.filterwarnings(
     action='ignore', module='matplotlib.figure', category=UserWarning,
@@ -167,14 +167,11 @@ class Block(Subject, Observer):
         else:
             result = self.treatment(self.data_ready)
             self._data_ready = result
-            print("END "+self.name)
-            for o in OUTPUT_BLOCK_OUTPUT_NAME:
-                if o in result:
-                    if result[o] is not None:
-                        self.pipeline.outputs.append({"name": self.name, "value": result[o]})
-                        if self.type in OUTPUT_BLOCK_TYPE:
-                            self._data_ready = set_dict_to_value(self.inputs_dict, None)
-                            print("RESET "+self.name)
+
+            if len(self._observers) == 0:
+                for output in self.outputs_dict:
+                    self.pipeline.outputs.append({"name": self.name, "value": result[output], "type": self.outputs_dict.get(output)})
+                    self._data_ready = set_dict_to_value(self.inputs_dict, None)
 
             self.subject_outputs = result
 
@@ -315,9 +312,19 @@ class Block(Subject, Observer):
 
     @staticmethod
     def launch_all(blocks=[]):
+        start_time = time.time()
+        notified = False
         if not blocks:
             blocks = Block.blocks
         for b in blocks:
+            elapsed_time = time.time() - start_time
+            if elapsed_time >= 5 and not notified:
+                notified = True
+                if b.pipeline.mercure:
+                    m = Mercure(b.pipeline.mercure.topic[b.pipeline.mercure.topic.index("/")+1:])
+                    m.send(json.dumps({"type": "info", "title": "Pipeline en cours : ",
+                                   "message": "Ce pipeline semble être un traitement long. Vous serez notifié dès la fin "
+                                              "de l'execution."}))
             if b.on_launch:
                 b.launch()
 

@@ -340,11 +340,10 @@ def pipeline_execute(request, name):
         j["update_url"] = "http://" + local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
 
         try:
-            context = requests.post("http://" + ip + ":12300/run", json=j, timeout=10)
-        except Exception:
-            m.send(json.dumps({"type": "info", "title": "Pipeline en cours : ",
-                               "message": "Ce pipeline semble être un traitement long. Vous serez notifié dès la fin "
-                                          "de l'execution."}))
+            context = requests.post("http://" + ip + ":12300/run", json=j)
+        except Exception as e:
+            print(e)
+
     except AttributeError or ValueError as e:
         print(e)
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
@@ -558,6 +557,9 @@ def import_block(request):
                 new_value = InputOutputType.objects.get_or_create(value=i["value"])[0]
                 new_output = InputOutput.objects.create(name=i["name"], value=new_value)
                 block.outputs.add(new_output)
+
+            block.code = data["code"]
+            block.save()
 
             return redirect('edit_block', name=block_name)
         else:
