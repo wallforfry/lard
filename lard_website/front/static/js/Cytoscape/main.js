@@ -447,7 +447,7 @@ function updatePipeline(data) {
     if (userIsOwner) {
         jQuery.ajax({
             type: "POST",
-            url: "/api/piplines/update",
+            url: "/api/pipelines/update",
             dataType: "json",
             traditional: true,
             data: {'name': pipelineName, 'pipeline': JSON.stringify(data)},

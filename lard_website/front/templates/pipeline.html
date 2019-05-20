@@ -19,7 +19,7 @@
                         </button>
                     </a>
                 </div>
-                {% if user == pipeline.owner %}
+                {% if user == pipeline.owner or pipeline.name == "Demo" %}
                     <div class="col-auto mt-1 mt-sm-0" role="toolbar"
                          aria-label="Toolbar with button groups">
                         <div class="btn-group">
@@ -79,22 +79,24 @@
         <div id="loader" class="loader"></div>
         <div id="cy"></div>
     </div>
-    <div class="fixed-bottom justify-content-end row mr-1 mb-3">
-        <div class="col-auto align-self-end">
+    {% if pipeline.is_public %}
+        <div class="fixed-bottom justify-content-end row mr-1 mb-3">
+            <div class="col-auto align-self-end">
 
-            <div class="menu pmd-floating-action" role="navigation">
-                <button id="thumbs-down" type="button"
-                        class="btn btn-danger btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
-                    <span class="fa fa-thumbs-down"></span></button>
-                <button id="thumbs-up" type="button"
-                        class="btn btn-success btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
-                    <span class="fa fa-thumbs-up"></span></button>
+                <div class="menu pmd-floating-action" role="navigation">
+                    <button id="thumbs-down" type="button"
+                            class="btn btn-danger btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
+                        <span class="fa fa-thumbs-down"></span></button>
+                    <button id="thumbs-up" type="button"
+                            class="btn btn-success btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
+                        <span class="fa fa-thumbs-up"></span></button>
 
-                <button type="button" class="btn btn-primary btn-lg fab rounded-circle pmd-floating-action-btn">
-                    <span class="fa fa-plus"></span></button>
+                    <button type="button" class="btn btn-primary btn-lg fab rounded-circle pmd-floating-action-btn">
+                        <span class="fa fa-plus"></span></button>
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
     <div id="modalDiv"></div>
     <div id="resultModalDiv"></div>
 
@@ -228,17 +230,20 @@
                 highlightError(failed_nodes);
             }
         }
-        jQuery("#thumbs-up").click(function () {
-            jQuery.post('{% url 'pipeline_score' name=name %}', {"value": 1}, function () {
-                console.log("ok")
-            })
-        });
 
-        jQuery("#thumbs-down").click(function () {
-            jQuery.post('{% url 'pipeline_score' name=name %}', {"value": -1}, function () {
-                console.log("ok")
-            })
-        });
+        {% if pipeline.is_public %}
+            jQuery("#thumbs-up").click(function () {
+                jQuery.post('{% url 'pipeline_score' name=name %}', {"value": 1}, function () {
+                    console.log("ok")
+                })
+            });
+
+            jQuery("#thumbs-down").click(function () {
+                jQuery.post('{% url 'pipeline_score' name=name %}', {"value": -1}, function () {
+                    console.log("ok")
+                })
+            });
+        {% endif %}
 
         jQuery("#close").click(function () {
             jQuery('#collapseExample').collapse('hide');
