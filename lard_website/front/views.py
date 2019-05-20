@@ -433,7 +433,7 @@ def pipeline_result_delete(request, id):
 @login_required
 def dashboard(request):
     scores = []
-    for p in Pipeline.objects.all():
+    for p in Pipeline.objects.filter(is_public=True):
         s = p.score_int()
         if s["count"] > 0:
             scores.append({"pipeline": p, "score": s})
