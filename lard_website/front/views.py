@@ -559,6 +559,9 @@ def import_block(request):
                 new_output = InputOutput.objects.create(name=i["name"], value=new_value)
                 block.outputs.add(new_output)
 
+            block.code = data["code"]
+            block.save()
+
             return redirect('edit_block', name=block_name)
         else:
             return HttpResponseBadRequest()
