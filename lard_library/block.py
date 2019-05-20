@@ -16,9 +16,6 @@ import networkx as nx
 # Ignore warning matplotlib
 import warnings
 
-# Outputs Settings
-OUTPUT_BLOCK_TYPE = ["OUTPUT", "Output"]
-OUTPUT_BLOCK_OUTPUT_NAME = ["output"]
 
 warnings.filterwarnings(
     action='ignore', module='matplotlib.figure', category=UserWarning,
@@ -167,14 +164,11 @@ class Block(Subject, Observer):
         else:
             result = self.treatment(self.data_ready)
             self._data_ready = result
-            print("END "+self.name)
-            for o in OUTPUT_BLOCK_OUTPUT_NAME:
-                if o in result:
-                    if result[o] is not None:
-                        self.pipeline.outputs.append({"name": self.name, "value": result[o]})
-                        if self.type in OUTPUT_BLOCK_TYPE:
-                            self._data_ready = set_dict_to_value(self.inputs_dict, None)
-                            print("RESET "+self.name)
+
+            if len(self._observers) == 0:
+                for output in self.outputs_dict:
+                    self.pipeline.outputs.append({"name": self.name, "value": result[output], "type": self.outputs_dict.get(output)})
+                    self._data_ready = set_dict_to_value(self.inputs_dict, None)
 
             self.subject_outputs = result
 
