@@ -6,6 +6,8 @@ Date : 18/02/19
 """
 import abc
 import copy
+import time
+
 import cv2
 import json
 import matplotlib.pyplot as plt
@@ -16,6 +18,7 @@ import networkx as nx
 # Ignore warning matplotlib
 import warnings
 
+from lard_library.mercure import Mercure
 
 warnings.filterwarnings(
     action='ignore', module='matplotlib.figure', category=UserWarning,
@@ -309,9 +312,19 @@ class Block(Subject, Observer):
 
     @staticmethod
     def launch_all(blocks=[]):
+        start_time = time.time()
+        notified = False
         if not blocks:
             blocks = Block.blocks
         for b in blocks:
+            elapsed_time = time.time() - start_time
+            if elapsed_time >= 5 and not notified:
+                notified = True
+                if b.pipeline.mercure:
+                    m = Mercure(b.pipeline.mercure.topic[b.pipeline.mercure.topic.index("/")+1:])
+                    m.send(json.dumps({"type": "info", "title": "Pipeline en cours : ",
+                                   "message": "Ce pipeline semble être un traitement long. Vous serez notifié dès la fin "
+                                              "de l'execution."}))
             if b.on_launch:
                 b.launch()
 

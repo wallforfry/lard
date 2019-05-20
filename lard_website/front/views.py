@@ -340,11 +340,10 @@ def pipeline_execute(request, name):
         j["update_url"] = "http://" + local_ip + ":8000" + reverse(update_result, kwargs={'worker_id': worker_id})
 
         try:
-            context = requests.post("http://" + ip + ":12300/run", json=j, timeout=10)
-        except Exception:
-            m.send(json.dumps({"type": "info", "title": "Pipeline en cours : ",
-                               "message": "Ce pipeline semble être un traitement long. Vous serez notifié dès la fin "
-                                          "de l'execution."}))
+            context = requests.post("http://" + ip + ":12300/run", json=j)
+        except Exception as e:
+            print(e)
+
     except AttributeError or ValueError as e:
         print(e)
         m.send(json.dumps({"type": "danger", "title": "Pipeline échoué : ",
