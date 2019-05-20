@@ -19,7 +19,7 @@
                         </button>
                     </a>
                 </div>
-                {% if user == pipeline.owner %}
+                {% if user == pipeline.owner or pipeline.name == "Demo" %}
                     <div class="col-auto mt-1 mt-sm-0" role="toolbar"
                          aria-label="Toolbar with button groups">
                         <div class="btn-group">

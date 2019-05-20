@@ -52,7 +52,7 @@ def datasets(request, name):
 
 
 @login_required
-def list_piplines(request):
+def list_pipelines(request):
     return render(request, "pipelines_list.html",
                   context={"pipelines_list": Pipeline.objects.filter(Q(is_public=True) | Q(owner=request.user))})
 
@@ -259,7 +259,7 @@ def pipeline_delete(request, name):
             p.delete()
         except Pipeline.DoesNotExist:
             return HttpResponseBadRequest()
-    return redirect(reverse(list_piplines))
+    return redirect(reverse(list_pipelines))
 
 
 @login_required
