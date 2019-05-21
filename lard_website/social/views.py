@@ -125,17 +125,20 @@ def feed_element(request, elt_id):
 
 @login_required
 def feed_publish(request):
+    up = UserProfile.objects.get(user=request.user)
+
     if request.method == 'POST':
         if "message" in request.POST and "scope" in request.POST:
             message = request.POST.get("message", "")
-            up = UserProfile.objects.get(user=request.user)
             scope = request.POST.get("scope", up.scope)
 
             pub = Publication.objects.create(user_profile=up, message=message, scope=scope)
 
+            print(request.POST)
             if "result_id" in request.POST:
                 result_id = request.POST.get("result_id")
                 try:
+                    print("TRY")
                     pr = PipelineResult.objects.get(user=request.user, id=result_id)
                     pub.associated_result = pr
                     pub.save()
@@ -145,7 +148,11 @@ def feed_publish(request):
 
             return redirect(feed)
 
-    return redirect(feed)
+    context={
+        "profile": up,
+        "associated_result": request.GET.get("associated_result", None)
+    }
+    return render(request, 'publish.html', context=context)
 
 
 @login_required

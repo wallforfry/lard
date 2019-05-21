@@ -13,4 +13,4 @@ def social_processor(request):
     else:
         user_profile = []
 
-    return {"user_profile": user_profile}
+    return {"user_profile": user_profile, "scopes": UserProfile.SCOPE_CHOICES}
