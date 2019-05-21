@@ -31,7 +31,7 @@
                             class="badge badge-primary pull-right">{{ profile.get_followers.all|length}}</span></a>
                 </li>
                 <li class="list-group-item">
-                    <a href="#"> <i class="fa fa-comments-o"></i> Publications <span
+                    <a href="{% url 'feed' %}?u={{ profile.username }}"> <i class="fa fa-comments-o"></i> Publications <span
                             class="badge badge-warning pull-right r-activity">{{ profile.get_publications|length }}</span></a>
                 </li>
             </ul>

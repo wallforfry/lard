@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 
 # Create your models here.
-from front.models import PipelineResult, Pipeline
+from front.models import PipelineResult, Pipeline, PipelineResultImage
 
 
 class UserProfile(models.Model):
@@ -88,6 +88,9 @@ class Publication(models.Model):
         for v in pv:
             sum += v.value
         return sum
+
+    def get_images(self):
+        return PipelineResultImage.objects.filter(pipeline_result=self.associated_result)
 
     def __str__(self):
         return self.message

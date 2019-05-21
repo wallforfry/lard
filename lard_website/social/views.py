@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 from front.models import PipelineResultImage, PipelineResult
 from social.models import UserProfile, Publication
 
-PUB_BY_PAGE = 1
+PUB_BY_PAGE = 10
 
 
 @login_required
@@ -21,6 +21,7 @@ def profile(request):
     }
     return render(request, 'profile.html', context=context)
 
+
 @login_required
 def profile_username(request, username):
     if username == request.user.username:
@@ -31,6 +32,7 @@ def profile_username(request, username):
         "profile": p
     }
     return render(request, 'profile.html', context=context)
+
 
 @login_required
 def profile_update(request):
@@ -56,15 +58,21 @@ def feed(request):
         pass
     else:
         up = UserProfile.objects.get(user=request.user)
-        pubs = Publication.objects.filter(
-            Q(scope='p') | Q(user_profile=up) | (Q(user_profile__in=up.followings.all()) & Q(scope='f'))).order_by(
-            "-created_at")
+        pubs = Publication.objects.filter((Q(user_profile=up) | ~Q(scope="u"))).order_by("-created_at")
+
+        if "u" in request.GET:
+            pubs = pubs.filter(user_profile__username=request.GET.get("u", ""))
+        if "s" in request.GET:
+            s = request.GET.get("s", "")
+            if s == "f":
+                pubs = pubs.filter((Q(user_profile__in=up.followings.all()) & ~Q(scope="u")))
 
         paginator = Paginator(pubs, PUB_BY_PAGE)
         page_obj = paginator.page(1)
 
         context = {
             "profile": UserProfile.objects.get(user=request.user),
+            "pubs": page_obj.object_list,
             "page": page_obj,
             "scopes": UserProfile.SCOPE_CHOICES
         }
@@ -74,9 +82,14 @@ def feed(request):
 @login_required
 def feed_json(request, page):
     up = UserProfile.objects.get(user=request.user)
-    pubs = Publication.objects.filter(
-        Q(scope='p') | Q(user_profile=up) | (Q(user_profile__in=up.followings.all()) & Q(scope='f'))).order_by(
-        "-created_at")
+    pubs = Publication.objects.filter((Q(user_profile=up) | ~Q(scope="u"))).order_by("-created_at")
+
+    if "u" in request.GET:
+        pubs = pubs.filter(user_profile__username=request.GET.get("u", ""))
+    if "s" in request.GET:
+        s = request.GET.get("s", "")
+        if s == "f":
+            pubs = pubs.filter((Q(user_profile__in=up.followings.all()) & ~Q(scope="u")))
 
     paginator = Paginator(pubs, PUB_BY_PAGE)
     try:
@@ -102,7 +115,7 @@ def feed_element(request, elt_id):
 
         context = {
             "pub": pub,
-            "images": PipelineResultImage.objects.filter(pipeline_result=pub.associated_result)
+            "images": pub.get_images()
         }
 
         return render(request, "feed_card.html", context=context)
@@ -134,6 +147,7 @@ def feed_publish(request):
 
     return redirect(feed)
 
+
 @login_required
 def feed_publish_delete(request, pub_id):
     if request.method == 'POST':
@@ -147,12 +161,14 @@ def feed_publish_delete(request, pub_id):
 
     return redirect(feed)
 
+
 @login_required
 def people(request):
     context = {
         "peoples": UserProfile.objects.filter(~Q(scope='u'))
     }
     return render(request, 'people.html', context=context)
+
 
 @login_required
 def people_add(request):

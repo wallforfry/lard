@@ -3,6 +3,21 @@
     <div class="container">
         <div class="row justify-content-center">
             {% include 'publish.html' with profile=profile %}
+
+            <div class="col-8 col-sm-7">
+                <select id="scopeFilter" class="form-control" onchange="filter('s', jQuery(this).val())">
+                    <option value="{{ scopes.0.0 }}">{{ scopes.0.1 }}</option>
+                    {% for s in scopes|slice:"1:2" %}
+                        <option value="{{ s.0 }}">{{ s.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br/>
+            <br/>
+            {% for p in  pubs%}
+                {% include 'feed_card.html' with pub=p images=p.get_images.all %}
+            {% endfor %}
+
             <div id="newitem-anchor"></div>
         </div>
     </div>
@@ -11,8 +26,28 @@
 {% block script %}
     {{ block.super }}
     <script type="text/javascript">
+
+        function filter(k, v) {
+            var queryParameters = {}, queryString = location.search.substring(1),
+                re = /([^&=]+)=([^&]*)/g, m;
+            while (m = re.exec(queryString)) {
+                queryParameters[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+            }
+            queryParameters[k] = v;
+            location.search = jQuery.param(queryParameters);
+        }
+
+        function getFilter(k) {
+            var queryParameters = {}, queryString = location.search.substring(1),
+                re = /([^&=]+)=([^&]*)/g, m;
+            while (m = re.exec(queryString)) {
+                queryParameters[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+            }
+            return queryParameters[k];
+        }
+
         // Scroll globals
-        var pageNum = {{ page.number }} - 1; // The latest page loaded
+        var pageNum = {{ page.number }}; // The latest page loaded
         var hasNextPage = {{ page.has_next|lower }}; // Indicates whether to expect another page after this one
         var baseUrl = '{% url 'feed' %}'; // The root for the JSON calls
 
@@ -28,6 +63,7 @@
         };
 
         var loadItems = function () {
+            var params = window.location.href.slice(window.location.href.indexOf('?'));
             // If the next page doesn't exist, just quit now
             if (hasNextPage === false) {
                 return false
@@ -35,7 +71,7 @@
             // Update the page number
             pageNum = pageNum + 1;
             // Configure the url we're about to hit
-            var url = baseUrl + "json/" + pageNum + '/';
+            var url = baseUrl + "json/" + pageNum + '/' + params;
             jQuery.ajax({
                 url: url,
                 dataType: 'json',
@@ -59,7 +95,8 @@
         };
 
         jQuery(document).ready(function () {
-            loadItems();
+            let s = getFilter("s") ? getFilter("s") : "p";
+            jQuery("#scopeFilter").val(s);
             jQuery(window).bind('scroll', loadOnScroll);
         });
     </script>
