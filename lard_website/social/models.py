@@ -22,17 +22,17 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     username = models.CharField(max_length=255)
     locality = models.CharField(max_length=30, null=True, blank=True)
-    genre = models.CharField(max_length=1, choices=GENRE_CHOICES, null=True)
+    genre = models.CharField(max_length=1, choices=GENRE_CHOICES, null=True, blank=True)
     scope = models.CharField(max_length=1, choices=SCOPE_CHOICES, null=True, default=SCOPE_CHOICES[0][0])
-    friends = models.ManyToManyField('UserProfile', blank=True)
+    followings = models.ManyToManyField('UserProfile', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def add_friend(self, user_profile):
-        self.friends.add(user_profile)
+        self.followings.add(user_profile)
 
     def remove_friend(self, user_profile):
-        self.friends.remove(user_profile)
+        self.followings.remove(user_profile)
 
     def get_publications(self):
         return Publication.objects.filter(user_profile=self)
@@ -40,8 +40,12 @@ class UserProfile(models.Model):
     def get_pipelines(self):
         return Pipeline.objects.filter(owner=self.user)
 
-    def get_result(self):
+    def get_results(self):
         return PipelineResult.objects.filter(user=self.user)
+
+    def get_friends_publications(self):
+
+        return None
 
     def get_gender(self):
         i = None
@@ -72,7 +76,7 @@ class Publication(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     scope = models.CharField(max_length=1, choices=SCOPE_CHOICES, null=True, default=SCOPE_CHOICES[1][0])
     message = models.TextField(blank=True, default="")
-    associated_result = models.ForeignKey(PipelineResult, on_delete=models.CASCADE, null=True)
+    associated_result = models.ForeignKey(PipelineResult, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
