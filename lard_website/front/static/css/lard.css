@@ -54,3 +54,30 @@
     width: 48px !important;
     height: 48px !important;
 }
+
+
+
+.carousel-control-next-icon:after
+{
+  content: '>';
+  font-size: 55px;
+  color: #ff1f0a !important;
+}
+
+.carousel-control-prev-icon:after {
+  content: '<';
+  font-size: 55px;
+  color: #ff1f0a !important;
+}
+
+.carousel-indicators li {
+    background-color: #ff1f0a56 !important;
+}
+
+.carousel-indicators li.active {
+    background-color: #ff1f0aff !important;
+}
+
+.color-red {
+    color: #ff1f0a !important;
+}

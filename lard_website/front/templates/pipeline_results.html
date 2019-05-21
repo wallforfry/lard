@@ -16,10 +16,10 @@
                                 <strong class="card-title">Pipelines Results :</strong> {{ result.pipeline }}
                                 ( Worker status : {{ worker_status }} )
                                 {% if worker_status != "removed" %}
-                                <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="tooltip"
-                                        data-placement="right" title="Annuler l'execution"
-                                        onclick="jQuery.post('{% url 'pipeline_cancel' id=result.id %}', function(){location.reload();})"><span
-                                        class="fa fa-close"/></button>
+                                    <button type="button" class="btn btn-outline-warning btn-sm" data-toggle="tooltip"
+                                            data-placement="right" title="Annuler l'execution"
+                                            onclick="jQuery.post('{% url 'pipeline_cancel' id=result.id %}', function(){location.reload();})"><span
+                                            class="fa fa-close"/></button>
                                 {% endif %}
                             </div>
                             <div class="col-sm-2 col-12 text-right mt-2">
@@ -31,6 +31,9 @@
                                     <button type="button" class="btn btn-danger" data-toggle="modal"
                                             data-target="#deletePipelineResultModal">Supprimer
                                     </button>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                            data-target="#publishResultModal">Publier
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -40,8 +43,10 @@
                                 {% for i in images %}
                                     <div class="row">
                                         <div class="col-12 text-center">
-                                            <a href="{% url 'pipeline_result_image' id=result.id image_id=i %}" data-toggle="lightbox">
-                                                <img src="{% url 'pipeline_result_image' id=result.id image_id=i %}" style="width:100%;max-width:500px"/>
+                                            <a href="{% url 'pipeline_result_image' id=result.id image_id=i %}"
+                                               data-toggle="lightbox">
+                                                <img src="{% url 'pipeline_result_image' id=result.id image_id=i %}"
+                                                     style="width:100%;max-width:500px"/>
                                             </a>
                                         </div>
                                     </div>
@@ -66,6 +71,23 @@
             </div>
         </div><!-- .animated -->
     </div><!-- .content -->
+
+    <div class="modal fade" id="publishResultModal" tabindex="-1" role="dialog"
+         aria-labelledby="publishResultModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="publishResultModalLabel">Publier</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% include 'publish.html' with profile=user_profile associated_result=result %}
+
+            </div>
+        </div>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="deletePipelineResultModal" tabindex="-1" role="dialog"

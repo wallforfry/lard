@@ -1,0 +1,6 @@
+{% extends 'gabarit.html' %}
+{% block content %}
+    {% for people in peoples %}
+        {% include 'people_card.html' with profile=people %}
+    {% endfor %}
+{% endblock %}

@@ -1,0 +1,23 @@
+<div class="col-md-4">
+    <div class="card-header user-header alt bg-dark text-white">
+        <span>{{ title|title }}</span>
+    </div>
+
+    <ul class="list-group list-group-flush">
+        {% for f in followers %}
+            <li class="list-group-item">
+                <a href="{% url 'profile_username' username=f.username %}"> <i
+                        class="fa fa-user"></i> {{ f.username }}</a>
+                    {% if f not in user_profile.followings.all and f != user_profile%}
+                        <button onclick="jQuery.post('{% url 'people_add' %}', {'csrfmiddlewaretoken': '{{ csrf_token }}', 'user_profile': '{{ f.id }}'}); location.reload()"
+                                class="btn-primary btn btn-sm float-right" title="Add to my friends"><i
+                                class="fa fa-user-plus"></i></button>
+                    {% elif f in user_profile.followings.all %}
+                        <button onclick="jQuery.post('{% url 'people_delete' %}', {'csrfmiddlewaretoken': '{{ csrf_token }}', 'user_profile': '{{ f.id }}'}); location.reload()"
+                                class="btn-danger btn btn-sm float-right" title="Remove from friends"><i
+                                class="fa fa-trash-o"></i></button>
+                    {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>

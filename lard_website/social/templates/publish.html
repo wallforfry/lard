@@ -1,0 +1,86 @@
+{% load gravatar %}
+<div class="col-12 {% if not associated_result %} col-md-7{% endif %}">
+    <section class="card">
+        <div class="card-header user-header alt bg-dark">
+            <div class="corner-ribon black-ribon">
+                <i class="fa fa-feed"></i>
+            </div>
+
+            <div class="media">
+                <a href="#">
+                    <img class="user-avatar align-self-center rounded-circle mr-3"
+                         src="{% gravatar_url profile.user.email 85 %}" alt="User Avatar"
+                         style="width:85px; height:85px;">
+                </a>
+                <div class="media-body">
+                    <h2 class="text-white display-6">{{ profile.username }}</h2>
+                    <p class="text-light d-none d-sm-block">{{ profile.user.email }}</p>
+                    <p class="text-light d-sm-none">{{ profile.user.email|truncatechars:20 }}</p>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="weather-category twt-category">
+            <ul>
+                <li class="active">
+                    <h5>{{ profile.get_publications|length }}</h5>
+                    Publications
+                </li>
+                <li>
+                    <h5>{{ profile.get_pipelines|length }}</h5>
+                    Pipelines
+                </li>
+                <li>
+                    <h5>{{ profile.get_results|length }}</h5>
+                    Results
+                </li>
+            </ul>
+        </div>
+        <div class="twt-write col-sm-12">
+            <form action="{% url 'feed_publish' %}" method="POST" id="publishForm">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea placeholder="Write your Publication and Enter" rows="1" class="form-control t-text-area"
+                              name="message"
+                              maxlength="255"
+                              oninput="jQuery('#charCount').text(jQuery(this).val().length);"></textarea>
+                    <span class="pull-right" style="color: #d2d2d2;">
+                        <span id="charCount">0</span>/255
+                    </span>
+                </div>
+                {% if associated_result %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" value="Pipeline {{ associated_result.pipeline }}, result n°{{ associated_result.id }}" disabled/>
+                        <input type="hidden" name="result_id" value="{{ associated_result.id }}" class="disabled"/>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <div class="col col-4 col-sm-3 col-form-label"><label for="select" class="form-control-label">Visibility
+                        : </label>
+                    </div>
+                    <div class="col-8 col-sm-9">
+                        <select name="scope" id="select" class="form-control">
+                            <option value="{{ profile.get_scope.0 }}">{{ profile.get_scope.1 }}</option>
+                            {% for s in scopes %}
+                                {% if s != profile.get_scope %}
+                                    <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <footer class="twt-footer">
+            {% comment %}
+            <a href="#"><i class="fa fa-camera"></i></a>
+            <a href="#"><i class="fa fa-map-marker"></i></a>
+            New Castle, UK
+            {% endcomment %}
+            <button type="submit" class="btn btn-primary btn-sm pull-right" onclick="jQuery('#publishForm').submit();">
+                <i class="fa fa-dot-circle-o"></i> Submit
+            </button>
+        </footer>
+    </section>
+</div>

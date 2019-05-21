@@ -1,0 +1,53 @@
+{% load gravatar %}
+<div class="col-md-4">
+    <aside class="profile-nav alt">
+        <section class="card">
+            <div class="card-header user-header alt bg-dark">
+                <div class="media">
+                    <a href="#">
+                        <img class="user-avatar align-self-center rounded-circle mr-3"
+                             src="{% gravatar_url profile.user.email 85 %}" alt="User Avatar"
+                             style="width:85px; height:85px;">
+                    </a>
+                    <div class="media-body">
+                        <h2 class="text-light display-6">{{ profile.username }}</h2>
+                        <p class="d-none d-sm-block">{{ profile.user.email }}</p>
+                        <p class="d-sm-none">{{ profile.user.email|truncatechars:20 }}</p>
+                        {% if profile.locality %}
+                            <div class="location text-sm-left text-white"><i
+                                    class="fa fa-map-marker"></i> {{ profile.locality }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <a href="#"> <i class="fa fa-users"></i> Following <span
+                            class="badge badge-primary pull-right">{{ profile.followings.all|length }}</span></a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#"> <i class="fa fa-users"></i> Followers <span
+                            class="badge badge-primary pull-right">{{ profile.get_followers.all|length}}</span></a>
+                </li>
+                <li class="list-group-item">
+                    <a href="{% url 'feed' %}?u={{ profile.username }}"> <i class="fa fa-comments-o"></i> Publications <span
+                            class="badge badge-warning pull-right r-activity">{{ profile.get_publications|length }}</span></a>
+                </li>
+            </ul>
+            {% if profile.user != user %}
+                <div class="card-footer">
+                    {% if profile not in user_profile.followings.all %}
+                        <button onclick="jQuery.post('{% url 'people_add' %}', {'csrfmiddlewaretoken': '{{ csrf_token }}', 'user_profile': '{{ profile.id }}'}); location.reload()"
+                                class="btn-primary btn btn-sm float-right" title="Add to my friends"><i
+                                class="fa fa-user-plus"></i></button>
+                    {% else %}
+                        <button onclick="jQuery.post('{% url 'people_delete' %}', {'csrfmiddlewaretoken': '{{ csrf_token }}', 'user_profile': '{{ profile.id }}'}); location.reload()"
+                                class="btn-danger btn btn-sm float-right" title="Remove from friends"><i
+                                class="fa fa-trash-o"></i></button>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </section>
+    </aside>
+</div>

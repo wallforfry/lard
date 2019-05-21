@@ -1,0 +1,83 @@
+{% extends 'gabarit.html' %}
+{% block content %}
+    <div class="row justify-content-center">
+        {% include 'people_card.html' with profile=profile %}
+
+        {% if user == profile.user %}
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Profile</strong> : {{ profile.username }}
+                    </div>
+                    <div class="card-body card-block">
+                        <form action="{% url 'profile_update' %}" method="POST" class="form-horizontal"
+                              id="profile_form">
+                            {% csrf_token %}
+                            <div class="row form-group">
+                                <div class="col col-md-12">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-map-marker"></i></div>
+                                        <input type="text" id="input1-group1" name="location" placeholder="Location"
+                                               value="{{ profile.locality }}"
+                                               class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            {% comment %}
+                    <div class="row form-group">
+                        <div class="col col-md-12">
+                            <div class="input-group">
+                                <div class="input-group-addon">Birthdate</div>
+                                <input type="date" id="input2-group1" name="birthdate" class="form-control" value="">
+                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endcomment %}
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label for="select" class=" form-control-label">Gender
+                                    : </label>
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <select name="gender" id="select" class="form-control">
+                                        <option value="{{ profile.get_gender.0 }}">{{ profile.get_gender.1 }}</option>
+                                        {% for g in genders %}
+                                            {% if g != profile.get_gender %}
+                                                <option value="{{ g.0 }}">{{ g.1 }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label for="select" class=" form-control-label">Profile
+                                    visibility
+                                    : </label>
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <select name="scope" id="select" class="form-control">
+                                        <option value="{{ profile.get_scope.0 }}">{{ profile.get_scope.1 }}</option>
+                                        {% for s in scopes %}
+                                            {% if s != profile.get_scope %}
+                                                <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-success btn-sm float-right"
+                                onclick="jQuery('#profile_form').submit()">
+                            <i class="fa fa-dot-circle-o"></i> Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% include 'followers.html' with followers=profile.get_followers title="followers" %}
+        {% include 'followers.html' with followers=profile.followings.all title="followings" %}
+    </div>
+
+{% endblock %}

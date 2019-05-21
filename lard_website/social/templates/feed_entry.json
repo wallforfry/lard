@@ -1,0 +1,7 @@
+{
+    "page": {{ page.number }},
+    "hasNext": {{ page.has_next|lower }},
+    "itemList": [{% for pub in page.object_list %}
+        {"id": "{{ pub.id }}"}{% if not forloop.last %},{% endif %}{% endfor %}
+    ]
+}
