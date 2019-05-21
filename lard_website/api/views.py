@@ -55,7 +55,9 @@ def update_result(request, worker_id):
         for i in context["images"]:
             addr = "http://" + context["worker_ip"] + ":12300/download"
             rq = requests.post(addr, json={"name": i})
-            PipelineResultImage.objects.create(name=i, image=rq.content, pipeline_result=r)
+            img = cv2.imdecode(np.frombuffer(rq.content, dtype=np.uint8), -1)
+            ret, img = cv2.imencode(".png", img)
+            PipelineResultImage.objects.create(name=i, image=img, pipeline_result=r)
 
         r.logs = json.dumps(context["logs"])
         r.save()
