@@ -288,6 +288,10 @@ function initCytoscape(data) {
             document.getElementById('han').style.display = 'block';
             document.getElementById('brand').style.display = 'none';
         }
+        if (cy.filter('node[name = "Raynal"]').data()) {
+            document.getElementById('rayn').style.display = 'block';
+            document.getElementById('brand').style.display = 'none';
+        }
     });
 
     document.querySelector("#import").addEventListener("click", function () {
