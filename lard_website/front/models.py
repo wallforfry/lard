@@ -108,4 +108,4 @@ class PipelineResult(models.Model):
 class PipelineResultImage(models.Model):
     pipeline_result = models.ForeignKey(PipelineResult, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    image = models.BinaryField(blank=True)
+    image = models.ImageField(upload_to='images/', blank=True)

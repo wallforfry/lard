@@ -6,6 +6,7 @@ import numpy as np
 import django
 import requests
 from django.contrib.auth.decorators import login_required
+from django.core.files.base import ContentFile
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from django.utils.timesince import timesince
@@ -56,8 +57,9 @@ def update_result(request, worker_id):
             addr = "http://" + context["worker_ip"] + ":12300/download"
             rq = requests.post(addr, json={"name": i})
             img = cv2.imdecode(np.frombuffer(rq.content, dtype=np.uint8), -1)
-            ret, img = cv2.imencode(".png", img)
-            PipelineResultImage.objects.create(name=i, image=img, pipeline_result=r)
+            ret, img = cv2.imencode(".png", img, [cv2.IMWRITE_PNG_COMPRESSION, 9])
+            pri = PipelineResultImage.objects.create(name=i, pipeline_result=r)
+            pri.image.save(i, ContentFile(img), save=True)
 
         r.logs = json.dumps(context["logs"])
         r.save()
