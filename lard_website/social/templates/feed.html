@@ -26,6 +26,10 @@
 {% block script %}
     {{ block.super }}
     <script type="text/javascript">
+        function addValue(elt, value) {
+            var el = parseInt(jQuery(elt).text());
+            jQuery(elt).text(el+value);
+        }
 
         function filter(k, v) {
             var queryParameters = {}, queryString = location.search.substring(1),

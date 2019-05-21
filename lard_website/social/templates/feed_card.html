@@ -55,10 +55,19 @@
         <div class="card-footer">
             {% if pub.user_profile.user == user %}
                 <small>Visible for : <b>{{ pub.get_scope_display }}</b></small>
-                <button onclick="jQuery.post('{% url 'feed_publish_delete' pub_id=pub.id %}', {'csrfmiddlewaretoken': '{{ csrf_token }}'}); location.reload()" class="btn-danger btn btn-sm float-right" title="Delete this publication"><i class="fa fa-trash-o"></i></button>
+                <button onclick="jQuery.post('{% url 'feed_publish_delete' pub_id=pub.id %}', {'csrfmiddlewaretoken': '{{ csrf_token }}'}); location.reload()"
+                        class="btn-danger btn btn-sm float-right" title="Delete this publication"><i
+                        class="fa fa-trash-o"></i></button>
             {% endif %}
-            <button class="btn social fa fa-heart color-red bg-transparent float-right" title="Like">
-                <span>&nbsp;{{ pub.get_publication_score }}</span></button>
+            {% if user_profile in pub.get_likers %}
+                <button class="btn social fa fa-heart color-red bg-transparent float-right" title="Dislike"
+                        onclick="let v = jQuery(this).hasClass('fa-heart') ? -1 : 1; jQuery.post('{% url 'feed_publication_like' elt_id=pub.id %}', {'value':v, 'csrfmiddlewaretoken': '{{ csrf_token }}'}); jQuery(this).toggleClass('fa-heart-o').toggleClass('fa-heart'); addValue('#score-{{ pub.id }}', v)">
+                    <span id="score-{{ pub.id }}">&nbsp;{{ pub.get_publication_score }}</span></button>
+            {% else %}
+                <button class="btn social fa fa-heart-o color-red bg-transparent float-right" title="Like"
+                        onclick="let v = jQuery(this).hasClass('fa-heart') ? -1 : 1; jQuery.post('{% url 'feed_publication_like' elt_id=pub.id %}', {'value':v, 'csrfmiddlewaretoken': '{{ csrf_token }}'}); jQuery(this).toggleClass('fa-heart-o').toggleClass('fa-heart'); addValue('#score-{{ pub.id }}', v)">
+                    <span id="score-{{ pub.id }}">&nbsp;{{ pub.get_publication_score }}</span></button>
+            {% endif %}
         </div>
     </div>
 </div>

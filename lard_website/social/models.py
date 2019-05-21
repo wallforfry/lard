@@ -92,6 +92,9 @@ class Publication(models.Model):
     def get_images(self):
         return PipelineResultImage.objects.filter(pipeline_result=self.associated_result)
 
+    def get_likers(self):
+        return UserProfile.objects.filter(publicationvote__publication=self, publicationvote__value__gt=0)
+
     def __str__(self):
         return self.message
 

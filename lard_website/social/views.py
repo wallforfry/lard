@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 
 # Create your views here.
 from front.models import PipelineResultImage, PipelineResult
-from social.models import UserProfile, Publication
+from social.models import UserProfile, Publication, PublicationVote
 
 PUB_BY_PAGE = 10
 
@@ -205,3 +205,20 @@ def people_delete(request):
             except UserProfile.DoesNotExist:
                 raise Http404
     return redirect(people)
+
+@login_required
+def feed_publication_like(request, elt_id):
+    if request.method == "POST":
+        up = UserProfile.objects.get(user=request.user)
+        if "value" in request.POST:
+            try:
+                pv = PublicationVote.objects.get_or_create(user=up, publication_id=elt_id)
+                v = 1 if int(request.POST.get("value")) >= 0 else 0
+                pv[0].value = v
+                pv[0].save()
+                return HttpResponse(status=200)
+
+            except PublicationVote.DoesNotExist:
+                return django.http.HttpResponseBadRequest()
+
+    return django.http.HttpResponseBadRequest()
