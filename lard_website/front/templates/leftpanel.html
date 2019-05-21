@@ -8,10 +8,12 @@
                     aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                 <i class="fa fa-bars"></i>
             </button>
-            <a class="navbar-brand" href="{% url 'index' %}"><h4>Lard</h4></a>
+            <a class="navbar-brand" href="{% url 'index' %}" id="brand"><h4>Lard</h4></a>
             <a class="navbar-brand hidden" href="{% url 'index' %}"><h5>L</h5></a>
+            <div id="han"></div>
+            <iframe id="han" src="https://giphy.com/embed/3ornjSL2sBcPflIDiU" frameBorder="0" class="giphy-embed navbar-brand" allowFullScreen style="display: none;" ></iframe>
+            <iframe id="rayn" src="https://giphy.com/embed/A4R8sdUG7G9TG" frameBorder="0" class="giphy-embed navbar-brand" allowFullScreen style="display: none;"></iframe>
         </div>
-
         <div id="main-menu" class="main-menu collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li class="{% if request.resolver_match.view_name == "dashboard" %}active{% endif %}" id="dashboard">
@@ -86,6 +88,7 @@
                     </li>
 
                 {% endif %}
+
             </ul>
         </div><!-- /.navbar-collapse -->
     </nav>

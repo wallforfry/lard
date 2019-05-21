@@ -284,6 +284,14 @@ function initCytoscape(data) {
         cy.resize();
         cy.fit();
         createArray(cy);
+        if (cy.filter('node[name = "Han Solo"]').data()) {
+            document.getElementById('han').style.display = 'block';
+            document.getElementById('brand').style.display = 'none';
+        }
+        if (cy.filter('node[name = "Raynal"]').data()) {
+            document.getElementById('rayn').style.display = 'block';
+            document.getElementById('brand').style.display = 'none';
+        }
     });
 
     document.querySelector("#import").addEventListener("click", function () {
@@ -347,11 +355,7 @@ function initCytoscape(data) {
     cy.elements().forEach(function (elem) {
         console.log(elem.data());
     });
-    /*
-    if(cy.filter('node[name = "Han Solo"]').data()){
-        document.getElementById('han').style.display = 'block';
-    }
-     */
+
 }
 
 function highlight(source, target, old_name, new_name) {

@@ -9,7 +9,7 @@
     position: absolute;
     width: 2em;
     height: 2em;
-    border: 3px solid #3cefff;
+    border: 3px solid #0069d9;
     overflow: hidden;
     animation: spin 3s ease infinite;
 }
@@ -21,7 +21,7 @@
     left: -3px;
     width: 2em;
     height: 2em;
-    background-color: hsla(185, 100%, 62%, 0.75);
+    background-color: hsla(211, 100%, 43%, 0.75);
     transform-origin: center bottom;
     transform: scaleY(1);
     animation: fill 3s linear infinite;
