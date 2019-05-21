@@ -1,0 +1,107 @@
+{% extends 'gabarit.html' %}
+{% load gravatar %}
+{% block content %}
+    <div class="col-md-4">
+        <aside class="profile-nav alt">
+            <section class="card">
+                <div class="card-header user-header alt bg-dark">
+                    <div class="media">
+                        <a href="#">
+                            <img class="user-avatar align-self-center rounded-circle mr-3"
+                                 src="{% gravatar_url profile.user.email 85 %}" alt="User Avatar"
+                                 style="width:85px; height:85px;">
+                        </a>
+                        <div class="media-body">
+                            <h2 class="text-light display-6">{{ profile.username }}</h2>
+                            <p class="d-none d-sm-block">{{ profile.user.email }}</p>
+                            <p class="d-sm-none">{{ profile.user.email|truncatechars:20 }}</p>
+                            {% if profile.locality %}
+                                <div class="location text-sm-left text-white"><i
+                                        class="fa fa-map-marker"></i> {{ profile.locality }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="#"> <i class="fa fa-users"></i> Friends <span
+                                class="badge badge-primary pull-right">{{ profile.friends|length }}</span></a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="#"> <i class="fa fa-comments-o"></i> Publications <span
+                                class="badge badge-warning pull-right r-activity">{{ profile.get_publications|length }}</span></a>
+                    </li>
+                </ul>
+
+            </section>
+        </aside>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <strong>Profile</strong> : {{ profile.username }}
+            </div>
+            <div class="card-body card-block">
+                <form action="{% url 'profile_update' %}" method="POST" class="form-horizontal" id="profile_form">
+                {% csrf_token %}
+                    <div class="row form-group">
+                        <div class="col col-md-12">
+                            <div class="input-group">
+                                <div class="input-group-addon"><i class="fa fa-map-marker"></i></div>
+                                <input type="text" id="input1-group1" name="location" placeholder="Location" value="{{ profile.locality }}"
+                                       class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    {% comment %}
+                    <div class="row form-group">
+                        <div class="col col-md-12">
+                            <div class="input-group">
+                                <div class="input-group-addon">Birthdate</div>
+                                <input type="date" id="input2-group1" name="birthdate" class="form-control" value="">
+                                <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endcomment %}
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="select" class=" form-control-label">Gender : </label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <select name="gender" id="select" class="form-control">
+                                <option value="{{ profile.get_gender.0 }}">{{ profile.get_gender.1 }}</option>
+                                {% for g in genders %}
+                                    {% if g != profile.get_gender %}
+                                        <option value="{{ g.0 }}">{{ g.1 }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="select" class=" form-control-label">Profile visibility : </label>
+                        </div>
+                        <div class="col-12 col-md-9">
+                            <select name="scope" id="select" class="form-control">
+                                <option value="{{ profile.get_scope.0 }}">{{ profile.get_scope.1 }}</option>
+                                {% for s in scopes %}
+                                    {% if s != profile.get_scope %}
+                                        <option value="{{ s.0 }}">{{ s.1 }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-success btn-sm float-right" onclick="jQuery('#profile_form').submit()">
+                    <i class="fa fa-dot-circle-o"></i> Submit
+                </button>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

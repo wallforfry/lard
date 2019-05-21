@@ -13,11 +13,18 @@ class UserProfile(models.Model):
         ('o', 'Other'),
     )
 
+    SCOPE_CHOICES = (
+        ('p', 'Public'),
+        ('f', 'Friends'),
+        ('u', 'User'),
+    )
+
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
     username = models.CharField(max_length=255)
-    locality = models.CharField(max_length=30, null=True)
+    locality = models.CharField(max_length=30, null=True, blank=True)
     genre = models.CharField(max_length=1, choices=GENRE_CHOICES, null=True)
-    friends = models.ManyToManyField('UserProfile')
+    scope = models.CharField(max_length=1, choices=SCOPE_CHOICES, null=True, default=SCOPE_CHOICES[0][0])
+    friends = models.ManyToManyField('UserProfile', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -26,6 +33,25 @@ class UserProfile(models.Model):
 
     def remove_friend(self, user_profile):
         self.friends.remove(user_profile)
+
+    def get_publications(self):
+        return Publication.objects.filter(user_profile=self)
+
+    def get_gender(self):
+        i = None
+        for e in self.GENRE_CHOICES:
+            if self.genre == e[0]:
+                i = e
+                break
+        return i
+
+    def get_scope(self):
+        i = None
+        for e in self.SCOPE_CHOICES:
+            if self.scope == e[0]:
+                i = e
+                break
+        return i
 
     def __str__(self):
         return self.username
@@ -37,8 +63,8 @@ class Publication(models.Model):
         ('u', 'User'),
     )
 
-    user_profile = models.ForeignKey(User, on_delete=models.CASCADE)
-    scope = models.CharField(max_length=1, choices=SCOPE_CHOICES, null=True, default=SCOPE_CHOICES[1][1])
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    scope = models.CharField(max_length=1, choices=SCOPE_CHOICES, null=True, default=SCOPE_CHOICES[1][0])
     message = models.TextField(blank=True, default="")
     associated_result = models.ForeignKey(PipelineResult, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
