@@ -53,7 +53,7 @@ var tour = new Tour({
         },
         {
             element: "#card_pipe_list",
-            placement: "bottom",
+            placement: "top",
             title: "Liste",
             content: "Les différentes pipelines sont regroupés ici.<br> Tu pourras voir toutes tes créations mais aussi celles<br> des autres utilisateurs (si elles sont en mode public)."
         },
