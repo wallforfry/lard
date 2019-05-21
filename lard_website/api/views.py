@@ -53,6 +53,8 @@ def update_result(request, worker_id):
 
     try:
         r = PipelineResult.objects.get(worker_id=worker_id)
+        m.send(json.dumps({"type": "info", "title": "Pipeline en cours: ",
+                           "message": "Les images du pipeline " + r.pipeline.name + " sont en cours d'enregistrement."}))
         for i in context["images"]:
             addr = "http://" + context["worker_ip"] + ":12300/download"
             rq = requests.post(addr, json={"name": i})
