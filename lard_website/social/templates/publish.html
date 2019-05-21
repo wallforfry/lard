@@ -1,0 +1,54 @@
+{% load gravatar %}
+<div class="col-12 col-md-7">
+    <section class="card">
+        <div class="card-header user-header alt bg-dark">
+            <div class="corner-ribon black-ribon">
+                <i class="fa fa-feed"></i>
+            </div>
+
+            <div class="media">
+                <a href="#">
+                    <img class="user-avatar align-self-center rounded-circle mr-3"
+                                 src="{% gravatar_url profile.user.email 85 %}" alt="User Avatar"
+                                 style="width:85px; height:85px;">
+                </a>
+                <div class="media-body">
+                    <h2 class="text-white display-6">{{ profile.username }}</h2>
+                    <p class="text-light d-none d-sm-block">{{ profile.user.email }}</p>
+                    <p class="text-light d-sm-none">{{ profile.user.email|truncatechars:20 }}</p>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="weather-category twt-category">
+            <ul>
+                <li class="active">
+                    <h5>{{ profile.get_publications|length }}</h5>
+                    Publications
+                </li>
+                <li>
+                    <h5>{{ profile.get_pipelines|length }}</h5>
+                    Pipelines
+                </li>
+                <li>
+                    <h5>{{ profile.get_results|length }}</h5>
+                    Results
+                </li>
+            </ul>
+        </div>
+        <div class="twt-write col-sm-12">
+            <textarea placeholder="Write your Publication and Enter" rows="1" class="form-control t-text-area"></textarea>
+        </div>
+        <footer class="twt-footer">
+            {% comment %}
+            <a href="#"><i class="fa fa-camera"></i></a>
+            <a href="#"><i class="fa fa-map-marker"></i></a>
+            New Castle, UK
+            {% endcomment %}
+            <span class="pull-right">
+                                    255
+                                </span>
+        </footer>
+    </section>
+</div>

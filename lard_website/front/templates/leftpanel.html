@@ -62,6 +62,9 @@
                  <li class="{% if request.resolver_match.view_name == "profile" %}active{% endif %}" id="profile">
                     <a href="{% url 'profile' %}"> <i class="menu-icon fa fa-user"></i>Profile</a>
                 </li>
+                <li class="{% if request.resolver_match.view_name == "feed" %}active{% endif %}" id="feed">
+                    <a href="{% url 'feed' %}"> <i class="menu-icon fa fa-feed"></i>Feed</a>
+                </li>
 
                 <h3 class="menu-title">Extras</h3><!-- /.menu-title -->
                 <li class="menu-item-has-children dropdown">

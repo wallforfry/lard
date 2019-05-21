@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 
 # Create your models here.
-from front.models import PipelineResult
+from front.models import PipelineResult, Pipeline
 
 
 class UserProfile(models.Model):
@@ -36,6 +36,12 @@ class UserProfile(models.Model):
 
     def get_publications(self):
         return Publication.objects.filter(user_profile=self)
+
+    def get_pipelines(self):
+        return Pipeline.objects.filter(owner=self.user)
+
+    def get_result(self):
+        return PipelineResult.objects.filter(user=self.user)
 
     def get_gender(self):
         i = None

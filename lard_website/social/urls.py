@@ -11,4 +11,5 @@ from social import views
 urlpatterns = [
     path('profile', views.profile, name="profile"),
     path('profile/update', views.profile_update, name="profile_update"),
+    path('feed', views.feed, name="feed"),
 ]

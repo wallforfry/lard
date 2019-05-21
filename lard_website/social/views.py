@@ -15,6 +15,7 @@ def profile(request):
     }
     return render(request, 'profile.html', context=context)
 
+
 @login_required
 def profile_update(request):
     if request.method == 'POST':
@@ -32,3 +33,14 @@ def profile_update(request):
         return redirect(profile)
 
     return HttpResponse(status=403)
+
+
+@login_required
+def feed(request):
+    if request.method == "POST":
+        pass
+    else:
+        context = {
+            "profile": UserProfile.objects.get(user=request.user),
+        }
+        return render(request, "feed.html", context=context)
