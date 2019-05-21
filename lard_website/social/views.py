@@ -21,6 +21,16 @@ def profile(request):
     }
     return render(request, 'profile.html', context=context)
 
+@login_required
+def profile_username(request, username):
+    if username == request.user.username:
+        return redirect(profile)
+    else:
+        p = UserProfile.objects.get((Q(username=username) & ~Q(scope='u')))
+    context = {
+        "profile": p
+    }
+    return render(request, 'profile.html', context=context)
 
 @login_required
 def profile_update(request):
@@ -136,3 +146,39 @@ def feed_publish_delete(request, pub_id):
             raise django.http.HttpResponseBadRequest
 
     return redirect(feed)
+
+@login_required
+def people(request):
+    context = {
+        "peoples": UserProfile.objects.filter(~Q(scope='u'))
+    }
+    return render(request, 'people.html', context=context)
+
+@login_required
+def people_add(request):
+    if request.method == 'POST':
+        if "user_profile" in request.POST:
+            user_profile_id = request.POST.get("user_profile")
+            try:
+                up_to_add = UserProfile.objects.get(id=user_profile_id)
+                up = UserProfile.objects.get(user=request.user)
+                up.add_friend(up_to_add)
+                up.save()
+            except UserProfile.DoesNotExist:
+                raise Http404
+    return redirect(people)
+
+
+@login_required
+def people_delete(request):
+    if request.method == 'POST':
+        if "user_profile" in request.POST:
+            user_profile_id = request.POST.get("user_profile")
+            try:
+                up_to_rm = UserProfile.objects.get(id=user_profile_id)
+                up = UserProfile.objects.get(user=request.user)
+                up.remove_friend(up_to_rm)
+                up.save()
+            except UserProfile.DoesNotExist:
+                raise Http404
+    return redirect(people)

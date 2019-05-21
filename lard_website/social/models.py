@@ -44,8 +44,10 @@ class UserProfile(models.Model):
         return PipelineResult.objects.filter(user=self.user)
 
     def get_friends_publications(self):
-
         return None
+
+    def get_followers(self):
+        return UserProfile.objects.filter(followings__in=[self])
 
     def get_gender(self):
         i = None
