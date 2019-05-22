@@ -8,6 +8,21 @@
 <!--<![endif]-->
 
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-61528869-4"></script>
+    <script>
+        if(window.location.hostname == "lard.wallforfry.fr") {
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+
+            gtag('config', 'UA-61528869-4');
+        }
+    </script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ title }}{% if page %} - {{ page }}{% endif %}</title>
@@ -158,22 +173,6 @@
         <script src="{% static 'vendors/chart.js/dist/Chart.bundle.min.js' %}"></script>{% endcomment %}
     <script src="{% static 'js/bootstrap-tour/bootstrap-tour-standalone.js' %}"></script>
     <script src="{% static 'js/tour.js' %}"></script>
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-61528869-4"></script>
-    <script>
-        if(window.location.hostname == "lard.wallforfry.fr") {
-            window.dataLayer = window.dataLayer || [];
-
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-
-            gtag('js', new Date());
-
-            gtag('config', 'UA-61528869-4');
-        }
-    </script>
 
 {% endblock %}
 
