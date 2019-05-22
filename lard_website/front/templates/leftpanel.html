@@ -23,7 +23,8 @@
                     </li>
                 {% endcomment %}
                 <h3 class="menu-title">Mes Projets</h3><!-- /.menu-title -->
-                <li class="{% if request.resolver_match.view_name == "pipeline" or request.resolver_match.view_name == "list_pipelines" %}active{% endif %}"  id="pipelines">
+                <li class="{% if request.resolver_match.view_name == "pipeline" or request.resolver_match.view_name == "list_pipelines" %}active{% endif %}"
+                    id="pipelines">
                     <a href="{% url 'list_pipelines' %}"> <i class="menu-icon fa fa-edit"></i>Traitements</a>
                 </li>
                 <li class="menu-item-has-children dropdown">
@@ -36,7 +37,8 @@
                         {% endfor %}
                     </ul>
                 </li>
-                <li class="{% if request.resolver_match.view_name == "pipelines_results_list" %}active{% endif %}" id="results">
+                <li class="{% if request.resolver_match.view_name == "pipelines_results_list" %}active{% endif %}"
+                    id="results">
                     <a href="{% url 'pipelines_results_list' %}"> <i class="menu-icon fa fa-edit"></i>Resultats</a>
                 </li>
 
@@ -59,7 +61,7 @@
                 </li>
 
                 <h3 class="menu-title">Social</h3><!-- /.menu-title -->
-                 <li class="{% if request.resolver_match.view_name == "profile" %}active{% endif %}" id="profile">
+                <li class="{% if request.resolver_match.view_name == "profile" %}active{% endif %}" id="profile">
                     <a href="{% url 'profile' %}"> <i class="menu-icon fa fa-user"></i>Profile</a>
                 </li>
                 <li class="{% if request.resolver_match.view_name == "people" %}active{% endif %}" id="people">
@@ -70,6 +72,7 @@
                 </li>
 
                 <h3 class="menu-title">Extras</h3><!-- /.menu-title -->
+                {% comment %}
                 <li class="menu-item-has-children dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                        aria-expanded="false"> <i class="menu-icon fa fa-share"></i>Partager</a>
@@ -77,6 +80,7 @@
                         <li><i class="menu-icon fa fa-facebook"></i><a href="#">Facebook</a></li>
                     </ul>
                 </li>
+                {% endcomment %}
                 <li class="">
                     <a id="startTour" href="#"> <i class="menu-icon fa fa-map"></i>Visite Guidée</a>
                 </li>
