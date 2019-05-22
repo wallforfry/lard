@@ -142,7 +142,7 @@
             }
         }
     </script>
-        <script>
+    <script>
         jQuery(document).ready(function ($) {
             jQuery(".table-row").click(function () {
                 window.document.location = jQuery(this).data("href");
@@ -158,6 +158,23 @@
         <script src="{% static 'vendors/chart.js/dist/Chart.bundle.min.js' %}"></script>{% endcomment %}
     <script src="{% static 'js/bootstrap-tour/bootstrap-tour-standalone.js' %}"></script>
     <script src="{% static 'js/tour.js' %}"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-61528869-4"></script>
+    <script>
+        if(window.location.hostname == "lard.wallforfry.fr") {
+            window.dataLayer = window.dataLayer || [];
+
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+
+            gtag('js', new Date());
+
+            gtag('config', 'UA-61528869-4');
+        }
+    </script>
+
 {% endblock %}
 
 </html>
