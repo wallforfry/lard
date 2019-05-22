@@ -4,7 +4,7 @@
         <div class="row justify-content-center">
             {% include 'publish.html' with profile=profile %}
 
-            <div class="col-8 col-sm-7">
+            <div class="col-12 col-md-7">
                 <select id="scopeFilter" class="form-control" onchange="filter('s', jQuery(this).val())">
                     <option value="{{ scopes.0.0 }}">{{ scopes.0.1 }}</option>
                     {% for s in scopes|slice:"1:2" %}
