@@ -7,13 +7,13 @@
             </div>
 
             <div class="media">
-                <a href="#">
+                <a href="{% url 'profile_username' username=profile.username %}">
                     <img class="user-avatar align-self-center rounded-circle mr-3"
                          src="{% gravatar_url profile.user.email 85 %}" alt="User Avatar"
                          style="width:85px; height:85px;">
                 </a>
                 <div class="media-body">
-                    <h2 class="text-white display-6">{{ profile.username }}</h2>
+                    <a href="{% url 'profile_username' username=profile.username %}"><h2 class="text-white display-6">{{ profile.username }}</h2></a>
                     <p class="text-light d-none d-sm-block">{{ profile.user.email }}</p>
                     <p class="text-light d-sm-none">{{ profile.user.email|truncatechars:20 }}</p>
                 </div>
