@@ -1,13 +1,13 @@
 {% load gravatar %}
-<div class="col-md-4">
+<div class="col-12 col-xl-4">
     <aside class="profile-nav alt">
         <section class="card">
             <div class="card-header user-header alt bg-dark">
                 <div class="media">
                     <a href="#">
-                        <img class="user-avatar align-self-center rounded-circle mr-3"
+                        <img class="user-avatar align-self-center rounded-circle mr-3 img-fluid"
                              src="{% gravatar_url profile.user.email 85 %}" alt="User Avatar"
-                             style="width:85px; height:85px;">
+                             style="max-width:85px; height:auto;">
                     </a>
                     <div class="media-body">
                         <h2 class="text-light display-6">{{ profile.username }}</h2>

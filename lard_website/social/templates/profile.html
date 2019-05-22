@@ -4,7 +4,7 @@
         {% include 'people_card.html' with profile=profile %}
 
         {% if user == profile.user %}
-            <div class="col-lg-6">
+            <div class="col-12 col-lg-6">
                 <div class="card">
                     <div class="card-header">
                         <strong>Profile</strong> : {{ profile.username }}
