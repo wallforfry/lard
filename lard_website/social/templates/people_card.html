@@ -44,11 +44,11 @@
                 <div class="card-footer">
                     {% if profile not in user_profile.followings.all %}
                         <button onclick="jQuery.post('{% url 'people_add' %}', {'csrfmiddlewaretoken': '{{ csrf_token }}', 'user_profile': '{{ profile.id }}'}); location.reload()"
-                                class="btn-primary btn btn-sm float-right" title="Add to my friends"><i
+                                class="btn-primary btn btn-sm float-right" title="Follow"><i
                                 class="fa fa-user-plus"></i></button>
                     {% else %}
                         <button onclick="jQuery.post('{% url 'people_delete' %}', {'csrfmiddlewaretoken': '{{ csrf_token }}', 'user_profile': '{{ profile.id }}'}); location.reload()"
-                                class="btn-danger btn btn-sm float-right" title="Remove from friends"><i
+                                class="btn-danger btn btn-sm float-right" title="Unfollow"><i
                                 class="fa fa-trash-o"></i></button>
                     {% endif %}
                 </div>
