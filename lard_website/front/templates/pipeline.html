@@ -10,12 +10,12 @@
             </div>
             <div class="mt-auto mb-sm-auto">
                 <div class="col-auto">
-                    <button type="button" class="btn btn-default" id="reload"><span class="fa fa-refresh"></span>
+                    <button type="button" class="btn btn-default" id="reload" title="Refresh view"><i class="fa fa-refresh"></i>
                     </button>
                     <button id="runButton" type="button" class="btn btn-success"><i class="fa fa-play"></i> Run</button>
                     <a href="{% url 'pipeline_export' name=name %}">
                         <button type="button" class="btn btn-primary"
-                                {% if not perms.front.view_pipeline %}disabled{% endif %}>Exporter
+                                {% if not perms.front.view_pipeline %}disabled{% endif %} title="Export"><i class="fa fa-download"></i>
                         </button>
                     </a>
                 </div>
@@ -28,10 +28,10 @@
                                aria-expanded="false" aria-controls="collapseExample" id="addButton">
                                 <i class="fa fa-caret-down"></i> Add
                             </a>
-                            <button type="button" class="btn btn-warning text-white" id="editButton">Editer
+                            <button type="button" class="btn btn-warning text-white" id="editButton" title="Edit"><i class="fa fa-pencil"></i>
                             </button>
-                            <button type="button" class="btn btn-danger" data-toggle="modal"
-                                    data-target="#deletePipelineModal">Supprimer
+                            <button type="button" class="btn btn-danger" data-toggle="modal" title="Delete"
+                                    data-target="#deletePipelineModal"><i class="fa fa-trash"></i>
                             </button>
 
                         </div>
@@ -85,13 +85,13 @@
 
                 <div class="menu pmd-floating-action" role="navigation">
                     <button id="thumbs-down" type="button"
-                            class="btn btn-danger btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
+                            class="btn btn-danger btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect" title="-1">
                         <span class="fa fa-thumbs-down"></span></button>
                     <button id="thumbs-up" type="button"
-                            class="btn btn-success btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect">
+                            class="btn btn-success btn-lg fab rounded-circle pmd-floating-action-btn  pmd-btn-raised pmd-ripple-effect" title="+1">
                         <span class="fa fa-thumbs-up"></span></button>
 
-                    <button type="button" class="btn btn-primary btn-lg fab rounded-circle pmd-floating-action-btn">
+                    <button type="button" class="btn btn-primary btn-lg fab rounded-circle pmd-floating-action-btn" title="Vote for pipeline">
                         <span class="fa fa-plus"></span></button>
                 </div>
             </div>
