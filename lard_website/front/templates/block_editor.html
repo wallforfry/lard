@@ -33,8 +33,8 @@
                             {% endfor %}
                             {% if perms.front.change_block %}
                                 <div class="btn-group float-right" role="group" aria-label="Inputs Toolbar">
-                                    <button id="button-add-input" type="button" class="btn btn-primary">Add</button>
-                                    <button type="submit" class="btn btn-success" id="save_inputs">Save</button>
+                                    <button id="button-add-input" type="button" class="btn btn-primary" title="Add input"><i class="fa fa-plus"></i></button>
+                                    <button type="submit" class="btn btn-success" id="save_inputs" title="Save inputs"><i class="fa fa-save"></i></button>
                                 </div>
                             {% endif %}
                         </form>
@@ -58,8 +58,8 @@
                             {% endfor %}
                             {% if perms.front.change_block %}
                                 <div class="btn-group float-right" role="group" aria-label="Outputs Toolbar">
-                                    <button id="button-add-output" type="button" class="btn btn-primary">Add</button>
-                                    <button type="submit" class="btn btn-success">Save</button>
+                                    <button id="button-add-output" type="button" class="btn btn-primary" title="Add output"><i class="fa fa-plus"></i></button>
+                                    <button type="submit" class="btn btn-success" title="Save outputs"><i class="fa fa-save"></i></button>
                                 </div>
                             {% endif %}
                         </form>

@@ -14,13 +14,13 @@
                     <input id="code" type="hidden" name="code">
                     <button type="button" class="btn btn-danger"
                             {% if not perms.front.delete_block %}disabled{% endif %} data-toggle="modal"
-                            data-target="#deleteBlockModal">Supprimer
+                            data-target="#deleteBlockModal" title="Delete"><i class="fa fa-trash"></i>
                     </button>
                     <a href="{% url 'export_block' name=file_name %}"><button type="button" class="btn btn-primary"
-                            {% if not perms.front.view_block %}disabled{% endif %}>Exporter
+                            {% if not perms.front.view_block %}disabled{% endif %} title="Export block"><i class="fa fa-download"></i>
                     </button></a>
                     <button type="submit" class="btn btn-success"
-                            {% if not perms.front.change_block %}disabled{% endif %}>Save
+                            {% if not perms.front.change_block %}disabled{% endif %} title="Save"><i class="fa fa-save"></i>
                     </button>
                 </form>
             </div>
