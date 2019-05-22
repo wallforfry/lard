@@ -28,7 +28,7 @@
                 </li>
                 <li class="list-group-item">
                     <a href="#"> <i class="fa fa-users"></i> Followers <span
-                            class="badge badge-primary pull-right">{{ profile.get_followers.all|length}}</span></a>
+                            class="badge badge-primary pull-right">{{ profile.get_followers|length}}</span></a>
                 </li>
                 <li class="list-group-item">
                     <a href="{% url 'feed' %}?u={{ profile.username }}"> <i class="fa fa-comments-o"></i> Publications <span

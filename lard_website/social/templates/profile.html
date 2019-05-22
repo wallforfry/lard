@@ -76,7 +76,7 @@
                 </div>
             </div>
         {% endif %}
-        {% include 'followers.html' with followers=profile.get_followers title="followers" %}
+        {% include 'followers.html' with followers=profile.get_followers.all title="followers" %}
         {% include 'followers.html' with followers=profile.followings.all title="followings" %}
     </div>
 
