@@ -172,7 +172,7 @@ def feed_publish_delete(request, pub_id):
 @login_required
 def people(request):
     context = {
-        "peoples": UserProfile.objects.filter(~Q(scope='u'))
+        "peoples": UserProfile.objects.filter(~Q(scope='u')).order_by('username')
     }
     return render(request, 'people.html', context=context)
 
