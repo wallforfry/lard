@@ -170,7 +170,7 @@ class Block(Subject, Observer):
 
             if len(self._observers) == 0:
                 for output in self.outputs_dict:
-                    self.pipeline.outputs.append({"name": self.name, "value": result[output], "type": self.outputs_dict.get(output)})
+                    self.pipeline.outputs.append({"name": self.name, "value": result.get(output), "type": self.outputs_dict.get(output)})
                     self._data_ready = set_dict_to_value(self.inputs_dict, None)
 
             self.subject_outputs = result

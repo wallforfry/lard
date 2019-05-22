@@ -6,3 +6,5 @@ networkx==2.2
 grequests
 bezier
 PyJWT==1.7.1
+face_recognition
+keras

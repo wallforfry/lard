@@ -61,13 +61,14 @@ def run():
 
         images_names = []
         for r in results:
-            try:
-                name = str(uuid.uuid1())+".png"
-                cv2.imwrite(name, r["value"])
-                images_names.append(name)
-            except Exception as e:
-                print(e)
-                p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value\n"+str(e)})
+            if r["type"] == "image":
+                try:
+                    name = str(uuid.uuid1())+".png"
+                    cv2.imwrite(name, r["value"])
+                    images_names.append(name)
+                except Exception as e:
+                    print(e)
+                    p.logs.append({"name": "LARD", "message": "Can't get correct \"image\" value\n"+str(e)})
 
         result = {"name": name, "images": images_names, "logs": p.logs, "worker_id": j.get("worker_id"), "username": j.get("username"), "worker_ip": j.get("worker_ip")}
 
