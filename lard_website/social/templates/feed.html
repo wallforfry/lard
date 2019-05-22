@@ -11,10 +11,16 @@
                         <option value="{{ s.0 }}">{{ s.1 }}</option>
                     {% endfor %}
                 </select>
+                <div class="input-group mt-1 mb-1">
+                    <input id="userFilter" type="search" class="form-control" placeholder="Search by user"/>
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary" onclick="filter('u', jQuery('#userFilter').val())">
+                            <i class="fa fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
             </div>
-            <br/>
-            <br/>
-            {% for p in  pubs%}
+            {% for p in  pubs %}
                 {% include 'feed_card.html' with pub=p images=p.get_images.all %}
             {% endfor %}
 
@@ -28,7 +34,7 @@
     <script type="text/javascript">
         function addValue(elt, value) {
             var el = parseInt(jQuery(elt).text());
-            jQuery(elt).text(el+value);
+            jQuery(elt).text(el + value);
         }
 
         function filter(k, v) {
@@ -101,6 +107,7 @@
         jQuery(document).ready(function () {
             let s = getFilter("s") ? getFilter("s") : "p";
             jQuery("#scopeFilter").val(s);
+            jQuery("#userFilter").val(getFilter('u'));
             jQuery(window).bind('scroll', loadOnScroll);
         });
     </script>

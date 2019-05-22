@@ -4,7 +4,7 @@
         {% include 'people_card.html' with profile=profile %}
 
         {% if user == profile.user %}
-            <div class="col-lg-6">
+            <div class="col-12 col-lg-6">
                 <div class="card">
                     <div class="card-header">
                         <strong>Profile</strong> : {{ profile.username }}
@@ -76,7 +76,7 @@
                 </div>
             </div>
         {% endif %}
-        {% include 'followers.html' with followers=profile.get_followers title="followers" %}
+        {% include 'followers.html' with followers=profile.get_followers.all title="followers" %}
         {% include 'followers.html' with followers=profile.followings.all title="followings" %}
     </div>
 

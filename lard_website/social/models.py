@@ -43,11 +43,8 @@ class UserProfile(models.Model):
     def get_results(self):
         return PipelineResult.objects.filter(user=self.user)
 
-    def get_friends_publications(self):
-        return None
-
     def get_followers(self):
-        return UserProfile.objects.filter(followings__in=[self])
+        return UserProfile.objects.filter(followings=self)
 
     def get_gender(self):
         i = None
@@ -67,6 +64,7 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.username
+
 
 class Publication(models.Model):
     SCOPE_CHOICES = (
@@ -98,6 +96,7 @@ class Publication(models.Model):
     def __str__(self):
         return self.message
 
+
 class PublicationVote(models.Model):
     value = models.IntegerField(default=0)
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
@@ -105,9 +104,11 @@ class PublicationVote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
 def create_user_profile(sender, instance, created, **kwargs):
     up = UserProfile.objects.get_or_create(user=instance)[0]
     up.username = instance.username
     up.save()
+
 
 post_save.connect(create_user_profile, sender=User)

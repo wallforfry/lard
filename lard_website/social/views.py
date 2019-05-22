@@ -61,7 +61,7 @@ def feed(request):
         pubs = Publication.objects.filter((Q(user_profile=up) | ~Q(scope="u"))).order_by("-created_at")
 
         if "u" in request.GET:
-            pubs = pubs.filter(user_profile__username=request.GET.get("u", ""))
+            pubs = pubs.filter(user_profile__username__icontains=request.GET.get("u", ""))
         if "s" in request.GET:
             s = request.GET.get("s", "")
             if s == "f":
@@ -85,7 +85,7 @@ def feed_json(request, page):
     pubs = Publication.objects.filter((Q(user_profile=up) | ~Q(scope="u"))).order_by("-created_at")
 
     if "u" in request.GET:
-        pubs = pubs.filter(user_profile__username=request.GET.get("u", ""))
+        pubs = pubs.filter(user_profile__username__icontains=request.GET.get("u", ""))
     if "s" in request.GET:
         s = request.GET.get("s", "")
         if s == "f":
@@ -172,7 +172,7 @@ def feed_publish_delete(request, pub_id):
 @login_required
 def people(request):
     context = {
-        "peoples": UserProfile.objects.filter(~Q(scope='u'))
+        "peoples": UserProfile.objects.filter(~Q(scope='u')).order_by('username')
     }
     return render(request, 'people.html', context=context)
 
