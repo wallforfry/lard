@@ -13,10 +13,14 @@
                         <h2 class="text-light display-6">{{ profile.username }}</h2>
                         <p class="d-none d-sm-block">{{ profile.user.email }}</p>
                         <p class="d-sm-none">{{ profile.user.email|truncatechars:20 }}</p>
-                        {% if profile.locality %}
-                            <div class="location text-sm-left text-white"><i
-                                    class="fa fa-map-marker"></i> {{ profile.locality }}</div>
-                        {% endif %}
+                        <div class="location text-sm-left text-white">
+                            {% if profile.locality %}
+                                <i class="fa fa-map-marker"></i> {{ profile.locality }}
+                            {% else %}
+                                &nbsp;
+                            {% endif %}
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -28,11 +32,12 @@
                 </li>
                 <li class="list-group-item">
                     <a href="#"> <i class="fa fa-users"></i> Followers <span
-                            class="badge badge-primary pull-right">{{ profile.get_followers|length}}</span></a>
+                            class="badge badge-primary pull-right">{{ profile.get_followers|length }}</span></a>
                 </li>
                 <li class="list-group-item">
-                    <a href="{% url 'feed' %}?u={{ profile.username }}"> <i class="fa fa-comments-o"></i> Publications <span
-                            class="badge badge-warning pull-right r-activity">{{ profile.get_publications|length }}</span></a>
+                    <a href="{% url 'feed' %}?u={{ profile.username }}"> <i class="fa fa-comments-o"></i> Publications
+                        <span
+                                class="badge badge-warning pull-right r-activity">{{ profile.get_publications|length }}</span></a>
                 </li>
             </ul>
             {% if profile.user != user %}
